@@ -1,5 +1,4 @@
-﻿using Chomskyspark.Model.SearchObjects;
-using Chomskyspark.Services.Interfaces;
+﻿using Chomskyspark.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -7,7 +6,7 @@ namespace Chomskyspark.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    //[Authorize]
+    [Authorize]
     public class BaseController<TModel, TSearch> : ControllerBase where TModel : class where TSearch : class
     {
         public readonly IBaseService<TModel, TSearch> IBaseService;

@@ -1,4 +1,6 @@
-﻿using Chomskyspark.Model.Requests;
+﻿using AdventuraClick.Authorization;
+using Chomskyspark.Model;
+using Chomskyspark.Model.Requests;
 using Chomskyspark.Model.SearchObjects;
 using Chomskyspark.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
@@ -8,7 +10,7 @@ namespace Chomskyspark.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-   // [Authorize]
+    [Authorize]
 
     public class UserController : BaseCRUDController<Model.User, UserSearchObject,
          UserInsertRequest, UserUpdateRequest>
@@ -18,6 +20,20 @@ namespace Chomskyspark.Controllers
             base(IUserService)
         {
             this.IUserService = IUserService;
+        }
+
+        [AllowAnonymous]
+        public override User Insert([FromBody] UserInsertRequest request)
+        {
+            return base.Insert(request);
+        }
+
+        [HttpGet("login"), AllowAnonymous]
+        public Model.User Login()
+        {
+            var credentials = CredentialsHelper.extractCredentials(Request);
+
+            return IUserService.Login(credentials.Username, credentials.Password);
         }
     }
 }
