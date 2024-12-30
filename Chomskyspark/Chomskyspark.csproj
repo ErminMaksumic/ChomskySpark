@@ -13,10 +13,14 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.0" />
+    <PackageReference Include="SixLabors.ImageSharp" Version="3.1.6" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Chomskyspark.Model\Chomskyspark.Model.csproj" />
     <ProjectReference Include="..\Chomskyspark.Service\Chomskyspark.Services.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="wwwroot\uploads\images\" />
   </ItemGroup>
 </Project>

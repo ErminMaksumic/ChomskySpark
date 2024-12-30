@@ -1,5 +1,6 @@
 using Chomskyspark.Services;
 using Chomskyspark.Services.Database;
+using Chomskyspark.Services.FileManager;
 using Chomskyspark.Services.Implementation;
 using Chomskyspark.Services.Interfaces;
 using eProdaja.API.Filters;
@@ -14,6 +15,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddTransient<IUserService, UserService>();
 builder.Services.AddTransient<IJWTService, JWTService>();
+builder.Services.AddTransient<IFileManager, FileManager>();
 
 builder.Services.AddControllers(x =>
 {
@@ -72,6 +74,7 @@ app.UseHttpsRedirection();
 
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseStaticFiles();
 
 app.MapControllers();
 
