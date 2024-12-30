@@ -7,5 +7,6 @@ namespace Chomskyspark.Services.Interfaces
     public interface IUserService : ICRUDService<Model.User, UserSearchObject, UserInsertRequest, UserUpdateRequest>
     {
         User Login(string username, string password);
+        string GenerateToken(Model.User user);
     }
 }

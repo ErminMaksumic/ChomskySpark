@@ -11,8 +11,12 @@ namespace Chomskyspark.Services.Implementation
 {
     public class UserService : CRUDService<Model.User, UserSearchObject, User, UserInsertRequest, UserUpdateRequest>, IUserService
     {
-        public UserService(ChomskySparkContext context, IMapper mapper) : base(context, mapper)
-        { }
+        private readonly IJWTService jWTService;
+
+        public UserService(ChomskySparkContext context, IMapper mapper, IJWTService jWTService) : base(context, mapper)
+        {
+            this.jWTService = jWTService;
+        }
 
         public static string GenerateSalt()
         {
@@ -47,7 +51,7 @@ namespace Chomskyspark.Services.Implementation
             if (request != null)
             {
 
-                if (Context.Users.Where(a => a.Username == request.Username).Any())
+                if (Context.Users.Where(a => a.Email == request.Email).Any())
                 {
                     throw new UserException("User with that username already exists!");
                 }
@@ -73,7 +77,7 @@ namespace Chomskyspark.Services.Implementation
 
         public Model.User Login(string username, string password)
         {
-            var entity = Context.Users.FirstOrDefault(x => x.Username == username);
+            var entity = Context.Users.FirstOrDefault(x => x.Email == username);
 
             if (entity == null)
             {
@@ -88,6 +92,11 @@ namespace Chomskyspark.Services.Implementation
             }
 
             return IMapper.Map<Model.User>(entity);
+        }
+
+        public string GenerateToken(Model.User user)
+        {
+            return jWTService.GenerateToken(user);
         }
     }
 }

@@ -28,12 +28,18 @@ namespace Chomskyspark.Controllers
             return base.Insert(request);
         }
 
-        [HttpGet("login"), AllowAnonymous]
-        public Model.User Login()
+        [HttpGet("login")]
+        [AllowAnonymous]
+        public IActionResult Login(string username, string password)
         {
-            var credentials = CredentialsHelper.extractCredentials(Request);
+            var user = IUserService.Login(username, password);
+            if (user == null)
+            {
+                return BadRequest("Not valid credentials!");
+            }
 
-            return IUserService.Login(credentials.Username, credentials.Password);
+            var token = IUserService.GenerateToken(user);
+            return Ok(new { token = token, user = user });
         }
     }
 }

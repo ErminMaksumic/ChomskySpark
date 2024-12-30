@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:shop/constants.dart';
+import 'package:shop/providers/user_provider.dart';
 import 'package:shop/route/route_constants.dart';
-
+import 'package:shop/utils/auth_helper.dart';
 import 'components/login_form.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -12,18 +14,22 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  late UserProvider _userProvider;
+  final _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
-    final Size size = MediaQuery.of(context).size;
+    _userProvider = Provider.of(context, listen: false);
 
+    final Size size = MediaQuery.of(context).size;
     return Scaffold(
       body: SingleChildScrollView(
         child: Column(
           children: [
             Image.asset(
-              "assets/images/login_dark.png",
+              "assets/images/login.png",
               fit: BoxFit.cover,
             ),
             Padding(
@@ -35,12 +41,10 @@ class _LoginScreenState extends State<LoginScreen> {
                     "Welcome back!",
                     style: Theme.of(context).textTheme.headlineSmall,
                   ),
-                  const SizedBox(height: defaultPadding / 2),
-                  const Text(
-                    "Log in with your data that you intered during your registration.",
-                  ),
                   const SizedBox(height: defaultPadding),
-                  LogInForm(formKey: _formKey),
+                  LogInForm(formKey: _formKey,
+                      emailController: _emailController,
+                      passwordController: _passwordController),
                   Align(
                     child: TextButton(
                       child: const Text("Forgot password"),
@@ -56,12 +60,28 @@ class _LoginScreenState extends State<LoginScreen> {
                         : defaultPadding,
                   ),
                   ElevatedButton(
-                    onPressed: () {
-                      if (_formKey.currentState!.validate()) {
-                        Navigator.pushNamedAndRemoveUntil(
-                            context,
-                            entryPointScreenRoute,
-                            ModalRoute.withName(logInScreenRoute));
+                    onPressed: () async {
+                      try {
+                        if (_formKey.currentState!.validate()) {
+                          Authorization.user = await _userProvider.login(_emailController.text, _passwordController.text);
+                          Navigator.popAndPushNamed(
+                              context, emptyPaymentScreenRoute);
+                        }
+                      } on Exception {
+                        _emailController.text = _passwordController.text = "";
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) => AlertDialog(
+                            title: const Text("Login failed"),
+                            content: const Text("Invalid username and/or password"),
+                            actions: [
+                              TextButton(
+                                child: const Text("Ok"),
+                                onPressed: () => Navigator.pop(context),
+                              )
+                            ],
+                          ),
+                        );
                       }
                     },
                     child: const Text("Log in"),

@@ -1,8 +1,8 @@
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:shop/providers/user_provider.dart';
 import 'package:shop/screens/auth/views/components/sign_up_form.dart';
 import 'package:shop/route/route_constants.dart';
-
 import '../../../constants.dart';
 
 class SignUpScreen extends StatefulWidget {
@@ -13,7 +13,22 @@ class SignUpScreen extends StatefulWidget {
 }
 
 class _SignUpScreenState extends State<SignUpScreen> {
+  late UserProvider _userProvider;
   final _formKey = GlobalKey<FormState>();
+
+  final TextEditingController _firstNameController = TextEditingController();
+  final TextEditingController _lastNameController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _userNameController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _passwordConfirmationController =
+  TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    _userProvider = Provider.of<UserProvider>(context, listen: false);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +37,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
         child: Column(
           children: [
             Image.asset(
-              "assets/images/signUp_dark.png",
+              "assets/images/registration.png",
               height: MediaQuery.of(context).size.height * 0.35,
               width: double.infinity,
               fit: BoxFit.cover,
@@ -41,49 +56,23 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     "Please enter your valid data in order to create an account.",
                   ),
                   const SizedBox(height: defaultPadding),
-                  SignUpForm(formKey: _formKey),
-                  const SizedBox(height: defaultPadding),
-                  Row(
-                    children: [
-                      Checkbox(
-                        onChanged: (value) {},
-                        value: false,
-                      ),
-                      Expanded(
-                        child: Text.rich(
-                          TextSpan(
-                            text: "I agree with the",
-                            children: [
-                              TextSpan(
-                                recognizer: TapGestureRecognizer()
-                                  ..onTap = () {
-                                    Navigator.pushNamed(
-                                        context, termsOfServicesScreenRoute);
-                                  },
-                                text: " Terms of service ",
-                                style: const TextStyle(
-                                  color: primaryColor,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              ),
-                              const TextSpan(
-                                text: "& privacy policy.",
-                              ),
-                            ],
-                          ),
-                        ),
-                      )
-                    ],
+                  SignUpForm(
+                    formKey: _formKey,
+                    firstNameController: _firstNameController,
+                    lastNameController: _lastNameController,
+                    emailController: _emailController,
+                    passwordController: _passwordController,
+                    passwordConfirmationController:
+                    _passwordConfirmationController,
                   ),
                   const SizedBox(height: defaultPadding * 2),
                   ElevatedButton(
                     onPressed: () {
-                      // There is 2 more screens while user complete their profile
-                      // afre sign up, it's available on the pro version get it now
-                      // 🔗 https://theflutterway.gumroad.com/l/fluttershop
-                      Navigator.pushNamed(context, entryPointScreenRoute);
+                      if (_formKey.currentState!.validate()) {
+                        _register();
+                      }
                     },
-                    child: const Text("Continue"),
+                    child: const Text("Submit"),
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -94,15 +83,58 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           Navigator.pushNamed(context, logInScreenRoute);
                         },
                         child: const Text("Log in"),
-                      )
+                      ),
                     ],
                   ),
                 ],
               ),
-            )
+            ),
           ],
         ),
       ),
     );
+  }
+
+  Future<void> _register() async {
+    try {
+      var user = await _userProvider.register({
+        'firstName': _firstNameController.text,
+        'lastName': _lastNameController.text,
+        'email': _emailController.text,
+        'password': _passwordController.text,
+        'passwordConfirmation': _passwordConfirmationController.text,
+      });
+
+      showDialog(
+        context: context,
+        builder: (BuildContext context) => AlertDialog(
+          title: const Text("Success"),
+          content: Text("You are registered as ${_firstNameController.text} ${_lastNameController.text}"),
+          actions: [
+            TextButton(
+              onPressed: () async => await Navigator.popAndPushNamed(
+                context,
+                emptyPaymentScreenRoute,
+              ),
+              child: const Text("Ok"),
+            ),
+          ],
+        ),
+      );
+    } on Exception catch (e) {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) => AlertDialog(
+          title: const Text("Error"),
+          content: Text(e.toString()),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text("Ok"),
+            ),
+          ],
+        ),
+      );
+    }
   }
 }

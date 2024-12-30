@@ -14,9 +14,6 @@ namespace Chomskyspark.Model.Requests
         [EmailAddress(), MaxLength(25)]
         public string Email { get; set; }
 
-        [MinLength(4), MaxLength(15)]
-        [Required(AllowEmptyStrings = false)]
-        public string Username { get; set; }
         [Required(AllowEmptyStrings = false), MaxLength(20)]
         public string Password { get; set; }
         [Required(AllowEmptyStrings = false), MaxLength(20)]

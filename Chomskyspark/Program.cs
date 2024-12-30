@@ -1,17 +1,19 @@
-using AdventuraClick.Authorization;
 using Chomskyspark.Services;
 using Chomskyspark.Services.Database;
 using Chomskyspark.Services.Implementation;
 using Chomskyspark.Services.Interfaces;
 using eProdaja.API.Filters;
-using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddTransient<IUserService, UserService>();
+builder.Services.AddTransient<IJWTService, JWTService>();
 
 builder.Services.AddControllers(x =>
 {
@@ -45,9 +47,17 @@ var connectionString = builder.Configuration.GetConnectionString("ChomskySparkCo
 builder.Services.AddDbContext<ChomskySparkContext>(options =>
     options.UseSqlServer(connectionString));
 
-// Add auth
-builder.Services.AddAuthentication("BasicAuthentication")
-    .AddScheme<AuthenticationSchemeOptions, BasicAuthHandler>("BasicAuthentication", null);
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options => {
+        options.TokenValidationParameters = new TokenValidationParameters()
+        {
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration.GetSection("CustomData:TokenKey").Value)),
+            ValidateIssuer = false,
+            ValidateAudience = false,
+            ValidateLifetime = false
+        };
+    });
 
 var app = builder.Build();
 

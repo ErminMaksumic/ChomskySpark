@@ -1,80 +1,114 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-
 import '../../../../constants.dart';
 
-class SignUpForm extends StatelessWidget {
+class SignUpForm extends StatefulWidget {
   const SignUpForm({
     super.key,
     required this.formKey,
+    required this.firstNameController,
+    required this.lastNameController,
+    required this.emailController,
+    required this.passwordController,
+    required this.passwordConfirmationController,
   });
 
   final GlobalKey<FormState> formKey;
+  final TextEditingController firstNameController;
+  final TextEditingController lastNameController;
+  final TextEditingController emailController;
+  final TextEditingController passwordController;
+  final TextEditingController passwordConfirmationController;
 
+  @override
+  State<SignUpForm> createState() => _SignUpFormState();
+}
+
+class _SignUpFormState extends State<SignUpForm> {
   @override
   Widget build(BuildContext context) {
     return Form(
-      key: formKey,
+      key: widget.formKey,
       child: Column(
         children: [
-          TextFormField(
-            onSaved: (emal) {
-              // Email
+          _buildTextField(
+            controller: widget.firstNameController,
+            hintText: "First Name",
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return 'Please enter your first name';
+              }
+              return null;
             },
-            validator: emaildValidator.call,
-            textInputAction: TextInputAction.next,
-            keyboardType: TextInputType.emailAddress,
-            decoration: InputDecoration(
-              hintText: "Email address",
-              prefixIcon: Padding(
-                padding:
-                    const EdgeInsets.symmetric(vertical: defaultPadding * 0.75),
-                child: SvgPicture.asset(
-                  "assets/icons/Message.svg",
-                  height: 24,
-                  width: 24,
-                  colorFilter: ColorFilter.mode(
-                    Theme.of(context)
-                        .textTheme
-                        .bodyLarge!
-                        .color!
-                        .withOpacity(0.3),
-                    BlendMode.srcIn,
-                  ),
-                ),
-              ),
-            ),
           ),
           const SizedBox(height: defaultPadding),
-          TextFormField(
-            onSaved: (pass) {
-              // Password
+          _buildTextField(
+            controller: widget.lastNameController,
+            hintText: "Last Name",
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return 'Please enter your last name';
+              }
+              return null;
             },
-            validator: passwordValidator.call,
+          ),
+          const SizedBox(height: defaultPadding),
+          _buildTextField(
+            controller: widget.emailController,
+            hintText: "Email Address",
+            validator: (value) {
+              if (value == null || !value.contains('@')) {
+                return 'Please enter a valid email address';
+              }
+              return null;
+            },
+            keyboardType: TextInputType.emailAddress,
+          ),
+          const SizedBox(height: defaultPadding),
+          _buildTextField(
+            controller: widget.passwordController,
+            hintText: "Password",
+            validator: (value) {
+              if (value == null || value.length < 6) {
+                return 'Password must be at least 6 characters';
+              }
+              return null;
+            },
             obscureText: true,
-            decoration: InputDecoration(
-              hintText: "Password",
-              prefixIcon: Padding(
-                padding:
-                    const EdgeInsets.symmetric(vertical: defaultPadding * 0.75),
-                child: SvgPicture.asset(
-                  "assets/icons/Lock.svg",
-                  height: 24,
-                  width: 24,
-                  colorFilter: ColorFilter.mode(
-                    Theme.of(context)
-                        .textTheme
-                        .bodyLarge!
-                        .color!
-                        .withOpacity(0.3),
-                    BlendMode.srcIn,
-                  ),
-                ),
-              ),
-            ),
+          ),
+          const SizedBox(height: defaultPadding),
+          _buildTextField(
+            controller: widget.passwordConfirmationController,
+            hintText: "Confirm Password",
+            validator: (value) {
+              if (value == null ||
+                  value != widget.passwordController.text) {
+                return 'Passwords do not match';
+              }
+              return null;
+            },
+            obscureText: true,
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildTextField({
+    required TextEditingController controller,
+    required String hintText,
+    required String? Function(String?) validator,
+    bool obscureText = false,
+    TextInputType keyboardType = TextInputType.text,
+  }) {
+    return TextFormField(
+      controller: controller,
+      decoration: InputDecoration(
+        hintText: hintText,
+      ),
+      obscureText: obscureText,
+      keyboardType: keyboardType,
+      validator: validator,
     );
   }
 }

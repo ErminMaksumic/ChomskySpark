@@ -25,7 +25,5 @@ namespace Chomskyspark.Controllers
         {
             return IBaseService.GetById(id);
         }
-
-
     }
 }
