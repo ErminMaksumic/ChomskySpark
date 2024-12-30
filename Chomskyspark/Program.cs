@@ -16,6 +16,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddTransient<IUserService, UserService>();
 builder.Services.AddTransient<IJWTService, JWTService>();
 builder.Services.AddTransient<IFileManager, FileManager>();
+builder.Services.AddTransient<IObjectDetectionService, ObjectDetectionService>();
 
 builder.Services.AddControllers(x =>
 {
@@ -79,3 +80,4 @@ app.UseStaticFiles();
 app.MapControllers();
 
 app.Run();
+
