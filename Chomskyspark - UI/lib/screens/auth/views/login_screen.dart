@@ -98,6 +98,17 @@ class _LoginScreenState extends State<LoginScreen> {
                       )
                     ],
                   ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      TextButton(
+                        onPressed: () {
+                          Navigator.pushNamed(context, "tts");
+                        },
+                        child: const Text("Text to Speech Test"),
+                      )
+                    ],
+                  ),
                 ],
               ),
             )

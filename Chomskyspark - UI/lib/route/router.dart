@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shop/entry_point.dart';
+import 'package:shop/screens/test/tts_button.dart';
 
 import 'screen_export.dart';
 
@@ -87,6 +88,10 @@ Route<dynamic> generateRoute(RouteSettings settings) {
     case passwordRecoveryScreenRoute:
       return MaterialPageRoute(
         builder: (context) => const PasswordRecoveryScreen(),
+      );
+    case "tts":
+      return MaterialPageRoute(
+        builder: (context) => TTSButton(),
       );
     // case verificationMethodScreenRoute:
     //   return MaterialPageRoute(
