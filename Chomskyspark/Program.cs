@@ -29,21 +29,31 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(opts =>
 {
-    opts.AddSecurityDefinition("basicAuth", new OpenApiSecurityScheme
+    opts.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
-        Type = SecuritySchemeType.Http,
-        Scheme = "basic"
+        In = ParameterLocation.Header,
+        Description = "Bearer token",
+        Name = "Authorization",
+        Type = SecuritySchemeType.ApiKey,
+        Scheme = "Bearer"
     });
     opts.AddSecurityRequirement(new OpenApiSecurityRequirement
+{
     {
+        new OpenApiSecurityScheme
         {
-            new OpenApiSecurityScheme
+            Reference = new OpenApiReference
             {
-                Reference = new OpenApiReference{Type=ReferenceType.SecurityScheme,Id="basicAuth"}
+                Type = ReferenceType.SecurityScheme,
+                Id = "Bearer"
             },
-            new string[]{}
-        }
-    });
+            Scheme = "Bearer",
+            Name = "Bearer",
+            In = ParameterLocation.Header,
+        },
+        new List<string>()
+    }
+});
 });
 
 var connectionString = builder.Configuration.GetConnectionString("ChomskySparkConnection");

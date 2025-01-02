@@ -1,4 +1,4 @@
-﻿using Chomskyspark.Services.Implementation;
+﻿using Chomskyspark.Model;
 using Chomskyspark.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -14,9 +14,9 @@ namespace Chomskyspark.Controllers
             this.IObjectionService = IObjectionService;
         }
         [HttpPost]
-        public virtual Task<string[]> DetectImage([FromBody] string imageUrl)
+        public virtual Task<IEnumerable<RecognizedObject>> DetectImage([FromBody] string imageUrl)
         {
-            return IObjectionService.DetectImage(imageUrl);
+            return IObjectionService.DetectImageAsync(imageUrl);
         }
     }
 }

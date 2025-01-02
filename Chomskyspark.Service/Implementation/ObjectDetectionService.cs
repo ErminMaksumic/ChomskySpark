@@ -1,4 +1,5 @@
-﻿using Chomskyspark.Services.Interfaces;
+﻿using Chomskyspark.Model;
+using Chomskyspark.Services.Interfaces;
 using Microsoft.Azure.CognitiveServices.Vision.ComputerVision;
 using Microsoft.Azure.CognitiveServices.Vision.ComputerVision.Models;
 using Microsoft.Extensions.Configuration;
@@ -8,29 +9,27 @@ namespace Chomskyspark.Services.Implementation
     {
         private readonly string endpoint = configuration["ObjectDetection:Endpoint"] ?? "";
         private readonly string key = configuration["ObjectDetection:Key"] ?? "";
-        public async Task<string[]> DetectImage(string imageUrl)
+
+        public async Task<IEnumerable<RecognizedObject>> DetectImageAsync(string imageUrl)
         {
             var client = new ComputerVisionClient(new ApiKeyServiceClientCredentials(key))
             {
                 Endpoint = endpoint
             };
-            ImageAnalysis analysis = await client.AnalyzeImageAsync(imageUrl, new List<VisualFeatureTypes?> { VisualFeatureTypes.Objects });
-            IList<DetectedObject> detectedObjects = analysis.Objects;
-            if (detectedObjects.Count > 0)
+
+            ImageAnalysis analysis = await client.AnalyzeImageAsync(imageUrl, [VisualFeatureTypes.Objects]);
+
+            var detectedObjects = analysis.Objects.Select(o => new RecognizedObject
             {
-                foreach (var detectedObject in detectedObjects)
-                {
-                    Console.WriteLine($"Object: {detectedObject.ObjectProperty}, Confidence: {detectedObject.Confidence}, " +
-                                      $"Bounding Box: {detectedObject.Rectangle.X}, {detectedObject.Rectangle.Y}, " +
-                                      $"{detectedObject.Rectangle.W}, {detectedObject.Rectangle.H}");
-                }
-            }
-            else
-            {
-                Console.WriteLine("No objects detected.");
-            }
-            string[] objectNames = detectedObjects.Select(o => o.ObjectProperty).ToArray();
-            return objectNames;
+                Name = o.ObjectProperty,
+                X = o.Rectangle.X.ToString(),
+                Y = o.Rectangle.Y.ToString(),
+                H = o.Rectangle.H.ToString(),
+                W = o.Rectangle.H.ToString(),
+                Confidence = (o.Confidence * 100).ToString("F2")
+            }).ToList();
+
+            return detectedObjects;
         }
     }
 }
