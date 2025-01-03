@@ -1,4 +1,4 @@
-﻿namespace Chomskyspark.Services.FileManager
+﻿namespace Chomskyspark.Helpers.FileManager
 {
     public interface IFileManager
     {

@@ -1,7 +1,7 @@
 ﻿using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Processing;
 
-namespace Chomskyspark.Services.FileManager
+namespace Chomskyspark.Helpers.FileManager
 {
     public class FileManager : IFileManager
     {
