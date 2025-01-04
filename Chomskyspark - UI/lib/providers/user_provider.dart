@@ -15,11 +15,11 @@ class UserProvider extends BaseProvider<User> {
   Future<User> login(String username, String password) async {
     var url = "$fullUrl/login";
     String queryString =
-    getQueryString({'username': username, 'password': password});
+        getQueryString({'username': username, 'password': password});
     url = "$url?$queryString";
     var uri = Uri.parse(url);
 
-    var response = await http!.get(uri);
+    var response = await httpClient!.get(uri);
 
     if (isValidResponseCode(response)) {
       var data = jsonDecode(response.body);
@@ -36,7 +36,8 @@ class UserProvider extends BaseProvider<User> {
 
     Map<String, String> headers = {"Content-Type": "application/json"};
     var jsonRequest = jsonEncode(request);
-    var response = await http!.post(url, headers: headers, body: jsonRequest);
+    var response =
+        await httpClient!.post(url, headers: headers, body: jsonRequest);
 
     print(response);
     if (isValidResponseCode(response)) {
