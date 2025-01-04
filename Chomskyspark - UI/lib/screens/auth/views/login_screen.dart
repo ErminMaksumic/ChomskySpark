@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shop/constants.dart';
-import 'package:shop/providers/file_provider%20copy.dart';
 import 'package:shop/providers/user_provider.dart';
 import 'package:shop/route/route_constants.dart';
 import 'package:shop/utils/auth_helper.dart';
+import '../../../providers/file_provider.dart';
 import 'components/login_form.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
