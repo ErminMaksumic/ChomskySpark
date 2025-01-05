@@ -13,7 +13,7 @@ abstract class BaseProvider<T> with ChangeNotifier {
   String? fullUrl;
 
   HttpClient client = HttpClient();
-  IOClient? http;
+  IOClient? httpClient;
 
   BaseProvider(String endPoint) {
     _baseUrl = const String.fromEnvironment("baseUrl",
@@ -25,7 +25,7 @@ abstract class BaseProvider<T> with ChangeNotifier {
 
     _endPoint = endPoint;
     client.badCertificateCallback = ((cert, host, port) => true);
-    http = IOClient(client);
+    httpClient = IOClient(client);
 
     fullUrl = "$_baseUrl$_endPoint";
     developer.log('fullUrl', name: fullUrl!);
@@ -36,7 +36,7 @@ abstract class BaseProvider<T> with ChangeNotifier {
 
     Map<String, String> headers = createHeaders();
 
-    var response = await http!.get(url, headers: headers);
+    var response = await httpClient!.get(url, headers: headers);
 
     if (isValidResponseCode(response)) {
       var data = jsonDecode(response.body);
@@ -57,7 +57,7 @@ abstract class BaseProvider<T> with ChangeNotifier {
     var uri = Uri.parse(url);
 
     Map<String, String> headers = createHeaders();
-    var response = await http!.get(uri, headers: headers);
+    var response = await httpClient!.get(uri, headers: headers);
 
     if (isValidResponseCode(response)) {
       var data = jsonDecode(response.body);
@@ -73,7 +73,8 @@ abstract class BaseProvider<T> with ChangeNotifier {
 
     Map<String, String> headers = createHeaders();
     var jsonRequest = jsonEncode(request);
-    var response = await http!.post(uri, headers: headers, body: jsonRequest);
+    var response =
+        await httpClient!.post(uri, headers: headers, body: jsonRequest);
 
     if (isValidResponseCode(response)) {
       var data = jsonDecode(response.body);
@@ -89,8 +90,8 @@ abstract class BaseProvider<T> with ChangeNotifier {
 
     Map<String, String> headers = createHeaders();
 
-    var response =
-    await http!.put(uri, headers: headers, body: jsonEncode(request));
+    var response = await httpClient!
+        .put(uri, headers: headers, body: jsonEncode(request));
 
     if (isValidResponseCode(response)) {
       var data = jsonDecode(response.body);

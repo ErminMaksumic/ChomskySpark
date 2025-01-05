@@ -4,7 +4,10 @@ import 'package:shop/constants.dart';
 import 'package:shop/providers/user_provider.dart';
 import 'package:shop/route/route_constants.dart';
 import 'package:shop/utils/auth_helper.dart';
+import '../../../providers/file_provider.dart';
 import 'components/login_form.dart';
+import 'dart:io';
+import 'package:image_picker/image_picker.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -42,7 +45,8 @@ class _LoginScreenState extends State<LoginScreen> {
                     style: Theme.of(context).textTheme.headlineSmall,
                   ),
                   const SizedBox(height: defaultPadding),
-                  LogInForm(formKey: _formKey,
+                  LogInForm(
+                      formKey: _formKey,
                       emailController: _emailController,
                       passwordController: _passwordController),
                   Align(
@@ -55,15 +59,15 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ),
                   SizedBox(
-                    height: size.height > 700
-                        ? size.height * 0.1
-                        : defaultPadding,
+                    height:
+                        size.height > 700 ? size.height * 0.1 : defaultPadding,
                   ),
                   ElevatedButton(
                     onPressed: () async {
                       try {
                         if (_formKey.currentState!.validate()) {
-                          Authorization.user = await _userProvider.login(_emailController.text, _passwordController.text);
+                          Authorization.user = await _userProvider.login(
+                              _emailController.text, _passwordController.text);
                           Navigator.popAndPushNamed(
                               context, emptyPaymentScreenRoute);
                         }
@@ -73,7 +77,8 @@ class _LoginScreenState extends State<LoginScreen> {
                           context: context,
                           builder: (BuildContext context) => AlertDialog(
                             title: const Text("Login failed"),
-                            content: const Text("Invalid username and/or password"),
+                            content:
+                                const Text("Invalid username and/or password"),
                             actions: [
                               TextButton(
                                 child: const Text("Ok"),
@@ -98,6 +103,10 @@ class _LoginScreenState extends State<LoginScreen> {
                       )
                     ],
                   ),
+                  ElevatedButton(
+                    onPressed: testFileUpload,
+                    child: Text('Upload File'),
+                  ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -116,5 +125,23 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
       ),
     );
+  }
+}
+
+Future<void> testFileUpload() async {
+  final picker = ImagePicker();
+
+  final pickedFile = await picker.pickImage(source: ImageSource.camera);
+
+  if (pickedFile != null) {
+    File file = File(pickedFile.path);
+    print('Picked file: ${file.path}');
+
+    FileProvider fileProvider = FileProvider();
+    await fileProvider.sendFile(file);
+
+    print('File uploaded successfully');
+  } else {
+    print('No file selected.');
   }
 }

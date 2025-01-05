@@ -1,12 +1,12 @@
 name: shop
 description: FlutterShop is a premium E-commerce UI kit that you can use to build various e-commerce apps using Flutter that works on both Android & iOS. This kit contains 100+ nicely crafted minimal screens that cover everything you need for your shop app.
 
-publish_to: "none"
+publish_to: 'none'
 
 version: 1.0.0+1
 
 environment:
-  sdk: ">=3.2.0 <4.0.0"
+  sdk: '>=3.2.0 <4.0.0'
 
 dependencies:
   flutter:
@@ -24,6 +24,7 @@ dependencies:
   animations: ^2.0.11
   url_launcher: ^6.3.0
   flutter_tts: ^3.5.4
+  image_picker: ^0.8.5+3
 
 dev_dependencies:
   flutter_test:
