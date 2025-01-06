@@ -1,14 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:shop/components/Banner/S/banner_s_style_1.dart';
-import 'package:shop/components/Banner/S/banner_s_style_5.dart';
-import 'package:shop/constants.dart';
-import 'package:shop/route/screen_export.dart';
-
-import 'components/best_sellers.dart';
-import 'components/flash_sale.dart';
-import 'components/most_popular.dart';
-import 'components/offer_carousel_and_categories.dart';
-import 'components/popular_products.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -17,56 +7,83 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: CustomScrollView(
-          slivers: [
-            const SliverToBoxAdapter(child: OffersCarouselAndCategories()),
-            const SliverToBoxAdapter(child: PopularProducts()),
-            const SliverPadding(
-              padding: EdgeInsets.symmetric(vertical: defaultPadding * 1.5),
-              sliver: SliverToBoxAdapter(child: FlashSale()),
-            ),
-            SliverToBoxAdapter(
-              child: Column(
-                children: [
-                  // While loading use 👇
-                  // const BannerMSkelton(),‚
-                  BannerSStyle1(
-                    title: "New \narrival",
-                    subtitle: "SPECIAL OFFER",
-                    discountParcent: 50,
-                    press: () {
-                      Navigator.pushNamed(context, onSaleScreenRoute);
-                    },
-                  ),
-                  const SizedBox(height: defaultPadding / 4),
-                  // We have 4 banner styles, all in the pro version
-                ],
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              // Title Section
+              const Text(
+                "Chomskyspark",
+                style: TextStyle(
+                  fontSize: 28,
+                  fontWeight: FontWeight.bold,
+                ),
+                textAlign: TextAlign.center,
               ),
-            ),
-            const SliverToBoxAdapter(child: BestSellers()),
-            const SliverToBoxAdapter(child: MostPopular()),
-            SliverToBoxAdapter(
-              child: Column(
-                children: [
-                  const SizedBox(height: defaultPadding * 1.5),
-
-                  const SizedBox(height: defaultPadding / 4),
-                  // While loading use 👇
-                  // const BannerSSkelton(),
-                  BannerSStyle5(
-                    title: "Black \nfriday",
-                    subtitle: "50% Off",
-                    bottomText: "Collection".toUpperCase(),
-                    press: () {
-                      Navigator.pushNamed(context, onSaleScreenRoute);
-                    },
-                  ),
-                  const SizedBox(height: defaultPadding / 4),
-                ],
+              const SizedBox(height: 8),
+              // Subtitle Section
+              const Text(
+                "Join the Word Quest - Snap, Seek and Speak",
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 13,
+                  color: Colors.grey,
+                ),
               ),
-            ),
-            const SliverToBoxAdapter(child: BestSellers()),
-          ],
+              const SizedBox(height: 32),
+              // Image Section with Shadow
+              ClipRRect(
+                borderRadius: BorderRadius.circular(16),
+                child: Container(
+                  decoration: BoxDecoration(
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.25), // Shadow color
+                        spreadRadius: 5, // Shadow spread
+                        blurRadius: 7, // Shadow blur effect
+                        offset: const Offset(0, 3), // Shadow direction
+                      ),
+                    ],
+                  ),
+                  child: Image.asset(
+                    'assets/images/chomskyspark.png', // Replace with your image path
+                    width: 250,
+                    height: 250,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 32),
+              // Button Section with Shadow
+              ElevatedButton.icon(
+                onPressed: () {
+                  // Add button action here
+                },
+                style: ElevatedButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(vertical: 14),
+                  backgroundColor: Colors.purple,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  elevation: 5, // Add shadow to the button
+                ),
+                icon: const Icon(
+                  Icons.camera_alt_outlined, // Camera icon
+                  color: Colors.white,
+                ),
+                label: const Text(
+                  "Take a picture",
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
