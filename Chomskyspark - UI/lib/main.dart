@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart'; // Import Provider package
-import 'package:shop/providers/file_provider%20copy.dart';
+import 'package:shop/providers/file_provider.dart';
+//import 'package:shop/providers/file_provider%20copy.dart';
 import 'package:shop/providers/user_provider.dart'; // Import your UserProvider
 import 'package:shop/route/route_constants.dart';
 import 'package:shop/route/router.dart' as router;

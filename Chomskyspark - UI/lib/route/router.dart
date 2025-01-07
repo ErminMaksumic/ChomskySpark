@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:shop/entry_point.dart';
-import 'package:shop/screens/test/tts_button.dart';
-
 import 'screen_export.dart';
 
 // Yuo will get 50+ screens and more once you have the full template
@@ -88,10 +86,6 @@ Route<dynamic> generateRoute(RouteSettings settings) {
     case passwordRecoveryScreenRoute:
       return MaterialPageRoute(
         builder: (context) => const PasswordRecoveryScreen(),
-      );
-    case "tts":
-      return MaterialPageRoute(
-        builder: (context) => TTSButton(),
       );
     // case verificationMethodScreenRoute:
     //   return MaterialPageRoute(

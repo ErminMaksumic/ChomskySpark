@@ -6,9 +6,10 @@ import 'package:http_parser/http_parser.dart';
 class FileProvider extends BaseProvider<File> {
   FileProvider() : super("File");
 
-  Future<void> sendFile(File file) async {
-    var url = Uri.parse(fullUrl!);
+  Future<String> sendFile(File file) async {
+    var url = Uri.parse('https://api.thorhof-bestellungen.at/api/File');
 
+    print(url);
     var request = http.MultipartRequest('POST', url);
 
     request.files.add(await http.MultipartFile.fromPath(
@@ -22,13 +23,13 @@ class FileProvider extends BaseProvider<File> {
     if (streamedResponse.statusCode == 200 ||
         streamedResponse.statusCode == 204) {
       print('File uploaded successfully');
-      var responseBody = await streamedResponse.stream.bytesToString();
-      print('Server response: $responseBody');
+      return await streamedResponse.stream.bytesToString();
     } else {
       print(
           'Failed to upload file. Status Code: ${streamedResponse.statusCode}');
       var responseBody = await streamedResponse.stream.bytesToString();
       print('Error response: $responseBody');
     }
+    return "";
   }
 }
