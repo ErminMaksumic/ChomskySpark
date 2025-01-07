@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Chomskyspark.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     public class ObjectDetectionController : ControllerBase
     {
         public readonly IObjectDetectionService IObjectionService;
