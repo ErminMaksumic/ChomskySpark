@@ -1,4 +1,9 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:shop/providers/file_provider.dart';
+import 'package:shop/providers/object_detection_provider.dart';
+import 'package:shop/screens/interactive-page/object-detection.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -49,8 +54,6 @@ class HomeScreen extends StatelessWidget {
                     ],
                   ),
                 ),
-
-
                 Padding(
                   padding: const EdgeInsets.only(top: 9.0),
                   child: Center(
@@ -145,7 +148,7 @@ class HomeScreen extends StatelessWidget {
                       SizedBox(height: 20),
                       ElevatedButton.icon(
                         onPressed: () {
-                          // Add camera functionality
+                          testFileUpload(context);
                         },
                         icon: Icon(Icons.camera_alt, color: Colors.white),
                         label: Text('Take a Picture'),
@@ -168,5 +171,57 @@ class HomeScreen extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Future<void> testFileUpload(BuildContext context) async {
+
+    final picker = ImagePicker();
+
+    final pickedFile = await picker.pickImage(source: ImageSource.camera);
+
+    if (pickedFile != null) {
+      File file = File(pickedFile.path);
+
+      FileProvider fileProvider = FileProvider();
+      var imageUrl = await fileProvider.sendFile(file);
+      imageUrl = "https://api.thorhof-bestellungen.at${imageUrl}";
+
+      ObjectDetectionProvider objectDetectionProvider = ObjectDetectionProvider();
+      final recognizedObjects = await objectDetectionProvider.detectImage(imageUrl);
+
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => ObjectDetectionPage(
+            recognizedObjects: recognizedObjects,
+            imageUrl: imageUrl,
+          ),
+        ),
+      );
+
+      print(recognizedObjects);
+
+    } else {
+      print('No file selected.');
+    }
+  }
+
+  //TODO: Remove after testing
+  Future<void> testFileUpload2(BuildContext context) async {
+
+    var imageUrl = "/uploads/chomskyspark/20250107_001739_914122bb-47ac-4e9b-b112-48c8598e56f3(1).jpg";//await fileProvider.sendFile(file);
+    imageUrl = "/uploads/chomskyspark/Screenshot_1_95019f70-79eb-40aa-9498-6868e1a81690.png";
+    ObjectDetectionProvider objectDetectionProvider = ObjectDetectionProvider();
+    final recognizedObjects = await objectDetectionProvider.detectImage("https://api.thorhof-bestellungen.at${imageUrl}");
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ObjectDetectionPage(
+          recognizedObjects: recognizedObjects,
+          imageUrl: "https://api.thorhof-bestellungen.at${imageUrl}",
+        ),
+      ),
+    );
+    print(recognizedObjects);
   }
 }
