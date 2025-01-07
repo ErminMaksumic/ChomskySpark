@@ -18,11 +18,11 @@ class _OnBordingScreenState extends State<OnBordingScreen> {
   int _pageIndex = 0;
   final List<Onbord> _onbordData = [
     Onbord(
-      image: "assets/Illustration/Illustration-0.png",
+      image: "assets/Illustration/IllustrationPrim.png",
       imageDarkTheme: "assets/Illustration/Illustration_darkTheme_0.png",
-      title: "Find the item you’ve \nbeen looking for",
+      title: "Join the Word Quest \n Snap,Seek and Speak!",
       description:
-          "Here you’ll see rich varieties of goods, carefully classified for seamless browsing experience.",
+          "Let your toddler explore, learn, and grow with every word.",
     ),
     Onbord(
       image: "assets/Illustration/Illustration-1.png",
