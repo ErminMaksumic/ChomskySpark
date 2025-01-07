@@ -8,5 +8,9 @@
         public string Y { get; set; }
         public string H { get; set; }
         public string W { get; set; }
+        public bool IsAdultContent { get; set; }
+        public bool IsGoryContent { get; set; }
+        public bool IsRacyContent { get; set; }
+
     }
 }
