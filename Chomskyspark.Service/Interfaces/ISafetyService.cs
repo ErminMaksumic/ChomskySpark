@@ -1,7 +1,8 @@
 ﻿namespace Chomskyspark.Services.Interfaces
 {
-    public interface IObjectSafetyService
+    public interface ISafetyService
     {
        string EvaluateObjectSafety(List<string> objects);
+       string EvaluateCategoriesSafety(IEnumerable<string> categories);
     }
 }

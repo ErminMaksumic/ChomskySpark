@@ -17,7 +17,7 @@ builder.Services.AddTransient<IUserService, UserService>();
 builder.Services.AddTransient<IJWTService, JWTService>();
 builder.Services.AddTransient<IFileManager, FileManager>();
 builder.Services.AddTransient<IObjectDetectionService, ObjectDetectionService>();
-builder.Services.AddTransient<IObjectSafetyService, ObjectSafetyService>();
+builder.Services.AddTransient<ISafetyService, SafetyService>();
 
 builder.Services.AddControllers(x =>
 {

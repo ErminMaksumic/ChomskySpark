@@ -6,7 +6,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace Chomskyspark.Services.Implementation
 {
-    public class ObjectDetectionService(IConfiguration configuration) : IObjectDetectionService
+    public class ObjectDetectionService(IConfiguration configuration, ISafetyService ISafetyService) : IObjectDetectionService
     {
         private readonly string endpoint = configuration["ObjectDetection:Endpoint"] ?? "";
         private readonly string key = configuration["ObjectDetection:Key"] ?? "";
@@ -29,6 +29,9 @@ namespace Chomskyspark.Services.Implementation
                 W = o.Rectangle.H.ToString(),
                 Confidence = (o.Confidence * 100).ToString("F2"),
             }).ToList();
+
+            // todo - check if needed
+            var checkedSafety = ISafetyService.EvaluateCategoriesSafety(analysis.Categories.Select(o=> o.Name));
 
             return detectedObjects;
         }
