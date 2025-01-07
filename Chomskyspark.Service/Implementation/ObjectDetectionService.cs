@@ -3,6 +3,7 @@ using Chomskyspark.Services.Interfaces;
 using Microsoft.Azure.CognitiveServices.Vision.ComputerVision;
 using Microsoft.Azure.CognitiveServices.Vision.ComputerVision.Models;
 using Microsoft.Extensions.Configuration;
+
 namespace Chomskyspark.Services.Implementation
 {
     public class ObjectDetectionService(IConfiguration configuration) : IObjectDetectionService
@@ -17,7 +18,7 @@ namespace Chomskyspark.Services.Implementation
                 Endpoint = endpoint
             };
 
-            ImageAnalysis analysis = await client.AnalyzeImageAsync(imageUrl, [VisualFeatureTypes.Objects, VisualFeatureTypes.Adult]);
+            ImageAnalysis analysis = await client.AnalyzeImageAsync(imageUrl, [VisualFeatureTypes.Objects, VisualFeatureTypes.Categories]);
 
             var detectedObjects = analysis.Objects.Select(o => new RecognizedObject
             {
@@ -27,9 +28,6 @@ namespace Chomskyspark.Services.Implementation
                 H = o.Rectangle.H.ToString(),
                 W = o.Rectangle.H.ToString(),
                 Confidence = (o.Confidence * 100).ToString("F2"),
-                IsAdultContent = analysis.Adult.IsAdultContent,
-                IsGoryContent = analysis.Adult.IsGoryContent,
-                IsRacyContent = analysis.Adult.IsRacyContent,
             }).ToList();
 
             return detectedObjects;

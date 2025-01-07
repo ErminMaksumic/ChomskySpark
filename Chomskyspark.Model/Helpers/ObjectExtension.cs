@@ -3,7 +3,7 @@ using Newtonsoft.Json.Linq;
 using System.Globalization;
 using JsonSerializer = Newtonsoft.Json.JsonSerializer;
 
-namespace AdventuraClick.Model.Helpers
+namespace Chomskyspark.Model.Helpers
 {
     public static class ObjectExtension
     {
@@ -28,9 +28,9 @@ namespace AdventuraClick.Model.Helpers
             {
                 try
                 {
-                    return ToKeyValue(JObject.FromObject(metaToken, JsonSerializerSettings));
+                    return JObject.FromObject(metaToken, JsonSerializerSettings).ToKeyValue();
                 }
-                catch (System.ArgumentException ex)
+                catch (ArgumentException ex)
                 {
                     var dict = new Dictionary<string, string>();
                     dict.Add("id", metaToken.ToString());

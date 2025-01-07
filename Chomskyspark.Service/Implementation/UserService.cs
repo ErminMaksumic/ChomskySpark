@@ -1,9 +1,9 @@
 ﻿using AutoMapper;
+using Chomskyspark.Model.Helpers;
 using Chomskyspark.Model.Requests;
 using Chomskyspark.Model.SearchObjects;
 using Chomskyspark.Services.Database;
 using Chomskyspark.Services.Interfaces;
-using eCarService.Model.Helpers;
 using System.Security.Cryptography;
 using System.Text;
 
