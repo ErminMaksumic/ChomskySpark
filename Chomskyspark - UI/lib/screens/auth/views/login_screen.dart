@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shop/constants.dart';
+import 'package:shop/providers/object_detection_provider.dart';
 import 'package:shop/providers/user_provider.dart';
 import 'package:shop/route/route_constants.dart';
+import 'package:shop/screens/interactive-page/object-detection.dart';
 import 'package:shop/utils/auth_helper.dart';
+import 'package:shop/utils/colors_util.dart';
 import '../../../providers/file_provider.dart';
 import 'components/login_form.dart';
 import 'dart:io';
@@ -25,7 +28,8 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     _userProvider = Provider.of(context, listen: false);
-
+    _emailController.text = "ime.prezime@edu.fit.ba";
+    _passwordController.text = "Test1234";
     final Size size = MediaQuery.of(context).size;
     return Scaffold(
       body: SingleChildScrollView(
@@ -118,6 +122,17 @@ class _LoginScreenState extends State<LoginScreen> {
                       )
                     ],
                   ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      TextButton(
+                        onPressed: () {
+                          Navigator.pushNamed(context, "interactive-page");
+                        },
+                        child: const Text("interactive-page"),
+                      )
+                    ],
+                  ),
                 ],
               ),
             )
@@ -126,22 +141,58 @@ class _LoginScreenState extends State<LoginScreen> {
       ),
     );
   }
-}
 
-Future<void> testFileUpload() async {
-  final picker = ImagePicker();
+  Future<void> testFileUpload() async {
 
-  final pickedFile = await picker.pickImage(source: ImageSource.camera);
+    final picker = ImagePicker();
 
-  if (pickedFile != null) {
-    File file = File(pickedFile.path);
-    print('Picked file: ${file.path}');
+    final pickedFile = await picker.pickImage(source: ImageSource.camera);
 
-    FileProvider fileProvider = FileProvider();
-    await fileProvider.sendFile(file);
+    if (pickedFile != null) {
+      File file = File(pickedFile.path);
 
-    print('File uploaded successfully');
-  } else {
-    print('No file selected.');
+      FileProvider fileProvider = FileProvider();
+      var imageUrl = await fileProvider.sendFile(file);
+      imageUrl = "https://api.thorhof-bestellungen.at${imageUrl}";
+
+      ObjectDetectionProvider objectDetectionProvider = ObjectDetectionProvider();
+      final recognizedObjects = await objectDetectionProvider.detectImage(imageUrl);
+
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => ObjectDetectionPage(
+            recognizedObjects: recognizedObjects,
+            imageUrl: imageUrl,
+          ),
+        ),
+      );
+
+      print(recognizedObjects);
+
+    } else {
+      print('No file selected.');
+    }
+  }
+
+  //TODO: Remove after testing
+  Future<void> testFileUpload2() async {
+
+      var imageUrl = "/uploads/chomskyspark/20250107_001739_914122bb-47ac-4e9b-b112-48c8598e56f3(1).jpg";//await fileProvider.sendFile(file);
+      imageUrl = "/uploads/chomskyspark/Screenshot_1_95019f70-79eb-40aa-9498-6868e1a81690.png";
+      ObjectDetectionProvider objectDetectionProvider = ObjectDetectionProvider();
+      final recognizedObjects = await objectDetectionProvider.detectImage("https://api.thorhof-bestellungen.at${imageUrl}");
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => ObjectDetectionPage(
+            recognizedObjects: recognizedObjects,
+            imageUrl: "https://api.thorhof-bestellungen.at${imageUrl}",
+          ),
+        ),
+      );
+      print(recognizedObjects);
   }
 }
+
+
