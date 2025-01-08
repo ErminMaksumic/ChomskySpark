@@ -4,7 +4,6 @@ import 'package:shop/providers/user_provider.dart'; // Import your UserProvider
 import 'package:shop/route/route_constants.dart';
 import 'package:shop/route/router.dart' as router;
 import 'package:shop/theme/app_theme.dart';
-import 'package:shop/screens/interactive-page/object-detection.dart';
 
 void main() {
   runApp(

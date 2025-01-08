@@ -1,4 +1,9 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:shop/providers/file_provider.dart';
+import 'package:shop/providers/object_detection_provider.dart';
+import 'package:shop/screens/interactive-page/object-detection.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -35,7 +40,6 @@ class HomeScreen extends StatelessWidget {
                         'Chomskyspark',
                         style: TextStyle(
                           fontSize: 20,
-                          fontFamily: 'Plus Jakarta',
                           //fontWeight: FontWeight.bold,
                           color: Colors.black
 
@@ -50,8 +54,6 @@ class HomeScreen extends StatelessWidget {
                     ],
                   ),
                 ),
-
-
                 Padding(
                   padding: const EdgeInsets.only(top: 9.0),
                   child: Center(
@@ -109,7 +111,7 @@ class HomeScreen extends StatelessWidget {
                             onPressed: () {},
                             child: Text('Find Object'),
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: Color(0xFFFF5B7E),
+                              backgroundColor: Colors.purple,
                               foregroundColor: Colors.white,
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(10),
@@ -122,12 +124,12 @@ class HomeScreen extends StatelessWidget {
                             onPressed: () {},
                             child: Text('Discover a Word'),
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: Color(0xFFFF5B7E),
+                              backgroundColor: Colors.purple.withOpacity(0.8),
                               foregroundColor: Colors.white,
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(10),
                               ),
-                              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                              padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
                             ),
                           ),
                         ],
@@ -138,7 +140,7 @@ class HomeScreen extends StatelessWidget {
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(15),
                           image: DecorationImage(
-                            image: AssetImage('assets/images/nesto.png'),
+                            image: AssetImage('assets/images/sample_image.png'),
                             fit: BoxFit.cover,
                           ),
                         ),
@@ -146,17 +148,17 @@ class HomeScreen extends StatelessWidget {
                       SizedBox(height: 20),
                       ElevatedButton.icon(
                         onPressed: () {
-                          // Add camera functionality
+                          testFileUpload(context);
                         },
                         icon: Icon(Icons.camera_alt, color: Colors.white),
                         label: Text('Take a Picture'),
-                            style: ElevatedButton.styleFrom(
-                                                  backgroundColor: Color(0xFFFF5B7E),
-                                                  foregroundColor: Colors.white,
-                                                  shape: RoundedRectangleBorder(
-                                                    borderRadius: BorderRadius.circular(10),
-                                                  ),
-                          padding: EdgeInsets.symmetric(horizontal: 70, vertical: 15),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.purple,
+                          foregroundColor: Colors.white,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          padding: EdgeInsets.symmetric(horizontal: 30, vertical: 15),
                         ),
                       ),
                     ],
@@ -169,5 +171,57 @@ class HomeScreen extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Future<void> testFileUpload(BuildContext context) async {
+
+    final picker = ImagePicker();
+
+    final pickedFile = await picker.pickImage(source: ImageSource.camera);
+
+    if (pickedFile != null) {
+      File file = File(pickedFile.path);
+
+      FileProvider fileProvider = FileProvider();
+      var imageUrl = await fileProvider.sendFile(file);
+      imageUrl = "https://api.thorhof-bestellungen.at${imageUrl}";
+
+      ObjectDetectionProvider objectDetectionProvider = ObjectDetectionProvider();
+      final recognizedObjects = await objectDetectionProvider.detectImage(imageUrl);
+
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => ObjectDetectionPage(
+            recognizedObjects: recognizedObjects,
+            imageUrl: imageUrl,
+          ),
+        ),
+      );
+
+      print(recognizedObjects);
+
+    } else {
+      print('No file selected.');
+    }
+  }
+
+  //TODO: Remove after testing
+  Future<void> testFileUpload2(BuildContext context) async {
+
+    var imageUrl = "/uploads/chomskyspark/20250107_001739_914122bb-47ac-4e9b-b112-48c8598e56f3(1).jpg";//await fileProvider.sendFile(file);
+    imageUrl = "/uploads/chomskyspark/Screenshot_1_95019f70-79eb-40aa-9498-6868e1a81690.png";
+    ObjectDetectionProvider objectDetectionProvider = ObjectDetectionProvider();
+    final recognizedObjects = await objectDetectionProvider.detectImage("https://api.thorhof-bestellungen.at${imageUrl}");
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ObjectDetectionPage(
+          recognizedObjects: recognizedObjects,
+          imageUrl: "https://api.thorhof-bestellungen.at${imageUrl}",
+        ),
+      ),
+    );
+    print(recognizedObjects);
   }
 }
