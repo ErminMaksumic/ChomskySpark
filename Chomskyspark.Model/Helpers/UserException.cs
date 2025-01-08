@@ -1,4 +1,4 @@
-﻿namespace eCarService.Model.Helpers
+﻿namespace Chomskyspark.Model.Helpers
 {
     public class UserException : Exception
     {

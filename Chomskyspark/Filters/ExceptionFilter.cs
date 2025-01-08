@@ -1,9 +1,9 @@
-﻿using eCarService.Model.Helpers;
+﻿using Chomskyspark.Model.Helpers;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using System.Net;
 
-namespace eProdaja.API.Filters
+namespace Chomskyspark.Filters
 {
     public class ExceptionFilter : ExceptionFilterAttribute
     {

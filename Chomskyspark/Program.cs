@@ -3,12 +3,12 @@ using Chomskyspark.Services.Database;
 using Chomskyspark.Helpers.FileManager;
 using Chomskyspark.Services.Implementation;
 using Chomskyspark.Services.Interfaces;
-using eProdaja.API.Filters;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
+using Chomskyspark.Filters;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,6 +17,8 @@ builder.Services.AddTransient<IUserService, UserService>();
 builder.Services.AddTransient<IJWTService, JWTService>();
 builder.Services.AddTransient<IFileManager, FileManager>();
 builder.Services.AddTransient<IObjectDetectionService, ObjectDetectionService>();
+builder.Services.AddTransient<ISafetyService, SafetyService>();
+builder.Services.AddSingleton<EmailSenderService>();
 
 builder.Services.AddControllers(x =>
 {
