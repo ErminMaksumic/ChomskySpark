@@ -33,7 +33,7 @@ class _LoginScreenState extends State<LoginScreen> {
               fit: BoxFit.cover,
             ),
             Padding(
-              padding: const EdgeInsets.all(defaultPadding),
+               padding: const EdgeInsets.all(defaultPadding),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -59,9 +59,9 @@ class _LoginScreenState extends State<LoginScreen> {
                         ? size.height * 0.1
                         : defaultPadding,
                   ),
-                  ElevatedButton(
-                    onPressed: () async {
-                      try {
+                    ElevatedButton(
+                                      onPressed: () async {
+                                        try {
                         if (_formKey.currentState!.validate()) {
                           Authorization.user = await _userProvider.login(_emailController.text, _passwordController.text);
                           Navigator.popAndPushNamed(
