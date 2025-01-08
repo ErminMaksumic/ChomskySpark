@@ -40,6 +40,7 @@ class HomeScreen extends StatelessWidget {
                         'Chomskyspark',
                         style: TextStyle(
                           fontSize: 20,
+                           fontFamily: 'Plus Jakarta',
                           //fontWeight: FontWeight.bold,
                           color: Colors.black
 
@@ -116,7 +117,7 @@ class HomeScreen extends StatelessWidget {
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(10),
                               ),
-                              padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+                              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                             ),
                           ),
                           SizedBox(width: 10),
@@ -124,12 +125,12 @@ class HomeScreen extends StatelessWidget {
                             onPressed: () {},
                             child: Text('Discover a Word'),
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.purple.withOpacity(0.8),
+                              backgroundColor:  Color(0xFFFF5B7E);,
                               foregroundColor: Colors.white,
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(10),
                               ),
-                              padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+                              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                             ),
                           ),
                         ],
@@ -140,7 +141,7 @@ class HomeScreen extends StatelessWidget {
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(15),
                           image: DecorationImage(
-                            image: AssetImage('assets/images/sample_image.png'),
+                            image: AssetImage('assets/images/picture.png'),
                             fit: BoxFit.cover,
                           ),
                         ),
@@ -153,12 +154,12 @@ class HomeScreen extends StatelessWidget {
                         icon: Icon(Icons.camera_alt, color: Colors.white),
                         label: Text('Take a Picture'),
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.purple,
+                          backgroundColor:  Color(0xFFFF5B7E);,
                           foregroundColor: Colors.white,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10),
                           ),
-                          padding: EdgeInsets.symmetric(horizontal: 30, vertical: 15),
+                          padding: EdgeInsets.symmetric(horizontal: 60, vertical: 15),
                         ),
                       ),
                     ],
