@@ -1,0 +1,6 @@
+import 'package:shop/models/object_detection_attempt_model.dart';
+import 'package:shop/providers/base_provider.dart';
+
+class ObjectDetectionAttemptProvider extends BaseProvider<ObjectDetectionAttempt> {
+  ObjectDetectionAttemptProvider() : super("ObjectDetectionAttempt");
+}

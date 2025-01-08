@@ -11,6 +11,10 @@ namespace Chomskyspark.Services
             CreateMap<Database.User, Model.User>().ReverseMap();
             CreateMap<Database.User, UserInsertRequest>().ReverseMap();
             CreateMap<Database.User, UserUpdateRequest>().ReverseMap();
+
+            //ObjectDetectionAttempt
+            CreateMap<Database.ObjectDetectionAttempt, Model.ObjectDetectionAttempt>().ReverseMap();
+            CreateMap<Database.ObjectDetectionAttempt, ObjectDetectionAttemptUpsertRequest>().ReverseMap();
         }
     }
 }

@@ -82,8 +82,6 @@ class HomeScreen extends StatelessWidget {
                   ),
                 ),
                 Spacer(),
-
-
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20.0),
                   child: Column(
@@ -148,7 +146,7 @@ class HomeScreen extends StatelessWidget {
                       SizedBox(height: 20),
                       ElevatedButton.icon(
                         onPressed: () {
-                          testFileUpload(context);
+                          testFileUpload2(context);
                         },
                         icon: Icon(Icons.camera_alt, color: Colors.white),
                         label: Text('Take a Picture'),
@@ -210,7 +208,7 @@ class HomeScreen extends StatelessWidget {
   Future<void> testFileUpload2(BuildContext context) async {
 
     var imageUrl = "/uploads/chomskyspark/20250107_001739_914122bb-47ac-4e9b-b112-48c8598e56f3(1).jpg";//await fileProvider.sendFile(file);
-    imageUrl = "/uploads/chomskyspark/Screenshot_1_95019f70-79eb-40aa-9498-6868e1a81690.png";
+    imageUrl = "/uploads/chomskyspark/20250107_152052_1bdf3a8f-2d6e-48b2-bc5e-b0eeffa5ac29.jpg";
     ObjectDetectionProvider objectDetectionProvider = ObjectDetectionProvider();
     final recognizedObjects = await objectDetectionProvider.detectImage("https://api.thorhof-bestellungen.at${imageUrl}");
     Navigator.push(
