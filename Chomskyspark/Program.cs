@@ -19,6 +19,7 @@ builder.Services.AddTransient<IFileManager, FileManager>();
 builder.Services.AddTransient<IObjectDetectionService, ObjectDetectionService>();
 builder.Services.AddTransient<ISafetyService, SafetyService>();
 builder.Services.AddSingleton<EmailSenderService>();
+builder.Services.AddTransient<IObjectDetectionAttemptService, ObjectDetectionAttemptService>();
 
 builder.Services.AddControllers(x =>
 {

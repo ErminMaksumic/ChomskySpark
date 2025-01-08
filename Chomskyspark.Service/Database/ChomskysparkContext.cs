@@ -23,5 +23,6 @@ namespace Chomskyspark.Services.Database
 
 
         public virtual DbSet<User> Users { get; set; }
+        public virtual DbSet<ObjectDetectionAttempt> ObjectDetectionAttempts { get; set; }
     }
 }

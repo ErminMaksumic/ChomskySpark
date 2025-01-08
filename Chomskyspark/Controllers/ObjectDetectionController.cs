@@ -13,6 +13,7 @@ namespace Chomskyspark.Controllers
         {
             this.IObjectionService = IObjectionService;
         }
+
         [HttpPost]
         public virtual Task<IEnumerable<RecognizedObject>> DetectImage([FromBody] string imageUrl)
         {
