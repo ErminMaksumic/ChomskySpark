@@ -21,7 +21,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    _userProvider = Provider.of(context, listen: false);
+    _userProvider = Provider.of<UserProvider>(context, listen: false);
 
     final Size size = MediaQuery.of(context).size;
     return Scaffold(
@@ -42,15 +42,16 @@ class _LoginScreenState extends State<LoginScreen> {
                     style: Theme.of(context).textTheme.headlineSmall,
                   ),
                   const SizedBox(height: defaultPadding),
-                  LogInForm(formKey: _formKey,
-                      emailController: _emailController,
-                      passwordController: _passwordController),
+                  LogInForm(
+                    formKey: _formKey,
+                    emailController: _emailController,
+                    passwordController: _passwordController,
+                  ),
                   Align(
                     child: TextButton(
                       child: const Text("Forgot password"),
                       onPressed: () {
-                        Navigator.pushNamed(
-                            context, passwordRecoveryScreenRoute);
+                        Navigator.pushNamed(context, passwordRecoveryScreenRoute);
                       },
                     ),
                   ),
@@ -63,12 +64,15 @@ class _LoginScreenState extends State<LoginScreen> {
                     onPressed: () async {
                       try {
                         if (_formKey.currentState!.validate()) {
-                          Authorization.user = await _userProvider.login(_emailController.text, _passwordController.text);
-                          Navigator.popAndPushNamed(
-                              context, homeScreenRoute);
+                          Authorization.user = await _userProvider.login(
+                            _emailController.text,
+                            _passwordController.text,
+                          );
+                          Navigator.popAndPushNamed(context, homeScreenRoute);
                         }
                       } on Exception {
-                        _emailController.text = _passwordController.text = "";
+                        _emailController.clear();
+                        _passwordController.clear();
                         showDialog(
                           context: context,
                           builder: (BuildContext context) => AlertDialog(
@@ -95,10 +99,9 @@ class _LoginScreenState extends State<LoginScreen> {
                           Navigator.pushNamed(context, signUpScreenRoute);
                         },
                         child: const Text("Sign up"),
-                      )
+                      ),
                     ],
                   ),
-<<<<<<< Updated upstream
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -107,14 +110,12 @@ class _LoginScreenState extends State<LoginScreen> {
                           Navigator.pushNamed(context, "tts");
                         },
                         child: const Text("Text to Speech Test"),
-                      )
+                      ),
                     ],
                   ),
-=======
->>>>>>> Stashed changes
                 ],
               ),
-            )
+            ),
           ],
         ),
       ),
