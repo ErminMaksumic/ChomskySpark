@@ -18,6 +18,7 @@ builder.Services.AddTransient<IJWTService, JWTService>();
 builder.Services.AddTransient<IFileManager, FileManager>();
 builder.Services.AddTransient<IObjectDetectionService, ObjectDetectionService>();
 builder.Services.AddTransient<ISafetyService, SafetyService>();
+builder.Services.AddSingleton<IEmailService, EmailSenderService>();
 builder.Services.AddSingleton<EmailSenderService>();
 builder.Services.AddTransient<IObjectDetectionAttemptService, ObjectDetectionAttemptService>();
 

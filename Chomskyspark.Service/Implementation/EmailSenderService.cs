@@ -1,9 +1,10 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Chomskyspark.Services.Interfaces;
+using Microsoft.Extensions.Configuration;
 using MimeKit;
 
 namespace Chomskyspark.Services.Implementation
 {
-    public class EmailSenderService
+    public class EmailSenderService : IEmailService
     {
         public async Task SendEmail(IConfiguration configuration, string receiverName, string receiverEmail, string subject, string message)
         {
