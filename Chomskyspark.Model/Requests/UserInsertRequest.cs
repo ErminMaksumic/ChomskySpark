@@ -18,6 +18,7 @@ namespace Chomskyspark.Model.Requests
         public string Password { get; set; }
         [Required(AllowEmptyStrings = false), MaxLength(20)]
         public string PasswordConfirmation { get; set; }
-
+        public int PrimaryLanguageId { get; set; }
+        public int SecondaryLanguageId { get; set; }
     }
 }

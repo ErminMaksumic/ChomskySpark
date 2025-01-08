@@ -4,6 +4,7 @@ using Chomskyspark.Services.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Chomskyspark.Services.Migrations
 {
     [DbContext(typeof(ChomskySparkContext))]
-    partial class ChomskySparkContextModelSnapshot : ModelSnapshot
+    [Migration("20250108215748_RevertAddLanguage")]
+    partial class RevertAddLanguage
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -31,6 +34,10 @@ namespace Chomskyspark.Services.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Type")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -91,6 +98,9 @@ namespace Chomskyspark.Services.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("LanguageId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Lastname")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -105,55 +115,21 @@ namespace Chomskyspark.Services.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Users");
-                });
-
-            modelBuilder.Entity("Chomskyspark.Services.Database.UserLanguage", b =>
-                {
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("LanguageId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Type")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("UserId", "LanguageId");
-
                     b.HasIndex("LanguageId");
 
-                    b.ToTable("UserLanguages");
-                });
-
-            modelBuilder.Entity("Chomskyspark.Services.Database.UserLanguage", b =>
-                {
-                    b.HasOne("Chomskyspark.Services.Database.Language", "Language")
-                        .WithMany("UserLanguages")
-                        .HasForeignKey("LanguageId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Chomskyspark.Services.Database.User", "User")
-                        .WithMany("UserLanguages")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Language");
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("Chomskyspark.Services.Database.Language", b =>
-                {
-                    b.Navigation("UserLanguages");
+                    b.ToTable("Users");
                 });
 
             modelBuilder.Entity("Chomskyspark.Services.Database.User", b =>
                 {
-                    b.Navigation("UserLanguages");
+                    b.HasOne("Chomskyspark.Services.Database.Language", null)
+                        .WithMany("Users")
+                        .HasForeignKey("LanguageId");
+                });
+
+            modelBuilder.Entity("Chomskyspark.Services.Database.Language", b =>
+                {
+                    b.Navigation("Users");
                 });
 #pragma warning restore 612, 618
         }

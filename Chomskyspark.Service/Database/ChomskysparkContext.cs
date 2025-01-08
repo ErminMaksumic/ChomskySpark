@@ -24,5 +24,26 @@ namespace Chomskyspark.Services.Database
 
         public virtual DbSet<User> Users { get; set; }
         public virtual DbSet<ObjectDetectionAttempt> ObjectDetectionAttempts { get; set; }
+        public virtual DbSet<Language> Languages { get; set; } = null!;
+        public virtual DbSet<UserLanguage> UserLanguages { get; set; } = null!;
+
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<UserLanguage>()
+                .HasKey(ul => new { ul.UserId, ul.LanguageId });
+
+            modelBuilder.Entity<UserLanguage>()
+                .HasOne(ul => ul.User)
+                .WithMany(u => u.UserLanguages)
+                .HasForeignKey(ul => ul.UserId);
+
+            modelBuilder.Entity<UserLanguage>()
+                .HasOne(ul => ul.Language)
+                .WithMany(l => l.UserLanguages)
+                .HasForeignKey(ul => ul.LanguageId);
+        }
     }
 }
