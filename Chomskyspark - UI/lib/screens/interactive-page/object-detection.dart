@@ -11,7 +11,9 @@ class ObjectDetectionPage extends StatefulWidget {
   final List<RecognizedObject> recognizedObjects;
   final String imageUrl;
 
-  ObjectDetectionPage({Key? key, required this.recognizedObjects, required this.imageUrl}) : super(key: key);
+  ObjectDetectionPage(
+      {Key? key, required this.recognizedObjects, required this.imageUrl})
+      : super(key: key);
 
   @override
   _ObjectDetectionPageState createState() => _ObjectDetectionPageState();
@@ -19,7 +21,8 @@ class ObjectDetectionPage extends StatefulWidget {
 
 class _ObjectDetectionPageState extends State<ObjectDetectionPage> {
   final TextToSpeechHelper ttsService = TextToSpeechHelper();
-  final ObjectDetectionAttemptProvider objectDetectionAttemptProvider = ObjectDetectionAttemptProvider();
+  final ObjectDetectionAttemptProvider objectDetectionAttemptProvider =
+      ObjectDetectionAttemptProvider();
   late String randomWord;
   late List<String> foundObjects;
 
@@ -68,7 +71,8 @@ class _ObjectDetectionPageState extends State<ObjectDetectionPage> {
                     if (loadingProgress == null) {
                       WidgetsBinding.instance.addPostFrameCallback((_) {
                         final imageConfiguration = ImageConfiguration();
-                        final imageStream = NetworkImage(widget.imageUrl).resolve(imageConfiguration);
+                        final imageStream = NetworkImage(widget.imageUrl)
+                            .resolve(imageConfiguration);
                         imageStream.addListener(
                           ImageStreamListener((ImageInfo image, _) {
                             setState(() {
@@ -81,15 +85,15 @@ class _ObjectDetectionPageState extends State<ObjectDetectionPage> {
 
                       return SizedBox.expand(
                           child: FittedBox(
-                            fit: BoxFit.fill,
-                            alignment: Alignment.center,
-                            child: Stack(
-                              children: [
-                                child,
-                                ..._buildBoundingBoxes(),
-                              ],
-                            ),
-                          ));
+                        fit: BoxFit.fill,
+                        alignment: Alignment.center,
+                        child: Stack(
+                          children: [
+                            child,
+                            ..._buildBoundingBoxes(),
+                          ],
+                        ),
+                      ));
                     }
                     return Center(child: CircularProgressIndicator());
                   },
@@ -140,7 +144,6 @@ class _ObjectDetectionPageState extends State<ObjectDetectionPage> {
               ttsService.speak("You're close. Try again.");
             }
           },
-
           child: Container(
             width: object.w,
             height: object.h,
@@ -154,7 +157,8 @@ class _ObjectDetectionPageState extends State<ObjectDetectionPage> {
   }
 
   String getRandomObjectName(List<RecognizedObject> objects) {
-    final remainingObjects = objects.where((o) => !foundObjects.contains(o.name)).toList();
+    final remainingObjects =
+        objects.where((o) => !foundObjects.contains(o.name)).toList();
     if (remainingObjects.isEmpty) {
       return "No object recognized";
     }
@@ -238,7 +242,6 @@ class _ObjectDetectionPageState extends State<ObjectDetectionPage> {
         ],
       ),
     );
-
 
     ttsService.speak("Well done! You found the object you were looking for.");
   }

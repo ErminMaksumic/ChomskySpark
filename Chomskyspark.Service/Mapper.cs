@@ -21,6 +21,10 @@ namespace Chomskyspark.Services
             CreateMap<Database.Language, Language>().ReverseMap();
             CreateMap<Database.UserLanguage, UserLanguage>().ReverseMap();
 
+            CreateMap<Database.User, User>()
+         .ForMember(dest => dest.UserLanguages, opt => opt.MapFrom(src => src.UserLanguages));
+
+
         }
     }
 }

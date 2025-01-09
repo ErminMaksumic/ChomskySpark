@@ -1,17 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import '../../../../constants.dart';
+import '../../../../models/language.dart';
 
 class SignUpForm extends StatefulWidget {
-  const SignUpForm({
-    super.key,
-    required this.formKey,
-    required this.firstNameController,
-    required this.lastNameController,
-    required this.emailController,
-    required this.passwordController,
-    required this.passwordConfirmationController,
-  });
+  const SignUpForm(
+      {super.key,
+      required this.formKey,
+      required this.firstNameController,
+      required this.lastNameController,
+      required this.emailController,
+      required this.passwordController,
+      required this.passwordConfirmationController,
+      required this.languages,
+      required this.onLanguageSelected});
 
   final GlobalKey<FormState> formKey;
   final TextEditingController firstNameController;
@@ -19,12 +21,16 @@ class SignUpForm extends StatefulWidget {
   final TextEditingController emailController;
   final TextEditingController passwordController;
   final TextEditingController passwordConfirmationController;
+  final List<Language> languages;
+  final Function(int?, int?) onLanguageSelected;
 
   @override
   State<SignUpForm> createState() => _SignUpFormState();
 }
 
 class _SignUpFormState extends State<SignUpForm> {
+  int? primaryLanguageId;
+  int? secondaryLanguageId;
   @override
   Widget build(BuildContext context) {
     return Form(
@@ -64,6 +70,32 @@ class _SignUpFormState extends State<SignUpForm> {
             },
             keyboardType: TextInputType.emailAddress,
           ),
+          const SizedBox(height: 16),
+          _buildDropdownField(
+            context: context,
+            hintText: "Primary Language",
+            value: primaryLanguageId,
+            languages: widget.languages,
+            onChanged: (value) {
+              setState(() {
+                primaryLanguageId = value;
+              });
+              widget.onLanguageSelected(primaryLanguageId, secondaryLanguageId);
+            },
+          ),
+          const SizedBox(height: 16),
+          _buildDropdownField(
+            context: context,
+            hintText: "Secondary Language",
+            value: secondaryLanguageId,
+            languages: widget.languages,
+            onChanged: (value) {
+              setState(() {
+                secondaryLanguageId = value;
+              });
+              widget.onLanguageSelected(primaryLanguageId, secondaryLanguageId);
+            },
+          ),
           const SizedBox(height: defaultPadding),
           _buildTextField(
             controller: widget.passwordController,
@@ -81,8 +113,7 @@ class _SignUpFormState extends State<SignUpForm> {
             controller: widget.passwordConfirmationController,
             hintText: "Confirm Password",
             validator: (value) {
-              if (value == null ||
-                  value != widget.passwordController.text) {
+              if (value == null || value != widget.passwordController.text) {
                 return 'Passwords do not match';
               }
               return null;
@@ -109,6 +140,26 @@ class _SignUpFormState extends State<SignUpForm> {
       obscureText: obscureText,
       keyboardType: keyboardType,
       validator: validator,
+    );
+  }
+
+  Widget _buildDropdownField({
+    required BuildContext context,
+    required String hintText,
+    required int? value,
+    required List<Language> languages,
+    required ValueChanged<int?> onChanged,
+  }) {
+    return DropdownButtonFormField<int>(
+      value: value,
+      decoration: InputDecoration(hintText: hintText),
+      items: languages.map((item) {
+        return DropdownMenuItem<int>(
+          value: item.id,
+          child: Text(item.name ?? ''),
+        );
+      }).toList(),
+      onChanged: onChanged,
     );
   }
 }

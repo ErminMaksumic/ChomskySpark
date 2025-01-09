@@ -6,7 +6,7 @@ part 'language.g.dart';
 class Language {
   int? id;
   String? name;
-
+  String? code;
   Language();
 
   factory Language.fromJson(Map<String, dynamic> json) =>
