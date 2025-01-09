@@ -12,5 +12,14 @@ namespace Chomskyspark.Services.Implementation
         {
 
         }
+
+        public override Model.ObjectDetectionAttempt Insert(ObjectDetectionAttemptUpsertRequest request)
+        {
+            if (request.Success) 
+            { 
+                Context.LearnedWords.Add(IMapper.Map<LearnedWord>(request));
+            }
+            return base.Insert(request);
+        }
     }
 }

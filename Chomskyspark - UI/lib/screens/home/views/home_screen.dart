@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shop/providers/file_provider.dart';
 import 'package:shop/providers/object_detection_provider.dart';
-import 'package:shop/screens/interactive-page/discover_word.dart';
-import 'package:shop/screens/interactive-page/find_object.dart';
+import 'package:shop/screens/interactive-page/discover_words.dart';
+import 'package:shop/screens/interactive-page/find_objects.dart';
 import 'package:shop/screens/interactive-page/object_detection.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -143,11 +143,11 @@ class HomeScreen extends StatelessWidget {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) => FindObjectPage(),
+                                    builder: (context) => FindObjectsPage(),
                                   ),
                                 );
                               },
-                              child: Text('Find Object'),
+                              child: Text('Find Objects'),
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: Colors.transparent, // Set background to transparent to show the shadow
                                 foregroundColor: Colors.white,
@@ -179,7 +179,7 @@ class HomeScreen extends StatelessWidget {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) => DiscoverWordPage(),
+                                    builder: (context) => DiscoverWordsPage(),
                                   ),
                                 );
                               },

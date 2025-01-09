@@ -1,31 +1,38 @@
+import 'dart:async';
+import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:shop/models/object_detection_attempt_model.dart';
 import 'package:shop/models/recognized_object.dart';
 import 'package:shop/providers/object_detection_attempt_provider.dart';
 import 'package:shop/providers/object_detection_provider.dart';
 import 'package:shop/route/route_constants.dart';
+import 'package:shop/utils/auth_helper.dart';
 import 'package:shop/utils/text_to_speech_helper.dart';
 
-class DiscoverWordPage extends StatefulWidget {
+class FindObjectsPage extends StatefulWidget {
 
-  DiscoverWordPage({Key? key}) : super(key: key);
+  FindObjectsPage({Key? key}) : super(key: key);
 
   @override
-  _DiscoverWordPageState createState() => _DiscoverWordPageState();
+  _FindObjectsPageState createState() => _FindObjectsPageState();
 }
 
-class _DiscoverWordPageState extends State<DiscoverWordPage> {
-  late List<RecognizedObject> recognizedObjects = [];
-  late String imageUrl = "";
-
+class _FindObjectsPageState extends State<FindObjectsPage> {
   final TextToSpeechHelper ttsService = TextToSpeechHelper();
   final ObjectDetectionAttemptProvider objectDetectionAttemptProvider = ObjectDetectionAttemptProvider();
-  late String word = "Please select any object...";
-  late List<String> foundObjects = [];
+  late String randomWord;
+  late List<String> foundObjects;
+  late List<RecognizedObject> recognizedObjects = [];
+  late String imageUrl = "";
 
   double imageWidth = 1;
   double imageHeight = 1;
   bool objectRecognized = false;
 
+  int attemptCount = 0;
+  late DateTime startTime;
+  Timer? timer;
+  Duration elapsedTime = Duration.zero;
   bool isLoading = true;
 
   final GlobalKey imageKey = GlobalKey();
@@ -42,6 +49,8 @@ class _DiscoverWordPageState extends State<DiscoverWordPage> {
     });
 
     try {
+      foundObjects = [];
+
       ObjectDetectionProvider objectDetectionProvider = ObjectDetectionProvider();
       var response = await objectDetectionProvider.getRandomRecognizedObject();
 
@@ -49,20 +58,31 @@ class _DiscoverWordPageState extends State<DiscoverWordPage> {
         recognizedObjects = response['recognizedObjects'] as List<RecognizedObject>;
         imageUrl = response['imageUrl'] as String;
       }
-      foundObjects = [];
-      ttsService.speak(word);
 
+      print(recognizedObjects);
+      randomWord = getRandomObjectName(recognizedObjects);
+
+      timer = Timer.periodic(Duration(seconds: 1), (Timer t) {
+        setState(() {
+          elapsedTime = DateTime.now().difference(startTime);
+        });
+      });
     } catch (e) {
       print("Error loading data: $e");
     } finally {
       setState(() {
         isLoading = false;
+        startTime = DateTime.now();
       });
+      if (objectRecognized) {
+        ttsService.findObject(randomWord);
+      }
     }
   }
 
   @override
   void dispose() {
+    timer?.cancel();
     ttsService.stop();
     super.dispose();
   }
@@ -71,7 +91,7 @@ class _DiscoverWordPageState extends State<DiscoverWordPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Discover a Word'),
+        title: Text('Find Objects'),
       ),
       body: isLoading
           ? Center(
@@ -79,6 +99,16 @@ class _DiscoverWordPageState extends State<DiscoverWordPage> {
       )
           : Column(
         children: [
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text("Time: ${_formatDuration(elapsedTime)}", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                Text("Words: ${foundObjects.length}/${recognizedObjects.length}", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+              ],
+            ),
+          ),
           Expanded(
             child: LayoutBuilder(
               builder: (context, constraints) {
@@ -123,10 +153,10 @@ class _DiscoverWordPageState extends State<DiscoverWordPage> {
             child: ElevatedButton(
               onPressed: () {
                 if (objectRecognized) {
-                  ttsService.tellWhatIsInThePicture(word);
+                  ttsService.findObject(randomWord);
                 }
               },
-              child: Text(word),
+              child: Text(randomWord),
               style: ElevatedButton.styleFrom(
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(15),
@@ -147,16 +177,34 @@ class _DiscoverWordPageState extends State<DiscoverWordPage> {
         top: object.y,
         child: GestureDetector(
           onTap: () async {
-            ttsService.speak("It is a ${object.name}");
-            word = object.name;
-            _showDialog();
+            attemptCount++;
+            final elapsedTime = DateTime.now().difference(startTime);
+            final success = object.name == randomWord;
+
+            final insertData = ObjectDetectionAttempt(
+                targetWord: randomWord,
+                selectedWord: object.name,
+                success: success,
+                attemptNumber: attemptCount,
+                elapsedTimeInSeconds: elapsedTime.inSeconds,
+                userId: Authorization.user!.id);
+
+            objectDetectionAttemptProvider.insert(insertData);
+
+            if (success) {
+              _onObjectFound(object.name);
+            } else {
+              ttsService.speak("You're close. Try again.");
+            }
           },
 
           child: Container(
             width: object.w,
             height: object.h,
             decoration: BoxDecoration(
-              border: Border.all(color: object.color, width: 4),
+              border: foundObjects.contains(object.name)
+                  ? null
+                  : Border.all(color: object.color, width: 4),
             ),
           ),
         ),
@@ -164,7 +212,26 @@ class _DiscoverWordPageState extends State<DiscoverWordPage> {
     }).toList();
   }
 
-  void _showDialog() {
+  String getRandomObjectName(List<RecognizedObject> objects) {
+    final remainingObjects = objects.where((o) => !foundObjects.contains(o.name)).toList();
+    if (remainingObjects.isEmpty) {
+      return "No object recognized";
+    }
+
+    setState(() {
+      objectRecognized = true;
+    });
+    final random = Random();
+    final randomIndex = random.nextInt(remainingObjects.length);
+    return remainingObjects[randomIndex].name;
+  }
+
+  void _onObjectFound(String objectName) {
+    setState(() {
+      foundObjects.add(objectName);
+    });
+
+    var text = "You found the $objectName";
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -190,7 +257,7 @@ class _DiscoverWordPageState extends State<DiscoverWordPage> {
             ),
             SizedBox(height: 10),
             Text(
-              "Today you discovered the word $word",
+              text,
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 18,
@@ -210,7 +277,15 @@ class _DiscoverWordPageState extends State<DiscoverWordPage> {
               ),
               onPressed: () {
                 Navigator.of(context).pop();
-                Navigator.of(context).pushReplacementNamed(homeScreenRoute);
+
+                if (foundObjects.length == recognizedObjects.length) {
+                  Navigator.of(context).pushReplacementNamed(homeScreenRoute);
+                } else {
+                  setState(() {
+                    randomWord = getRandomObjectName(recognizedObjects);
+                    ttsService.findObject(randomWord);
+                  });
+                }
               },
               child: Text(
                 "Continue",
@@ -226,6 +301,12 @@ class _DiscoverWordPageState extends State<DiscoverWordPage> {
       ),
     );
 
-    ttsService.speak("Today you discovered the word $word");
+    ttsService.speak("Well done! $text");
+  }
+
+  String _formatDuration(Duration duration) {
+    final minutes = duration.inMinutes;
+    final seconds = duration.inSeconds % 60;
+    return "${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}";
   }
 }
