@@ -36,7 +36,7 @@ class TextToSpeechHelper {
 
   Future<void> findObject(String word) async {
     if (word.isNotEmpty) {
-      await speak('On this picture, show where the ${word} is.');
+      await speak('Find the $word');
     }
   }
 
