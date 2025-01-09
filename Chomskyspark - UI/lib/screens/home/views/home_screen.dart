@@ -139,7 +139,14 @@ class HomeScreen extends StatelessWidget {
                               ],
                             ),
                             child: ElevatedButton(
-                              onPressed: () {},
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => FindObjectPage(),
+                                  ),
+                                );
+                              },
                               child: Text('Find Object'),
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: Colors.transparent, // Set background to transparent to show the shadow
@@ -168,7 +175,14 @@ class HomeScreen extends StatelessWidget {
                               ],
                             ),
                             child: ElevatedButton(
-                              onPressed: () {},
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => DiscoverWordPage(),
+                                  ),
+                                );
+                              },
                               child: Text('Discover a Word'),
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: Colors.transparent, // Set background to transparent to show the shadow
@@ -221,7 +235,7 @@ class HomeScreen extends StatelessWidget {
                         ),
                         child: ElevatedButton.icon(
                           onPressed: () {
-                            // Add camera functionality
+                            testFileUpload2(context);
                           },
                           icon: Icon(Icons.camera_alt, color: Colors.white),
                           label: Text('Take a Picture'),
