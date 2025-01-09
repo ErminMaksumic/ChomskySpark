@@ -22,6 +22,7 @@ builder.Services.AddSingleton<IEmailService, EmailSenderService>();
 builder.Services.AddSingleton<EmailSenderService>();
 builder.Services.AddTransient<IObjectDetectionAttemptService, ObjectDetectionAttemptService>();
 builder.Services.AddTransient<ILanguageService, LanguageService>();
+builder.Services.AddTransient<ILearnedWordService, LearnedWordService>();
 
 builder.Services.AddControllers(x =>
 {

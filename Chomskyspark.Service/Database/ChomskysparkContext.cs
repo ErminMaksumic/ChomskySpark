@@ -22,11 +22,11 @@ namespace Chomskyspark.Services.Database
         }
 
 
-        public virtual DbSet<User> Users { get; set; }
+        public virtual DbSet<LearnedWord> LearnedWords { get; set; }
         public virtual DbSet<ObjectDetectionAttempt> ObjectDetectionAttempts { get; set; }
         public virtual DbSet<Language> Languages { get; set; } = null!;
         public virtual DbSet<UserLanguage> UserLanguages { get; set; } = null!;
-
+        public virtual DbSet<User> Users { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

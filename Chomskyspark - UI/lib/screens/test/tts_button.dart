@@ -33,7 +33,7 @@ class _TTSButtonState extends State<TTSButton> {
               onPressed: () {
                 final inputText = _textController.text;
                 if (inputText.isNotEmpty) {
-                  ttsService.tellWhatIsInThePicture(inputText);
+                  ttsService.findObject(inputText);
                 } else {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(content: Text('Please enter text before playing.')),

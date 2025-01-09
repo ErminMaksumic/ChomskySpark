@@ -32,4 +32,33 @@ class ObjectDetectionProvider extends BaseProvider<File> {
       return [];
     }
   }
+
+  Future<Map<String, dynamic>> getRandomRecognizedObject() async {
+    try {
+      var uri = Uri.parse("$fullUrl");
+
+      Map<String, String> headers = createHeaders();
+      var response = await httpClient!.get(uri, headers: headers);
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> jsonResponse = jsonDecode(response.body);
+        print(jsonResponse);
+
+        final List<RecognizedObject> recognizedObjects = (jsonResponse['recognizedObjects'] as List)
+            .map((json) => RecognizedObject.fromJson(json))
+            .toList();
+
+        return {
+          'imageUrl': jsonResponse['imageUrl'],
+          'recognizedObjects': recognizedObjects,
+        };
+      } else {
+        print('Failed to load recognized objects: ${response.statusCode}');
+        throw Exception('Failed to load recognized objects');
+      }
+    } catch (e) {
+      print('An error occurred: $e');
+      throw Exception('An error occurred: $e');
+    }
+  }
 }

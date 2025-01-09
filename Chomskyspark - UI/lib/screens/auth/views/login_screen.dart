@@ -30,9 +30,13 @@ class _LoginScreenState extends State<LoginScreen> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            Image.asset(
-              "assets/images/login.png",
-              fit: BoxFit.cover,
+
+            ClipRRect(
+              borderRadius: BorderRadius.circular(25),
+              child: Image.asset(
+                "assets/images/cute.png",
+                fit: BoxFit.cover,
+              ),
             ),
             Padding(
               padding: const EdgeInsets.all(defaultPadding),
@@ -58,8 +62,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ),
                   SizedBox(
-                    height:
-                        size.height > 700 ? size.height * 0.1 : defaultPadding,
+                    height: defaultPadding / 2,  // Reduced space
                   ),
                   ElevatedButton(
                     onPressed: () async {
@@ -90,6 +93,16 @@ class _LoginScreenState extends State<LoginScreen> {
                       }
                     },
                     child: const Text("Log in"),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.purple,  // Purple background color
+                      foregroundColor: Colors.white,  // White text color
+                      minimumSize: Size(double.infinity, 60),  // Button height
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),  // Oval corners
+                      ),
+                      elevation: 15,  // Stronger shadow
+                      shadowColor: Colors.black.withOpacity(0.4), // More pronounced shadow
+                    ),
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -112,5 +125,3 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 }
-
-
