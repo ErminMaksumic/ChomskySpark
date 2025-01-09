@@ -1,25 +1,29 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:shop/models/learned_word.dart';
 import 'package:shop/models/recognized_object.dart';
+import 'package:shop/providers/learned_word_provider.dart';
 import 'package:shop/providers/object_detection_attempt_provider.dart';
 import 'package:shop/providers/object_detection_provider.dart';
 import 'package:shop/route/route_constants.dart';
+import 'package:shop/utils/auth_helper.dart';
 import 'package:shop/utils/text_to_speech_helper.dart';
 
-class FindObjectPage extends StatefulWidget {
+class DiscoverWordsPage extends StatefulWidget {
 
-  FindObjectPage({Key? key}) : super(key: key);
+  DiscoverWordsPage({Key? key}) : super(key: key);
 
   @override
-  _FindObjectPageState createState() => _FindObjectPageState();
+  _DiscoverWordsPageState createState() => _DiscoverWordsPageState();
 }
 
-class _FindObjectPageState extends State<FindObjectPage> {
+class _DiscoverWordsPageState extends State<DiscoverWordsPage> {
   late List<RecognizedObject> recognizedObjects = [];
   late String imageUrl = "";
 
   final TextToSpeechHelper ttsService = TextToSpeechHelper();
   final ObjectDetectionAttemptProvider objectDetectionAttemptProvider = ObjectDetectionAttemptProvider();
+  final LearnedWordProvider learnedWordProvider = LearnedWordProvider();
   late String word = "Please select any object...";
   late List<String> foundObjects = [];
 
@@ -83,7 +87,7 @@ class _FindObjectPageState extends State<FindObjectPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Find Objects'),
+        title: Text('Discover Words'),
       ),
       body: isLoading
           ? Center(
@@ -151,7 +155,7 @@ class _FindObjectPageState extends State<FindObjectPage> {
             child: ElevatedButton(
               onPressed: () {
                 if (objectRecognized) {
-                  ttsService.tellWhatIsInThePicture(word);
+                  ttsService.findObject(word);
                 }
               },
               child: Text(word),
@@ -181,11 +185,16 @@ class _FindObjectPageState extends State<FindObjectPage> {
             if (!foundObjects.contains(object.name)){
               wordCounter++;
               foundObjects.add(word);
+
+              final insertData = LearnedWord(
+                  word: object.name,
+                  userId: Authorization.user!.id!);
+              learnedWordProvider.insert(insertData);
             }
 
-            if (recognizedObjects.length == foundObjects.length) {
+            if (recognizedObjects.length == foundObjects.length && timer!.isActive) {
               timer!.cancel();
-              Future.delayed(Duration(seconds: 3), () {
+              Future.delayed(Duration(seconds: 2), () {
                 _showDialog();
               });
             }
@@ -232,7 +241,7 @@ class _FindObjectPageState extends State<FindObjectPage> {
             ),
             SizedBox(height: 10),
             Text(
-              "You learned the following words: $objects",
+              "You discovered the following words: $objects",
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 18,
@@ -252,10 +261,6 @@ class _FindObjectPageState extends State<FindObjectPage> {
               ),
               onPressed: () {
                 Navigator.of(context).pop();
-
-                if (foundObjects.length == recognizedObjects.length) {
-                  Navigator.of(context).pushReplacementNamed(homeScreenRoute);
-                }
               },
               child: Text(
                 "Continue",
@@ -271,7 +276,7 @@ class _FindObjectPageState extends State<FindObjectPage> {
       ),
     );
 
-    ttsService.speak("Well done! You learned the following words: ${objects}");
+    ttsService.speak("Well done! You discovered the following words: ${objects}");
   }
 
   String _formatDuration(Duration duration) {

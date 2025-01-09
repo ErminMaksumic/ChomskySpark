@@ -70,7 +70,7 @@ class _ObjectDetectionPageState extends State<ObjectDetectionPage> {
         startTime = DateTime.now();
       });
       if (objectRecognized) {
-        ttsService.tellWhatIsInThePicture(randomWord);
+        ttsService.findObject(randomWord);
       }
     }
   }
@@ -149,7 +149,7 @@ class _ObjectDetectionPageState extends State<ObjectDetectionPage> {
             child: ElevatedButton(
               onPressed: () {
                 if (objectRecognized) {
-                  ttsService.tellWhatIsInThePicture(randomWord);
+                  ttsService.findObject(randomWord);
                 }
               },
               child: Text(randomWord),
@@ -276,7 +276,7 @@ class _ObjectDetectionPageState extends State<ObjectDetectionPage> {
                 } else {
                   setState(() {
                     randomWord = getRandomObjectName(recognizedObjects);
-                    ttsService.tellWhatIsInThePicture(randomWord);
+                    ttsService.findObject(randomWord);
                   });
                 }
               },

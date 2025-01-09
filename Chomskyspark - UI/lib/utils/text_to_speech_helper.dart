@@ -9,7 +9,8 @@ class TextToSpeechHelper {
 
   void _initializeTTS() async {
     await _flutterTts.setLanguage("en-US");
-    await _flutterTts.setPitch(1.0);
+    await _flutterTts.setPitch(1.3);
+    await _flutterTts.setVoice({"name": "en-us-x-sfg#female_1-local", "locale": "en-US"});
   }
 
   Future<void> speak(String text) async {
@@ -18,9 +19,9 @@ class TextToSpeechHelper {
     }
   }
 
-  Future<void> tellWhatIsInThePicture(String word) async {
+  Future<void> findObject(String word) async {
     if (word.isNotEmpty) {
-      await _flutterTts.speak('On this picture, show where the ${word} is.');
+      await _flutterTts.speak('Find the ${word}.');
     }
   }
 

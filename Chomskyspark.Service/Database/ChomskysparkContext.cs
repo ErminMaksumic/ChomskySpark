@@ -22,7 +22,8 @@ namespace Chomskyspark.Services.Database
         }
 
 
-        public virtual DbSet<User> Users { get; set; }
+        public virtual DbSet<LearnedWord> LearnedWords { get; set; }
         public virtual DbSet<ObjectDetectionAttempt> ObjectDetectionAttempts { get; set; }
+        public virtual DbSet<User> Users { get; set; }
     }
 }
