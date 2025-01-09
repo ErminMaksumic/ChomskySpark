@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shop/constants.dart';
+import 'package:shop/providers/language_provider.dart';
 import 'package:shop/providers/user_provider.dart';
 import 'package:shop/route/route_constants.dart';
 import 'package:shop/utils/auth_helper.dart';
@@ -17,13 +18,13 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   late UserProvider _userProvider;
+  late LanguageProvider _languageProvider;
   final _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
     _userProvider = Provider.of(context, listen: false);
-    _emailController.text = "ime.prezime@edu.fit.ba";
-    _passwordController.text = "Test1234";
+    _languageProvider = Provider.of(context, listen: false);
     final Size size = MediaQuery.of(context).size;
     return Scaffold(
       body: SingleChildScrollView(
@@ -66,6 +67,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         if (_formKey.currentState!.validate()) {
                           Authorization.user = await _userProvider.login(
                               _emailController.text, _passwordController.text);
+                            await _languageProvider.translateWord("kuca", "spanish");
                           Navigator.popAndPushNamed(
                               context, homeScreenRoute);
                         }
