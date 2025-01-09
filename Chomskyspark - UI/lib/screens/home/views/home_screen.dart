@@ -13,9 +13,11 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       home: Scaffold(
         body: Stack(
           children: [
+            // Background Image
             Container(
               decoration: BoxDecoration(
                 image: DecorationImage(
@@ -26,14 +28,12 @@ class HomeScreen extends StatelessWidget {
             ),
             Column(
               children: [
-
+                // Header Container with Menu
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
-                   margin: const EdgeInsets.only(top: 20.0),
-
+                  margin: const EdgeInsets.only(top: 20.0),
                   decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.03
-                    ),
+                    color: Colors.blue.withOpacity(0.02),
                   ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -42,20 +42,19 @@ class HomeScreen extends StatelessWidget {
                         'Chomskyspark',
                         style: TextStyle(
                           fontSize: 20,
-                          //fontWeight: FontWeight.bold,
-                          color: Colors.black
-
+                          fontFamily: 'Pacifico',
+                          color: Colors.white,
                         ),
                       ),
                       IconButton(
-                        onPressed: () {
-
-                        },
-                        icon: Icon(Icons.menu, color: Colors.black),
+                        onPressed: () {},
+                        icon: Icon(Icons.menu, color: Colors.white),
                       ),
                     ],
                   ),
                 ),
+
+                // Counter Circle with Shadow
                 Padding(
                   padding: const EdgeInsets.only(top: 9.0),
                   child: Center(
@@ -63,31 +62,47 @@ class HomeScreen extends StatelessWidget {
                       onTap: () {
                         // Add button functionality
                       },
-                      child: CircleAvatar(
-                        radius: 50,
-                        backgroundColor: Colors.white,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              '0',
-                              style: TextStyle(
-                                fontSize: 30,
-                                fontWeight: FontWeight.bold,
-                              ),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.blue.withOpacity(0.2),
+                              spreadRadius: 4,
+                              blurRadius: 8,
+                              offset: Offset(4, 4), // Shadow position
                             ),
-                            Text('Counter'),
                           ],
+                        ),
+                        child: CircleAvatar(
+                          radius: 50,
+                          backgroundColor: Colors.white,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                '0',
+                                style: TextStyle(
+                                  fontSize: 30,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              Text('Counter'),
+                            ],
+                          ),
                         ),
                       ),
                     ),
                   ),
                 ),
                 Spacer(),
+
+                // Main Content
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20.0),
                   child: Column(
                     children: [
+                      // Welcome Text
                       Text(
                         'You are doing Excellent,',
                         style: TextStyle(
@@ -104,75 +119,120 @@ class HomeScreen extends StatelessWidget {
                         ),
                       ),
                       SizedBox(height: 20),
+
+                      // Buttons Row
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          ElevatedButton(
-                            onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => FindObjectPage(),
+                          // Find Object Button
+                          Container(
+                            decoration: BoxDecoration(
+                              color: Colors.purple,
+                              borderRadius: BorderRadius.circular(10),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withOpacity(0.2),
+                                  spreadRadius: 2,
+                                  blurRadius: 2,
+                                  offset: Offset(2, 4), // Drop shadow position
                                 ),
-                              );
-                            },
-                            child: Text('Find Object'),
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.purple,
-                              foregroundColor: Colors.white,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10),
+                              ],
+                            ),
+                            child: ElevatedButton(
+                              onPressed: () {},
+                              child: Text('Find Object'),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.transparent, // Set background to transparent to show the shadow
+                                foregroundColor: Colors.white,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                padding: EdgeInsets.symmetric(horizontal: 23, vertical: 10),
                               ),
-                              padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
                             ),
                           ),
                           SizedBox(width: 10),
-                          ElevatedButton(
-                            onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => DiscoverWordPage(),
+
+                          // Discover a Word Button
+                          Container(
+                            decoration: BoxDecoration(
+                              color: Colors.purple,
+                              borderRadius: BorderRadius.circular(10),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withOpacity(0.2),
+                                  spreadRadius: 2,
+                                  blurRadius: 2,
+                                  offset: Offset(2, 4), // Drop shadow position
                                 ),
-                              );
-                            },
-                            child: Text('Discover a Word'),
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.purple.withOpacity(0.8),
-                              foregroundColor: Colors.white,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10),
+                              ],
+                            ),
+                            child: ElevatedButton(
+                              onPressed: () {},
+                              child: Text('Discover a Word'),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.transparent, // Set background to transparent to show the shadow
+                                foregroundColor: Colors.white,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
                               ),
-                              padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
                             ),
                           ),
                         ],
                       ),
                       SizedBox(height: 20),
+
+                      // Image Container with Shadow
                       Container(
                         height: 245,
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(15),
                           image: DecorationImage(
-                            image: AssetImage('assets/images/sample_image.png'),
+                            image: AssetImage('assets/images/try_image.png'),
                             fit: BoxFit.cover,
                           ),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.3),
+                              spreadRadius: 2,
+                              blurRadius: 8,
+                              offset: Offset(4, 4), // Position of the shadow
+                            ),
+                          ],
                         ),
                       ),
                       SizedBox(height: 20),
-                      ElevatedButton.icon(
-                        onPressed: () {
-                          testFileUpload2(context);
-                        },
-                        icon: Icon(Icons.camera_alt, color: Colors.white),
-                        label: Text('Take a Picture'),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.purple,
-                          foregroundColor: Colors.white,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
+
+                      // Take a Picture Button with Shadow
+                      Container(
+                        decoration: BoxDecoration(
+                          color: Colors.purple,
+                          borderRadius: BorderRadius.circular(10),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.3),
+                              spreadRadius: 2,
+                              blurRadius: 5,
+                              offset: Offset(2, 4),
+                            ),
+                          ],
+                        ),
+                        child: ElevatedButton.icon(
+                          onPressed: () {
+                            // Add camera functionality
+                          },
+                          icon: Icon(Icons.camera_alt, color: Colors.white),
+                          label: Text('Take a Picture'),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.transparent, // Set background to transparent to show the shadow
+                            foregroundColor: Colors.white,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            padding: EdgeInsets.symmetric(horizontal: 60, vertical: 15),
                           ),
-                          padding: EdgeInsets.symmetric(horizontal: 30, vertical: 15),
                         ),
                       ),
                     ],
