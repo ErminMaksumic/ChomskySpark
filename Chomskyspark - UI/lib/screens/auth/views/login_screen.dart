@@ -35,9 +35,13 @@ class _LoginScreenState extends State<LoginScreen> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            Image.asset(
-              "assets/images/login.png",
-              fit: BoxFit.cover,
+
+            ClipRRect(
+              borderRadius: BorderRadius.circular(25),
+              child: Image.asset(
+                "assets/images/cute.png",
+                fit: BoxFit.cover,
+              ),
             ),
             Padding(
               padding: const EdgeInsets.all(defaultPadding),
@@ -63,8 +67,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ),
                   SizedBox(
-                    height:
-                        size.height > 700 ? size.height * 0.1 : defaultPadding,
+                    height: defaultPadding / 2,  // Reduced space
                   ),
                   ElevatedButton(
                     onPressed: () async {
@@ -94,6 +97,16 @@ class _LoginScreenState extends State<LoginScreen> {
                       }
                     },
                     child: const Text("Log in"),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.purple,  // Purple background color
+                      foregroundColor: Colors.white,  // White text color
+                      minimumSize: Size(double.infinity, 60),  // Button height
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),  // Oval corners
+                      ),
+                      elevation: 15,  // Stronger shadow
+                      shadowColor: Colors.black.withOpacity(0.4), // More pronounced shadow
+                    ),
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -143,9 +156,7 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Future<void> testFileUpload() async {
-
     final picker = ImagePicker();
-
     final pickedFile = await picker.pickImage(source: ImageSource.camera);
 
     if (pickedFile != null) {
@@ -169,30 +180,8 @@ class _LoginScreenState extends State<LoginScreen> {
       );
 
       print(recognizedObjects);
-
     } else {
       print('No file selected.');
     }
   }
-
-  //TODO: Remove after testing
-  Future<void> testFileUpload2() async {
-
-      var imageUrl = "/uploads/chomskyspark/20250107_001739_914122bb-47ac-4e9b-b112-48c8598e56f3(1).jpg";//await fileProvider.sendFile(file);
-      imageUrl = "/uploads/chomskyspark/Screenshot_1_95019f70-79eb-40aa-9498-6868e1a81690.png";
-      ObjectDetectionProvider objectDetectionProvider = ObjectDetectionProvider();
-      final recognizedObjects = await objectDetectionProvider.detectImage("https://api.thorhof-bestellungen.at${imageUrl}");
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => ObjectDetectionPage(
-            recognizedObjects: recognizedObjects,
-            imageUrl: "https://api.thorhof-bestellungen.at${imageUrl}",
-          ),
-        ),
-      );
-      print(recognizedObjects);
-  }
 }
-
-
