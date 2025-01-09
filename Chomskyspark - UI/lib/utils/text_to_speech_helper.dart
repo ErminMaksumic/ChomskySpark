@@ -18,7 +18,8 @@ class TextToSpeechHelper {
   void _initializeTTS() async {
     await _flutterTts.setLanguage("en-US");
     await _flutterTts.setPitch(1.3);
-    await _flutterTts.setVoice({"name": "en-us-x-sfg#female_1-local", "locale": "en-US"});
+    await _flutterTts
+        .setVoice({"name": "en-us-x-sfg#female_1-local", "locale": "en-US"});
   }
 
   Future<void> _setLanguage(String language) async {
@@ -28,13 +29,8 @@ class TextToSpeechHelper {
 
   Future<void> speak(String text) async {
     for (String languageCode in languageCodes) {
-      try {
-        await _setLanguage(languageCode);
-        print("Language set to: $languageCode");
-      } catch (e) {
-        print("Error setting language: $e");
-        continue; // Skip to the next language if there's an error
-      }
+      await _setLanguage(languageCode);
+      await _flutterTts.speak(text);
     }
   }
 
