@@ -21,6 +21,7 @@ builder.Services.AddTransient<ISafetyService, SafetyService>();
 builder.Services.AddSingleton<IEmailService, EmailSenderService>();
 builder.Services.AddSingleton<EmailSenderService>();
 builder.Services.AddTransient<IObjectDetectionAttemptService, ObjectDetectionAttemptService>();
+builder.Services.AddTransient<ILanguageService, LanguageService>();
 
 builder.Services.AddControllers(x =>
 {

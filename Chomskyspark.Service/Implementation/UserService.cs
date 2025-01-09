@@ -81,7 +81,7 @@ namespace Chomskyspark.Services.Implementation
 
         public Model.User Login(string username, string password)
         {
-            var entity = Context.Users.FirstOrDefault(x => x.Email == username);
+            var entity = Context.Users.Include("UserLanguages").FirstOrDefault(x => x.Email == username);
 
             if (entity == null)
             {
