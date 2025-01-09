@@ -12,9 +12,7 @@ import 'package:shop/utils/text_to_speech_helper.dart';
 class ObjectDetectionPage extends StatefulWidget {
   final String imageUrl;
 
-  ObjectDetectionPage(
-      {Key? key, required this.recognizedObjects, required this.imageUrl})
-      : super(key: key);
+  ObjectDetectionPage({Key? key, required this.imageUrl}) : super(key: key);
 
   @override
   _ObjectDetectionPageState createState() => _ObjectDetectionPageState();
@@ -54,8 +52,10 @@ class _ObjectDetectionPageState extends State<ObjectDetectionPage> {
     try {
       foundObjects = [];
 
-      ObjectDetectionProvider objectDetectionProvider = ObjectDetectionProvider();
-      recognizedObjects = await objectDetectionProvider.detectImage(widget.imageUrl);
+      ObjectDetectionProvider objectDetectionProvider =
+          ObjectDetectionProvider();
+      recognizedObjects =
+          await objectDetectionProvider.detectImage(widget.imageUrl);
 
       print(recognizedObjects);
       randomWord = getRandomObjectName(recognizedObjects);
@@ -93,80 +93,87 @@ class _ObjectDetectionPageState extends State<ObjectDetectionPage> {
       ),
       body: isLoading
           ? Center(
-        child: CircularProgressIndicator(),
-      )
+              child: CircularProgressIndicator(),
+            )
           : Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text("Time: ${_formatDuration(elapsedTime)}", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-                Text("Found: ${foundObjects.length}/${recognizedObjects.length}", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-                Text("Attempts: $attemptCount", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text("Time: ${_formatDuration(elapsedTime)}",
+                          style: TextStyle(
+                              fontSize: 16, fontWeight: FontWeight.bold)),
+                      Text(
+                          "Found: ${foundObjects.length}/${recognizedObjects.length}",
+                          style: TextStyle(
+                              fontSize: 16, fontWeight: FontWeight.bold)),
+                      Text("Attempts: $attemptCount",
+                          style: TextStyle(
+                              fontSize: 16, fontWeight: FontWeight.bold)),
+                    ],
+                  ),
+                ),
+                Expanded(
+                  child: LayoutBuilder(
+                    builder: (context, constraints) {
+                      return Image.network(
+                        key: imageKey,
+                        widget.imageUrl,
+                        loadingBuilder: (context, child, loadingProgress) {
+                          if (loadingProgress == null) {
+                            WidgetsBinding.instance.addPostFrameCallback((_) {
+                              final imageConfiguration = ImageConfiguration();
+                              final imageStream = NetworkImage(widget.imageUrl)
+                                  .resolve(imageConfiguration);
+                              imageStream.addListener(
+                                ImageStreamListener((ImageInfo image, _) {
+                                  setState(() {
+                                    imageWidth = image.image.width.toDouble();
+                                    imageHeight = image.image.height.toDouble();
+                                  });
+                                }),
+                              );
+                            });
+
+                            return SizedBox.expand(
+                                child: FittedBox(
+                              fit: BoxFit.fill,
+                              alignment: Alignment.center,
+                              child: Stack(
+                                children: [
+                                  child,
+                                  ..._buildBoundingBoxes(),
+                                ],
+                              ),
+                            ));
+                          }
+                          return Center(child: CircularProgressIndicator());
+                        },
+                      );
+                    },
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: ElevatedButton(
+                    onPressed: () {
+                      if (objectRecognized) {
+                        ttsService.findObject(randomWord);
+                      }
+                    },
+                    child: Text(randomWord),
+                    style: ElevatedButton.styleFrom(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                      backgroundColor: Colors.purple,
+                    ),
+                  ),
+                ),
               ],
             ),
-          ),
-          Expanded(
-            child: LayoutBuilder(
-              builder: (context, constraints) {
-                return Image.network(
-                  key: imageKey,
-                  widget.imageUrl,
-                  loadingBuilder: (context, child, loadingProgress) {
-                    if (loadingProgress == null) {
-                      WidgetsBinding.instance.addPostFrameCallback((_) {
-                        final imageConfiguration = ImageConfiguration();
-                        final imageStream = NetworkImage(widget.imageUrl)
-                            .resolve(imageConfiguration);
-                        imageStream.addListener(
-                          ImageStreamListener((ImageInfo image, _) {
-                            setState(() {
-                              imageWidth = image.image.width.toDouble();
-                              imageHeight = image.image.height.toDouble();
-                            });
-                          }),
-                        );
-                      });
-
-                      return SizedBox.expand(
-                          child: FittedBox(
-                        fit: BoxFit.fill,
-                        alignment: Alignment.center,
-                        child: Stack(
-                          children: [
-                            child,
-                            ..._buildBoundingBoxes(),
-                          ],
-                        ),
-                      ));
-                    }
-                    return Center(child: CircularProgressIndicator());
-                  },
-                );
-              },
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: ElevatedButton(
-              onPressed: () {
-                if (objectRecognized) {
-                  ttsService.findObject(randomWord);
-                }
-              },
-              child: Text(randomWord),
-              style: ElevatedButton.styleFrom(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(15),
-                ),
-                backgroundColor: Colors.purple,
-              ),
-            ),
-          ),
-        ],
-      ),
     );
   }
 
