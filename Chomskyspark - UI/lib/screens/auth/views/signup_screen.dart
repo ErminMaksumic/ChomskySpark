@@ -22,7 +22,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final TextEditingController _userNameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _passwordConfirmationController =
-  TextEditingController();
+      TextEditingController();
 
   @override
   void initState() {
@@ -37,10 +37,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
         child: Column(
           children: [
             Image.asset(
-              "assets/images/registration.png",
-              height: MediaQuery.of(context).size.height * 0.35,
+              "assets/images/signup.png",
+              height: MediaQuery.of(context).size.height * 0.35, // Adjusted height
               width: double.infinity,
-              fit: BoxFit.cover,
+              fit: BoxFit.cover, // Ensures the image is fully visible and fits the space
             ),
             Padding(
               padding: const EdgeInsets.all(defaultPadding),
@@ -53,7 +53,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   ),
                   const SizedBox(height: defaultPadding / 2),
                   const Text(
-                    "Please enter your valid data in order to create an account.",
+                    "Please complete the form below to register your account.",
                   ),
                   const SizedBox(height: defaultPadding),
                   SignUpForm(
@@ -63,16 +63,26 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     emailController: _emailController,
                     passwordController: _passwordController,
                     passwordConfirmationController:
-                    _passwordConfirmationController,
+                        _passwordConfirmationController,
                   ),
                   const SizedBox(height: defaultPadding * 2),
                   ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.purple, // Purple background color
+                      foregroundColor: Colors.white, // White text color
+                      padding: EdgeInsets.symmetric(horizontal: 60, vertical: 15), // Padding similar to HomeScreen button
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10), // Rounded corners
+                      ),
+                      shadowColor: Colors.black.withOpacity(0.4), // Increased shadow opacity
+                      elevation: 15, // Increased elevation for stronger shadow
+                    ),
                     onPressed: () {
                       if (_formKey.currentState!.validate()) {
                         _register();
                       }
                     },
-                    child: const Text("Submit"),
+                    child: const Text("Submit", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
