@@ -1,4 +1,7 @@
-﻿using Azure.AI.OpenAI;
+﻿using AutoMapper;
+using Azure.AI.OpenAI;
+using Chomskyspark.Model;
+using Chomskyspark.Model.SearchObjects;
 using Chomskyspark.Services.Interfaces;
 using Microsoft.Extensions.Configuration;
 using OpenAI.Chat;
@@ -6,14 +9,14 @@ using System.ClientModel;
 
 namespace Chomskyspark.Services.Implementation
 {
-    public class LanguageService : ILanguageService
+    public class LanguageService : BaseService<Language, BaseSearchObject, Database.Language>, ILanguageService
     {
         private readonly string endpoint;
         private readonly string key;
         private readonly string model;
         private readonly string languagePrompt;
 
-        public LanguageService(IConfiguration configuration)
+        public LanguageService(Database.ChomskySparkContext context, IMapper mapper, IConfiguration configuration) : base(context, mapper)
         {
             endpoint = configuration["OpenAI:Endpoint"] ?? "";
             key = configuration["OpenAI:Key"] ?? "";

@@ -8,6 +8,11 @@ import 'package:shop/utils/auth_helper.dart';
 class LanguageProvider extends BaseProvider<Language> {
   LanguageProvider() : super("Language");
 
+  @override
+  Language fromJson(data) {
+    return Language.fromJson(data);
+  }
+
   Future<String?> translateWord(String word, String language) async {
     var url = Uri.parse("$fullUrl");
 

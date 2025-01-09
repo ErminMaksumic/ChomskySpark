@@ -8,9 +8,9 @@ part of 'language.dart';
 
 Language _$LanguageFromJson(Map<String, dynamic> json) => Language()
   ..id = (json['id'] as num?)?.toInt()
-  ..Name = json['Name'] as String?;
+  ..name = json['name'] as String?;
 
 Map<String, dynamic> _$LanguageToJson(Language instance) => <String, dynamic>{
       'id': instance.id,
-      'Name': instance.Name,
+      'name': instance.name,
     };

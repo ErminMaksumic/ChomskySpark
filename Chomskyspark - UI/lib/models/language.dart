@@ -5,7 +5,7 @@ part 'language.g.dart';
 @JsonSerializable()
 class Language {
   int? id;
-  String? Name;
+  String? name;
 
   Language();
 
