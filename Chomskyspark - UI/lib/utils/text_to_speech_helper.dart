@@ -31,6 +31,7 @@ class TextToSpeechHelper {
     for (String languageCode in languageCodes) {
       await _setLanguage(languageCode);
       await _flutterTts.speak(text);
+      await _flutterTts.awaitSpeakCompletion(true);
     }
   }
 
