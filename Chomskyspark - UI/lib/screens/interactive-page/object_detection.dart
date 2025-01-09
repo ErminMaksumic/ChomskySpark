@@ -1,17 +1,18 @@
+import 'dart:async';
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:shop/models/object_detection_attempt_model.dart';
 import 'package:shop/models/recognized_object.dart';
 import 'package:shop/providers/object_detection_attempt_provider.dart';
+import 'package:shop/providers/object_detection_provider.dart';
 import 'package:shop/route/route_constants.dart';
 import 'package:shop/utils/auth_helper.dart';
 import 'package:shop/utils/text_to_speech_helper.dart';
 
 class ObjectDetectionPage extends StatefulWidget {
-  final List<RecognizedObject> recognizedObjects;
   final String imageUrl;
 
-  ObjectDetectionPage({Key? key, required this.recognizedObjects, required this.imageUrl}) : super(key: key);
+  ObjectDetectionPage({Key? key, required this.imageUrl}) : super(key: key);
 
   @override
   _ObjectDetectionPageState createState() => _ObjectDetectionPageState();
@@ -22,6 +23,7 @@ class _ObjectDetectionPageState extends State<ObjectDetectionPage> {
   final ObjectDetectionAttemptProvider objectDetectionAttemptProvider = ObjectDetectionAttemptProvider();
   late String randomWord;
   late List<String> foundObjects;
+  late List<RecognizedObject> recognizedObjects = [];
 
   double imageWidth = 1;
   double imageHeight = 1;
@@ -29,23 +31,53 @@ class _ObjectDetectionPageState extends State<ObjectDetectionPage> {
 
   int attemptCount = 0;
   late DateTime startTime;
+  Timer? timer;
+  Duration elapsedTime = Duration.zero;
+  bool isLoading = true;
 
   final GlobalKey imageKey = GlobalKey();
 
   @override
   void initState() {
     super.initState();
-    startTime = DateTime.now();
-    foundObjects = [];
-    randomWord = getRandomObjectName(widget.recognizedObjects);
+    setData();
+  }
 
-    if (objectRecognized) {
-      ttsService.tellWhatIsInThePicture(randomWord);
+  setData() async {
+    setState(() {
+      isLoading = true;
+    });
+
+    try {
+      foundObjects = [];
+
+      ObjectDetectionProvider objectDetectionProvider = ObjectDetectionProvider();
+      recognizedObjects = await objectDetectionProvider.detectImage(widget.imageUrl);
+
+      print(recognizedObjects);
+      randomWord = getRandomObjectName(recognizedObjects);
+
+      timer = Timer.periodic(Duration(seconds: 1), (Timer t) {
+        setState(() {
+          elapsedTime = DateTime.now().difference(startTime);
+        });
+      });
+    } catch (e) {
+      print("Error loading data: $e");
+    } finally {
+      setState(() {
+        isLoading = false;
+        startTime = DateTime.now();
+      });
+      if (objectRecognized) {
+        ttsService.tellWhatIsInThePicture(randomWord);
+      }
     }
   }
 
   @override
   void dispose() {
+    timer?.cancel();
     ttsService.stop();
     super.dispose();
   }
@@ -56,8 +88,23 @@ class _ObjectDetectionPageState extends State<ObjectDetectionPage> {
       appBar: AppBar(
         title: Text('Object Detection'),
       ),
-      body: Column(
+      body: isLoading
+          ? Center(
+        child: CircularProgressIndicator(),
+      )
+          : Column(
         children: [
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text("Time: ${_formatDuration(elapsedTime)}", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                Text("Found: ${foundObjects.length}/${recognizedObjects.length}", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                Text("Attempts: $attemptCount", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+              ],
+            ),
+          ),
           Expanded(
             child: LayoutBuilder(
               builder: (context, constraints) {
@@ -106,6 +153,12 @@ class _ObjectDetectionPageState extends State<ObjectDetectionPage> {
                 }
               },
               child: Text(randomWord),
+              style: ElevatedButton.styleFrom(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(15),
+                ),
+                backgroundColor: Colors.purple,
+              ),
             ),
           ),
         ],
@@ -114,7 +167,7 @@ class _ObjectDetectionPageState extends State<ObjectDetectionPage> {
   }
 
   List<Widget> _buildBoundingBoxes() {
-    return widget.recognizedObjects.map((object) {
+    return recognizedObjects.map((object) {
       return Positioned(
         left: object.x,
         top: object.y,
@@ -159,7 +212,9 @@ class _ObjectDetectionPageState extends State<ObjectDetectionPage> {
       return "No object recognized";
     }
 
-    objectRecognized = true;
+    setState(() {
+      objectRecognized = true;
+    });
     final random = Random();
     final randomIndex = random.nextInt(remainingObjects.length);
     return remainingObjects[randomIndex].name;
@@ -177,7 +232,7 @@ class _ObjectDetectionPageState extends State<ObjectDetectionPage> {
         backgroundColor: Colors.white,
         title: Center(
           child: Text(
-            "🎉 Great Job!",
+            "\uD83C\uDF89 Great Job!",
             style: TextStyle(
               fontSize: 24,
               fontWeight: FontWeight.bold,
@@ -216,11 +271,11 @@ class _ObjectDetectionPageState extends State<ObjectDetectionPage> {
               onPressed: () {
                 Navigator.of(context).pop();
 
-                if (foundObjects.length == widget.recognizedObjects.length) {
+                if (foundObjects.length == recognizedObjects.length) {
                   Navigator.of(context).pushReplacementNamed(homeScreenRoute);
                 } else {
                   setState(() {
-                    randomWord = getRandomObjectName(widget.recognizedObjects);
+                    randomWord = getRandomObjectName(recognizedObjects);
                     ttsService.tellWhatIsInThePicture(randomWord);
                   });
                 }
@@ -239,7 +294,12 @@ class _ObjectDetectionPageState extends State<ObjectDetectionPage> {
       ),
     );
 
-
     ttsService.speak("Well done! You found the object you were looking for.");
+  }
+
+  String _formatDuration(Duration duration) {
+    final minutes = duration.inMinutes;
+    final seconds = duration.inSeconds % 60;
+    return "${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}";
   }
 }

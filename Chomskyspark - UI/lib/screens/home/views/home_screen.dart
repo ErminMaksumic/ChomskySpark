@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shop/providers/file_provider.dart';
 import 'package:shop/providers/object_detection_provider.dart';
-import 'package:shop/screens/interactive-page/object-detection.dart';
+import 'package:shop/screens/interactive-page/discover_word.dart';
+import 'package:shop/screens/interactive-page/find_object.dart';
+import 'package:shop/screens/interactive-page/object_detection.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -106,7 +108,14 @@ class HomeScreen extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           ElevatedButton(
-                            onPressed: () {},
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => FindObjectPage(),
+                                ),
+                              );
+                            },
                             child: Text('Find Object'),
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.purple,
@@ -119,7 +128,14 @@ class HomeScreen extends StatelessWidget {
                           ),
                           SizedBox(width: 10),
                           ElevatedButton(
-                            onPressed: () {},
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => DiscoverWordPage(),
+                                ),
+                              );
+                            },
                             child: Text('Discover a Word'),
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.purple.withOpacity(0.8),
@@ -184,21 +200,14 @@ class HomeScreen extends StatelessWidget {
       var imageUrl = await fileProvider.sendFile(file);
       imageUrl = "https://api.thorhof-bestellungen.at${imageUrl}";
 
-      ObjectDetectionProvider objectDetectionProvider = ObjectDetectionProvider();
-      final recognizedObjects = await objectDetectionProvider.detectImage(imageUrl);
-
       Navigator.push(
         context,
         MaterialPageRoute(
           builder: (context) => ObjectDetectionPage(
-            recognizedObjects: recognizedObjects,
             imageUrl: imageUrl,
           ),
         ),
       );
-
-      print(recognizedObjects);
-
     } else {
       print('No file selected.');
     }
@@ -209,17 +218,13 @@ class HomeScreen extends StatelessWidget {
 
     var imageUrl = "/uploads/chomskyspark/20250107_001739_914122bb-47ac-4e9b-b112-48c8598e56f3(1).jpg";//await fileProvider.sendFile(file);
     imageUrl = "/uploads/chomskyspark/20250107_152052_1bdf3a8f-2d6e-48b2-bc5e-b0eeffa5ac29.jpg";
-    ObjectDetectionProvider objectDetectionProvider = ObjectDetectionProvider();
-    final recognizedObjects = await objectDetectionProvider.detectImage("https://api.thorhof-bestellungen.at${imageUrl}");
     Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => ObjectDetectionPage(
-          recognizedObjects: recognizedObjects,
           imageUrl: "https://api.thorhof-bestellungen.at${imageUrl}",
         ),
       ),
     );
-    print(recognizedObjects);
   }
 }
