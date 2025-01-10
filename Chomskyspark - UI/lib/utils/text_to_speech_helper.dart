@@ -2,11 +2,13 @@ import 'package:flutter_tts/flutter_tts.dart';
 import 'package:shop/models/user_language.dart';
 import 'package:shop/utils/auth_helper.dart';
 
+import '../providers/language_provider.dart';
+
 class TextToSpeechHelper {
   final FlutterTts _flutterTts = FlutterTts();
   List<UserLanguage>? languages = Authorization.user?.userLanguages;
   List<String> languageCodes = [];
-
+  final LanguageProvider _languageProvider = LanguageProvider();
   TextToSpeechHelper() {
     _initializeTTS();
     languageCodes = languages!
@@ -28,16 +30,25 @@ class TextToSpeechHelper {
   }
 
   Future<void> speak(String text) async {
-    for (String languageCode in languageCodes) {
-      await _setLanguage(languageCode);
-      await _flutterTts.speak(text);
-      await _flutterTts.awaitSpeakCompletion(true);
-    }
+    await _setLanguage("en-US");
+    await _flutterTts.speak(text);
+    await _flutterTts.awaitSpeakCompletion(true);
   }
 
-  Future<void> findObject(String word) async {
-    if (word.isNotEmpty) {
-      await speak('Find the $word');
+  Future<void> findObject(String word, {String? sentenceTemplate}) async {
+    if (word.isEmpty) return;
+
+    for (String languageCode in languageCodes) {
+      String? translatedWord =
+          await _languageProvider.translateWord(word, languageCode);
+
+      String sentence = sentenceTemplate != null
+          ? sentenceTemplate.replaceAll("{word}", translatedWord!)
+          : "Find the $translatedWord.";
+
+      await _setLanguage(languageCode);
+      await _flutterTts.speak(sentence);
+      await _flutterTts.awaitSpeakCompletion(true);
     }
   }
 

@@ -1,13 +1,17 @@
 import 'dart:async';
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:shop/models/object_detection_attempt_model.dart';
 import 'package:shop/models/recognized_object.dart';
 import 'package:shop/providers/object_detection_attempt_provider.dart';
 import 'package:shop/providers/object_detection_provider.dart';
 import 'package:shop/route/route_constants.dart';
 import 'package:shop/utils/auth_helper.dart';
+import 'package:shop/utils/speech_messages.dart';
 import 'package:shop/utils/text_to_speech_helper.dart';
+
+import '../../providers/language_provider.dart';
 
 class ObjectDetectionPage extends StatefulWidget {
   final String imageUrl;
@@ -73,7 +77,8 @@ class _ObjectDetectionPageState extends State<ObjectDetectionPage> {
         startTime = DateTime.now();
       });
       if (objectRecognized) {
-        ttsService.findObject(randomWord);
+        ttsService.findObject(randomWord,
+            sentenceTemplate: SpeechMessages.Success);
       }
     }
   }
@@ -160,7 +165,8 @@ class _ObjectDetectionPageState extends State<ObjectDetectionPage> {
                   child: ElevatedButton(
                     onPressed: () {
                       if (objectRecognized) {
-                        ttsService.findObject(randomWord);
+                        ttsService.findObject(randomWord,
+                            sentenceTemplate: SpeechMessages.Success);
                       }
                     },
                     child: Text(randomWord),
@@ -287,7 +293,8 @@ class _ObjectDetectionPageState extends State<ObjectDetectionPage> {
                 } else {
                   setState(() {
                     randomWord = getRandomObjectName(recognizedObjects);
-                    ttsService.findObject(randomWord);
+                    ttsService.findObject(randomWord,
+                        sentenceTemplate: SpeechMessages.Find);
                   });
                 }
               },
@@ -305,7 +312,7 @@ class _ObjectDetectionPageState extends State<ObjectDetectionPage> {
       ),
     );
 
-    ttsService.speak("Well done! You found the object you were looking for.");
+    ttsService.findObject(randomWord, sentenceTemplate: SpeechMessages.Success);
   }
 
   String _formatDuration(Duration duration) {

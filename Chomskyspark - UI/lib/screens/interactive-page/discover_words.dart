@@ -7,6 +7,7 @@ import 'package:shop/providers/object_detection_attempt_provider.dart';
 import 'package:shop/providers/object_detection_provider.dart';
 import 'package:shop/route/route_constants.dart';
 import 'package:shop/utils/auth_helper.dart';
+import 'package:shop/utils/speech_messages.dart';
 import 'package:shop/utils/text_to_speech_helper.dart';
 
 class DiscoverWordsPage extends StatefulWidget {
@@ -155,7 +156,7 @@ class _DiscoverWordsPageState extends State<DiscoverWordsPage> {
             child: ElevatedButton(
               onPressed: () {
                 if (objectRecognized) {
-                  ttsService.findObject(word);
+                  ttsService.findObject(word, sentenceTemplate: SpeechMessages.Success);
                 }
               },
               child: Text(word),
@@ -180,7 +181,7 @@ class _DiscoverWordsPageState extends State<DiscoverWordsPage> {
         top: object.y,
         child: GestureDetector(
           onTap: () async {
-            ttsService.speak("It is a ${object.name}");
+            ttsService.findObject(object.name, sentenceTemplate: "It is a {word}.");
             word = object.name;
             if (!foundObjects.contains(object.name)){
               wordCounter++;
