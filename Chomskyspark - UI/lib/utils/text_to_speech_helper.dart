@@ -30,7 +30,6 @@ class TextToSpeechHelper {
   }
 
   Future<void> speak(String text) async {
-    await _setLanguage("en-US");
     await _flutterTts.speak(text);
     await _flutterTts.awaitSpeakCompletion(true);
   }
@@ -46,7 +45,6 @@ class TextToSpeechHelper {
           ? sentenceTemplate.replaceAll("{word}", translatedWord!)
           : "Find the $translatedWord.";
 
-      await _setLanguage(languageCode);
       await _flutterTts.speak(sentence);
       await _flutterTts.awaitSpeakCompletion(true);
     }
