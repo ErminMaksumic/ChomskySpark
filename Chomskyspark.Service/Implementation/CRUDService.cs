@@ -20,6 +20,7 @@ namespace Chomskyspark.Services.Implementation
             set.Add(entity);
 
             BeforeInsert(request, entity);
+            AfterInsert(request, entity);
 
             Context.SaveChanges();
 
@@ -33,6 +34,7 @@ namespace Chomskyspark.Services.Implementation
             var entity = set.Find(id);
 
             BeforeUpdate(entity, request);
+            AfterUpdate(entity, request);
 
             if (entity != null)
             {
@@ -47,6 +49,7 @@ namespace Chomskyspark.Services.Implementation
 
             return IMapper.Map<TModel>(entity);
         }
+
         public virtual TModel Delete(int id)
         {
 
@@ -73,7 +76,10 @@ namespace Chomskyspark.Services.Implementation
 
         public virtual void BeforeUpdate(TDatabase entity, TUpdate request)
         { }
+        public virtual void AfterInsert(TInsert request, TDatabase entity)
+        { }
+        public virtual void AfterUpdate(TDatabase entity, TUpdate request)
+        { }
 
     }
-
 }

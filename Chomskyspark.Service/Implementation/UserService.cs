@@ -1,11 +1,14 @@
 ﻿using AutoMapper;
+using Chomskyspark.Model;
 using Chomskyspark.Model.Helpers;
 using Chomskyspark.Model.Requests;
 using Chomskyspark.Model.SearchObjects;
 using Chomskyspark.Services.Database;
 using Chomskyspark.Services.Interfaces;
+using Microsoft.EntityFrameworkCore;
 using System.Security.Cryptography;
 using System.Text;
+using User = Chomskyspark.Services.Database.User;
 
 namespace Chomskyspark.Services.Implementation
 {
@@ -66,9 +69,10 @@ namespace Chomskyspark.Services.Implementation
 
                 newUser.PasswordHash = GenerateHash(newUser.PasswordSalt, request.Password);
 
-
                 Context.Users.Add(newUser);
                 Context.SaveChanges();
+
+                AfterInsert(request, newUser);
 
                 return IMapper.Map<Model.User>(newUser);
             }
@@ -77,7 +81,7 @@ namespace Chomskyspark.Services.Implementation
 
         public Model.User Login(string username, string password)
         {
-            var entity = Context.Users.FirstOrDefault(x => x.Email == username);
+            var entity = Context.Users.Include(x=> x.UserLanguages).ThenInclude(x=> x.Language).FirstOrDefault(x => x.Email == username);
 
             if (entity == null)
             {
@@ -97,6 +101,106 @@ namespace Chomskyspark.Services.Implementation
         public string GenerateToken(Model.User user)
         {
             return jWTService.GenerateToken(user);
+        }
+
+        public override void AfterInsert(UserInsertRequest request, User entity)
+        {
+            if (request.PrimaryLanguageId > 0)
+            {
+                var userLangPrimary = new Database.UserLanguage
+                {
+                    UserId = entity.Id,
+                    LanguageId = request.PrimaryLanguageId,
+                    Type = "Primary"
+                };
+                Context.UserLanguages.Add(userLangPrimary);
+            }
+
+            if (request.SecondaryLanguageId > 0)
+            {
+                var userLangSecondary = new Database.UserLanguage
+                {
+                    UserId = entity.Id,
+                    LanguageId = request.SecondaryLanguageId,
+                    Type = "Secondary"
+                };
+                Context.UserLanguages.Add(userLangSecondary);
+            }
+
+            Context.SaveChanges();
+        }
+
+        public virtual Model.User Update(int id, UserUpdateRequest request)
+        {
+            var set = Context.Set<User>();
+
+            var entity = Context.Users
+             .Include(u => u.UserLanguages)
+             .FirstOrDefault(u => u.Id == id);
+
+            BeforeUpdate(entity, request);
+            AfterUpdate(entity, request);
+
+            if (entity != null)
+            {
+                IMapper.Map(request, entity);
+            }
+            else
+            {
+                return null;
+            }
+
+            Context.SaveChanges();
+
+            return IMapper.Map<Model.User>(entity);
+        }
+
+        public override void AfterUpdate(User entity, UserUpdateRequest request)
+        {
+            var primary = entity.UserLanguages.FirstOrDefault(x => x.Type == "Primary");
+            if (primary != null)
+                Context.UserLanguages.Remove(primary);
+
+            var secondary = entity.UserLanguages.FirstOrDefault(x => x.Type == "Secondary");
+            if (secondary != null)
+                Context.UserLanguages.Remove(secondary);
+
+            Context.SaveChanges();
+
+            if (request.PrimaryLanguageId > 0)
+            {
+                var newPrimary = new Database.UserLanguage
+                {
+                    UserId = entity.Id,
+                    LanguageId = request.PrimaryLanguageId,
+                    Type = "Primary"
+                };
+                entity.UserLanguages.Add(newPrimary);
+            }
+
+            if (request.SecondaryLanguageId > 0)
+            {
+                var newSecondary = new Database.UserLanguage
+                {
+                    UserId = entity.Id,
+                    LanguageId = request.SecondaryLanguageId,
+                    Type = "Secondary"
+                };
+                entity.UserLanguages.Add(newSecondary);
+            }
+
+            Context.SaveChanges();
+        }
+
+        public override IQueryable<User> AddInclude(IQueryable<User> query, UserSearchObject searchObject = null)
+        {
+            var includedQuery = base.AddInclude(query, searchObject);
+
+            if (searchObject.IncludeUserLanguage)
+            {
+                includedQuery = includedQuery.Include("UserLanguages");
+            }
+            return includedQuery;
         }
     }
 }

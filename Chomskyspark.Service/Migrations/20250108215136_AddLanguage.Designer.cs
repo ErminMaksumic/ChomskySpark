@@ -4,6 +4,7 @@ using Chomskyspark.Services.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Chomskyspark.Services.Migrations
 {
     [DbContext(typeof(ChomskySparkContext))]
-    partial class ChomskySparkContextModelSnapshot : ModelSnapshot
+    [Migration("20250108215136_AddLanguage")]
+    partial class AddLanguage
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,46 +24,6 @@ namespace Chomskyspark.Services.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
-
-            modelBuilder.Entity("Chomskyspark.Services.Database.Category", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Category");
-                });
-
-            modelBuilder.Entity("Chomskyspark.Services.Database.LearnedWord", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("DateTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int?>("UserId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Word")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("LearnedWords");
-                });
 
             modelBuilder.Entity("Chomskyspark.Services.Database.Language", b =>
                 {
@@ -70,11 +33,11 @@ namespace Chomskyspark.Services.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Code")
+                    b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Name")
+                    b.Property<string>("Type")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -152,52 +115,34 @@ namespace Chomskyspark.Services.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("Chomskyspark.Services.Database.UserLanguage", b =>
+            modelBuilder.Entity("LanguageUser", b =>
                 {
-                    b.Property<int>("UserId")
+                    b.Property<int>("LanguagesId")
                         .HasColumnType("int");
 
-                    b.Property<int>("LanguageId")
+                    b.Property<int>("UsersId")
                         .HasColumnType("int");
 
-                    b.Property<string>("Type")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.HasKey("LanguagesId", "UsersId");
 
-                    b.HasKey("UserId", "LanguageId");
+                    b.HasIndex("UsersId");
 
-                    b.HasIndex("LanguageId");
-
-                    b.ToTable("UserLanguages");
+                    b.ToTable("LanguageUser");
                 });
 
-            modelBuilder.Entity("Chomskyspark.Services.Database.UserLanguage", b =>
+            modelBuilder.Entity("LanguageUser", b =>
                 {
-                    b.HasOne("Chomskyspark.Services.Database.Language", "Language")
-                        .WithMany("UserLanguages")
-                        .HasForeignKey("LanguageId")
+                    b.HasOne("Chomskyspark.Services.Database.Language", null)
+                        .WithMany()
+                        .HasForeignKey("LanguagesId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Chomskyspark.Services.Database.User", "User")
-                        .WithMany("UserLanguages")
-                        .HasForeignKey("UserId")
+                    b.HasOne("Chomskyspark.Services.Database.User", null)
+                        .WithMany()
+                        .HasForeignKey("UsersId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Language");
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("Chomskyspark.Services.Database.Language", b =>
-                {
-                    b.Navigation("UserLanguages");
-                });
-
-            modelBuilder.Entity("Chomskyspark.Services.Database.User", b =>
-                {
-                    b.Navigation("UserLanguages");
                 });
 #pragma warning restore 612, 618
         }

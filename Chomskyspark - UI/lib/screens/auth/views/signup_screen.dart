@@ -4,6 +4,8 @@ import 'package:shop/providers/user_provider.dart';
 import 'package:shop/screens/auth/views/components/sign_up_form.dart';
 import 'package:shop/route/route_constants.dart';
 import '../../../constants.dart';
+import '../../../models/language.dart';
+import '../../../providers/language_provider.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
@@ -14,6 +16,9 @@ class SignUpScreen extends StatefulWidget {
 
 class _SignUpScreenState extends State<SignUpScreen> {
   late UserProvider _userProvider;
+  late LanguageProvider _languageProvider;
+  late Future<List<Language>> _languagesFuture;
+
   final _formKey = GlobalKey<FormState>();
 
   final TextEditingController _firstNameController = TextEditingController();
@@ -24,10 +29,20 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final TextEditingController _passwordConfirmationController =
       TextEditingController();
 
+  int? primaryLanguageId;
+  int? secondaryLanguageId;
+
   @override
   void initState() {
     super.initState();
     _userProvider = Provider.of<UserProvider>(context, listen: false);
+    _languageProvider = Provider.of(context, listen: false);
+
+    _languagesFuture = _fetchLanguages();
+  }
+
+  Future<List<Language>> _fetchLanguages() async {
+    return await _languageProvider.get();
   }
 
   @override
@@ -56,14 +71,32 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     "Please complete the form below to register your account.",
                   ),
                   const SizedBox(height: defaultPadding),
-                  SignUpForm(
-                    formKey: _formKey,
-                    firstNameController: _firstNameController,
-                    lastNameController: _lastNameController,
-                    emailController: _emailController,
-                    passwordController: _passwordController,
-                    passwordConfirmationController:
-                        _passwordConfirmationController,
+                  FutureBuilder<List<Language>>(
+                    future: _languagesFuture,
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const CircularProgressIndicator();
+                      } else if (snapshot.hasError) {
+                        return Text("Error: ${snapshot.error}");
+                      } else if (snapshot.hasData) {
+                        return SignUpForm(
+                          formKey: _formKey,
+                          firstNameController: _firstNameController,
+                          lastNameController: _lastNameController,
+                          emailController: _emailController,
+                          passwordController: _passwordController,
+                          passwordConfirmationController:
+                              _passwordConfirmationController,
+                          languages: snapshot.data!,
+                          onLanguageSelected: (primaryId, secondaryId) {
+                            primaryLanguageId = primaryId;
+                            secondaryLanguageId = secondaryId;
+                          },
+                        );
+                      } else {
+                        return const Text("No languages available");
+                      }
+                    },
                   ),
                   const SizedBox(height: defaultPadding * 2),
                   ElevatedButton(
@@ -113,13 +146,16 @@ class _SignUpScreenState extends State<SignUpScreen> {
         'email': _emailController.text,
         'password': _passwordController.text,
         'passwordConfirmation': _passwordConfirmationController.text,
+        'primaryLanguageId': primaryLanguageId,
+        'secondaryLanguageId': secondaryLanguageId,
       });
 
       showDialog(
         context: context,
         builder: (BuildContext context) => AlertDialog(
           title: const Text("Success"),
-          content: Text("You are registered as ${_firstNameController.text} ${_lastNameController.text}"),
+          content: Text(
+              "You are registered as ${_firstNameController.text} ${_lastNameController.text}"),
           actions: [
             TextButton(
               onPressed: () async => await Navigator.popAndPushNamed(

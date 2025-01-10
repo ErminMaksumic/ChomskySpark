@@ -1,5 +1,6 @@
 // ignore: depend_on_referenced_packages
 import 'package:json_annotation/json_annotation.dart';
+import 'package:shop/models/user_language.dart';
 part 'user.g.dart';
 
 @JsonSerializable()
@@ -8,6 +9,7 @@ class User {
   String? firstName;
   String? lastName;
   String? email;
+  List<UserLanguage>? userLanguages;
 
   User();
 

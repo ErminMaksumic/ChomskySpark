@@ -1,13 +1,17 @@
 import 'dart:async';
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:shop/models/object_detection_attempt_model.dart';
 import 'package:shop/models/recognized_object.dart';
 import 'package:shop/providers/object_detection_attempt_provider.dart';
 import 'package:shop/providers/object_detection_provider.dart';
 import 'package:shop/route/route_constants.dart';
 import 'package:shop/utils/auth_helper.dart';
+import 'package:shop/utils/speech_messages.dart';
 import 'package:shop/utils/text_to_speech_helper.dart';
+
+import '../../providers/language_provider.dart';
 
 class ObjectDetectionPage extends StatefulWidget {
   final String imageUrl;
@@ -20,7 +24,8 @@ class ObjectDetectionPage extends StatefulWidget {
 
 class _ObjectDetectionPageState extends State<ObjectDetectionPage> {
   final TextToSpeechHelper ttsService = TextToSpeechHelper();
-  final ObjectDetectionAttemptProvider objectDetectionAttemptProvider = ObjectDetectionAttemptProvider();
+  final ObjectDetectionAttemptProvider objectDetectionAttemptProvider =
+      ObjectDetectionAttemptProvider();
   late String randomWord;
   late List<String> foundObjects;
   late List<RecognizedObject> recognizedObjects = [];
@@ -51,8 +56,10 @@ class _ObjectDetectionPageState extends State<ObjectDetectionPage> {
     try {
       foundObjects = [];
 
-      ObjectDetectionProvider objectDetectionProvider = ObjectDetectionProvider();
-      recognizedObjects = await objectDetectionProvider.detectImage(widget.imageUrl);
+      ObjectDetectionProvider objectDetectionProvider =
+          ObjectDetectionProvider();
+      recognizedObjects =
+          await objectDetectionProvider.detectImage(widget.imageUrl);
 
       print(recognizedObjects);
       randomWord = getRandomObjectName(recognizedObjects);
@@ -70,7 +77,8 @@ class _ObjectDetectionPageState extends State<ObjectDetectionPage> {
         startTime = DateTime.now();
       });
       if (objectRecognized) {
-        ttsService.findObject(randomWord);
+        ttsService.findObject(randomWord,
+            sentenceTemplate: SpeechMessages.Success);
       }
     }
   }
@@ -90,79 +98,88 @@ class _ObjectDetectionPageState extends State<ObjectDetectionPage> {
       ),
       body: isLoading
           ? Center(
-        child: CircularProgressIndicator(),
-      )
+              child: CircularProgressIndicator(),
+            )
           : Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text("Time: ${_formatDuration(elapsedTime)}", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-                Text("Found: ${foundObjects.length}/${recognizedObjects.length}", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-                Text("Attempts: $attemptCount", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text("Time: ${_formatDuration(elapsedTime)}",
+                          style: TextStyle(
+                              fontSize: 16, fontWeight: FontWeight.bold)),
+                      Text(
+                          "Found: ${foundObjects.length}/${recognizedObjects.length}",
+                          style: TextStyle(
+                              fontSize: 16, fontWeight: FontWeight.bold)),
+                      Text("Attempts: $attemptCount",
+                          style: TextStyle(
+                              fontSize: 16, fontWeight: FontWeight.bold)),
+                    ],
+                  ),
+                ),
+                Expanded(
+                  child: LayoutBuilder(
+                    builder: (context, constraints) {
+                      return Image.network(
+                        key: imageKey,
+                        widget.imageUrl,
+                        loadingBuilder: (context, child, loadingProgress) {
+                          if (loadingProgress == null) {
+                            WidgetsBinding.instance.addPostFrameCallback((_) {
+                              final imageConfiguration = ImageConfiguration();
+                              final imageStream = NetworkImage(widget.imageUrl)
+                                  .resolve(imageConfiguration);
+                              imageStream.addListener(
+                                ImageStreamListener((ImageInfo image, _) {
+                                  setState(() {
+                                    imageWidth = image.image.width.toDouble();
+                                    imageHeight = image.image.height.toDouble();
+                                  });
+                                }),
+                              );
+                            });
+
+                            return SizedBox.expand(
+                                child: FittedBox(
+                              fit: BoxFit.fill,
+                              alignment: Alignment.center,
+                              child: Stack(
+                                children: [
+                                  child,
+                                  ..._buildBoundingBoxes(),
+                                ],
+                              ),
+                            ));
+                          }
+                          return Center(child: CircularProgressIndicator());
+                        },
+                      );
+                    },
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: ElevatedButton(
+                    onPressed: () {
+                      if (objectRecognized) {
+                        ttsService.findObject(randomWord,
+                            sentenceTemplate: SpeechMessages.Success);
+                      }
+                    },
+                    child: Text(randomWord),
+                    style: ElevatedButton.styleFrom(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                      backgroundColor: Colors.purple,
+                    ),
+                  ),
+                ),
               ],
             ),
-          ),
-          Expanded(
-            child: LayoutBuilder(
-              builder: (context, constraints) {
-                return Image.network(
-                  key: imageKey,
-                  widget.imageUrl,
-                  loadingBuilder: (context, child, loadingProgress) {
-                    if (loadingProgress == null) {
-                      WidgetsBinding.instance.addPostFrameCallback((_) {
-                        final imageConfiguration = ImageConfiguration();
-                        final imageStream = NetworkImage(widget.imageUrl).resolve(imageConfiguration);
-                        imageStream.addListener(
-                          ImageStreamListener((ImageInfo image, _) {
-                            setState(() {
-                              imageWidth = image.image.width.toDouble();
-                              imageHeight = image.image.height.toDouble();
-                            });
-                          }),
-                        );
-                      });
-
-                      return SizedBox.expand(
-                          child: FittedBox(
-                            fit: BoxFit.fill,
-                            alignment: Alignment.center,
-                            child: Stack(
-                              children: [
-                                child,
-                                ..._buildBoundingBoxes(),
-                              ],
-                            ),
-                          ));
-                    }
-                    return Center(child: CircularProgressIndicator());
-                  },
-                );
-              },
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: ElevatedButton(
-              onPressed: () {
-                if (objectRecognized) {
-                  ttsService.findObject(randomWord);
-                }
-              },
-              child: Text(randomWord),
-              style: ElevatedButton.styleFrom(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(15),
-                ),
-                backgroundColor: Colors.purple,
-              ),
-            ),
-          ),
-        ],
-      ),
     );
   }
 
@@ -193,7 +210,6 @@ class _ObjectDetectionPageState extends State<ObjectDetectionPage> {
               ttsService.speak("You're close. Try again.");
             }
           },
-
           child: Container(
             width: object.w,
             height: object.h,
@@ -207,7 +223,8 @@ class _ObjectDetectionPageState extends State<ObjectDetectionPage> {
   }
 
   String getRandomObjectName(List<RecognizedObject> objects) {
-    final remainingObjects = objects.where((o) => !foundObjects.contains(o.name)).toList();
+    final remainingObjects =
+        objects.where((o) => !foundObjects.contains(o.name)).toList();
     if (remainingObjects.isEmpty) {
       return "No object recognized";
     }
@@ -276,7 +293,8 @@ class _ObjectDetectionPageState extends State<ObjectDetectionPage> {
                 } else {
                   setState(() {
                     randomWord = getRandomObjectName(recognizedObjects);
-                    ttsService.findObject(randomWord);
+                    ttsService.findObject(randomWord,
+                        sentenceTemplate: SpeechMessages.Find);
                   });
                 }
               },
@@ -294,7 +312,7 @@ class _ObjectDetectionPageState extends State<ObjectDetectionPage> {
       ),
     );
 
-    ttsService.speak("Well done! You found the object you were looking for.");
+    ttsService.findObject(randomWord, sentenceTemplate: SpeechMessages.Success);
   }
 
   String _formatDuration(Duration duration) {

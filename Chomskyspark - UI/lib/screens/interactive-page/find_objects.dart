@@ -7,10 +7,10 @@ import 'package:shop/providers/object_detection_attempt_provider.dart';
 import 'package:shop/providers/object_detection_provider.dart';
 import 'package:shop/route/route_constants.dart';
 import 'package:shop/utils/auth_helper.dart';
+import 'package:shop/utils/speech_messages.dart';
 import 'package:shop/utils/text_to_speech_helper.dart';
 
 class FindObjectsPage extends StatefulWidget {
-
   FindObjectsPage({Key? key}) : super(key: key);
 
   @override
@@ -19,7 +19,8 @@ class FindObjectsPage extends StatefulWidget {
 
 class _FindObjectsPageState extends State<FindObjectsPage> {
   final TextToSpeechHelper ttsService = TextToSpeechHelper();
-  final ObjectDetectionAttemptProvider objectDetectionAttemptProvider = ObjectDetectionAttemptProvider();
+  final ObjectDetectionAttemptProvider objectDetectionAttemptProvider =
+      ObjectDetectionAttemptProvider();
   late String randomWord;
   late List<String> foundObjects;
   late List<RecognizedObject> recognizedObjects = [];
@@ -51,11 +52,13 @@ class _FindObjectsPageState extends State<FindObjectsPage> {
     try {
       foundObjects = [];
 
-      ObjectDetectionProvider objectDetectionProvider = ObjectDetectionProvider();
+      ObjectDetectionProvider objectDetectionProvider =
+          ObjectDetectionProvider();
       var response = await objectDetectionProvider.getRandomRecognizedObject();
 
       if (response.isNotEmpty) {
-        recognizedObjects = response['recognizedObjects'] as List<RecognizedObject>;
+        recognizedObjects =
+            response['recognizedObjects'] as List<RecognizedObject>;
         imageUrl = response['imageUrl'] as String;
       }
 
@@ -74,9 +77,7 @@ class _FindObjectsPageState extends State<FindObjectsPage> {
         isLoading = false;
         startTime = DateTime.now();
       });
-      if (objectRecognized) {
-        ttsService.findObject(randomWord);
-      }
+      ttsService.findObject(randomWord, sentenceTemplate: SpeechMessages.Find);
     }
   }
 
@@ -95,78 +96,85 @@ class _FindObjectsPageState extends State<FindObjectsPage> {
       ),
       body: isLoading
           ? Center(
-        child: CircularProgressIndicator(),
-      )
+              child: CircularProgressIndicator(),
+            )
           : Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text("Time: ${_formatDuration(elapsedTime)}", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-                Text("Words: ${foundObjects.length}/${recognizedObjects.length}", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text("Time: ${_formatDuration(elapsedTime)}",
+                          style: TextStyle(
+                              fontSize: 16, fontWeight: FontWeight.bold)),
+                      Text(
+                          "Words: ${foundObjects.length}/${recognizedObjects.length}",
+                          style: TextStyle(
+                              fontSize: 16, fontWeight: FontWeight.bold)),
+                    ],
+                  ),
+                ),
+                Expanded(
+                  child: LayoutBuilder(
+                    builder: (context, constraints) {
+                      return Image.network(
+                        key: imageKey,
+                        imageUrl,
+                        loadingBuilder: (context, child, loadingProgress) {
+                          if (loadingProgress == null) {
+                            WidgetsBinding.instance.addPostFrameCallback((_) {
+                              final imageConfiguration = ImageConfiguration();
+                              final imageStream = NetworkImage(imageUrl)
+                                  .resolve(imageConfiguration);
+                              imageStream.addListener(
+                                ImageStreamListener((ImageInfo image, _) {
+                                  setState(() {
+                                    imageWidth = image.image.width.toDouble();
+                                    imageHeight = image.image.height.toDouble();
+                                  });
+                                }),
+                              );
+                            });
+
+                            return SizedBox.expand(
+                                child: FittedBox(
+                              fit: BoxFit.fill,
+                              alignment: Alignment.center,
+                              child: Stack(
+                                children: [
+                                  child,
+                                  ..._buildBoundingBoxes(),
+                                ],
+                              ),
+                            ));
+                          }
+                          return Center(child: CircularProgressIndicator());
+                        },
+                      );
+                    },
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: ElevatedButton(
+                    onPressed: () {
+                      if (objectRecognized) {
+                        ttsService.findObject(randomWord,
+                            sentenceTemplate: SpeechMessages.Success);
+                      }
+                    },
+                    child: Text(randomWord),
+                    style: ElevatedButton.styleFrom(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                      backgroundColor: Colors.purple,
+                    ),
+                  ),
+                ),
               ],
             ),
-          ),
-          Expanded(
-            child: LayoutBuilder(
-              builder: (context, constraints) {
-                return Image.network(
-                  key: imageKey,
-                  imageUrl,
-                  loadingBuilder: (context, child, loadingProgress) {
-                    if (loadingProgress == null) {
-                      WidgetsBinding.instance.addPostFrameCallback((_) {
-                        final imageConfiguration = ImageConfiguration();
-                        final imageStream = NetworkImage(imageUrl).resolve(imageConfiguration);
-                        imageStream.addListener(
-                          ImageStreamListener((ImageInfo image, _) {
-                            setState(() {
-                              imageWidth = image.image.width.toDouble();
-                              imageHeight = image.image.height.toDouble();
-                            });
-                          }),
-                        );
-                      });
-
-                      return SizedBox.expand(
-                          child: FittedBox(
-                            fit: BoxFit.fill,
-                            alignment: Alignment.center,
-                            child: Stack(
-                              children: [
-                                child,
-                                ..._buildBoundingBoxes(),
-                              ],
-                            ),
-                          ));
-                    }
-                    return Center(child: CircularProgressIndicator());
-                  },
-                );
-              },
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: ElevatedButton(
-              onPressed: () {
-                if (objectRecognized) {
-                  ttsService.findObject(randomWord);
-                }
-              },
-              child: Text(randomWord),
-              style: ElevatedButton.styleFrom(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(15),
-                ),
-                backgroundColor: Colors.purple,
-              ),
-            ),
-          ),
-        ],
-      ),
     );
   }
 
@@ -197,7 +205,6 @@ class _FindObjectsPageState extends State<FindObjectsPage> {
               ttsService.speak("You're close. Try again.");
             }
           },
-
           child: Container(
             width: object.w,
             height: object.h,
@@ -213,7 +220,8 @@ class _FindObjectsPageState extends State<FindObjectsPage> {
   }
 
   String getRandomObjectName(List<RecognizedObject> objects) {
-    final remainingObjects = objects.where((o) => !foundObjects.contains(o.name)).toList();
+    final remainingObjects =
+        objects.where((o) => !foundObjects.contains(o.name)).toList();
     if (remainingObjects.isEmpty) {
       return "No object recognized";
     }
@@ -283,7 +291,8 @@ class _FindObjectsPageState extends State<FindObjectsPage> {
                 } else {
                   setState(() {
                     randomWord = getRandomObjectName(recognizedObjects);
-                    ttsService.findObject(randomWord);
+                    ttsService.findObject(randomWord,
+                        sentenceTemplate: SpeechMessages.Find);
                   });
                 }
               },
@@ -301,7 +310,7 @@ class _FindObjectsPageState extends State<FindObjectsPage> {
       ),
     );
 
-    ttsService.speak("Well done! $text");
+    ttsService.findObject(randomWord, sentenceTemplate: "You found the {word}");
   }
 
   String _formatDuration(Duration duration) {

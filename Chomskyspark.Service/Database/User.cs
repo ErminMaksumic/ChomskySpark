@@ -14,5 +14,7 @@ namespace Chomskyspark.Services.Database
         public string Email { get; set; }
         public string PasswordHash { get; set; }
         public string PasswordSalt { get; set; }
+        public virtual ICollection<UserLanguage> UserLanguages { get; set; }
+
     }
 }
