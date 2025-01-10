@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.Azure.CognitiveServices.Vision.ComputerVision.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace Chomskyspark.Services.Database
 {
@@ -15,7 +16,7 @@ namespace Chomskyspark.Services.Database
             if (!optionsBuilder.IsConfigured)
             {
                 optionsBuilder.UseSqlServer(
-                    "Server=tcp:chomskydbserver.database.windows.net,1433;Database=ChomskySpark;User ID=sqladmin;Password=Azure@2024;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;",
+                    "Server=.;Database=ChomskySpark;User ID=sqladmin;Password=Azure@2024;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;",
                     options => options.EnableRetryOnFailure()
                 );
             }
@@ -27,6 +28,7 @@ namespace Chomskyspark.Services.Database
         public virtual DbSet<Language> Languages { get; set; } = null!;
         public virtual DbSet<UserLanguage> UserLanguages { get; set; } = null!;
         public virtual DbSet<User> Users { get; set; }
+        public DbSet<Category> Category { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
