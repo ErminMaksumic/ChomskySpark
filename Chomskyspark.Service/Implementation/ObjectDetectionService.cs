@@ -3,13 +3,16 @@ using Chomskyspark.Services.Interfaces;
 using Microsoft.Azure.CognitiveServices.Vision.ComputerVision;
 using Microsoft.Azure.CognitiveServices.Vision.ComputerVision.Models;
 using Microsoft.Extensions.Configuration;
+using System.Text.Json;
 
 namespace Chomskyspark.Services.Implementation
 {
     public class ObjectDetectionService(IConfiguration configuration, ISafetyService ISafetyService) : IObjectDetectionService
     {
+        private readonly INotificationService INotificationService;
         private readonly string endpoint = configuration["ObjectDetection:Endpoint"] ?? "";
         private readonly string key = configuration["ObjectDetection:Key"] ?? "";
+
 
         public async Task<IEnumerable<RecognizedObject>> DetectImageAsync(string imageUrl)
         {
@@ -30,8 +33,18 @@ namespace Chomskyspark.Services.Implementation
                 Confidence = (o.Confidence * 100).ToString("F2"),
             }).ToList();
 
-            // todo - check if needed
-            var checkedSafety = ISafetyService.EvaluateCategoriesSafety(analysis.Categories.Select(o=> o.Name));
+
+            List<string> objectNames = detectedObjects.Select(obj => obj.Name).ToList();
+            var checkedSafety = ISafetyService.EvaluateObjectSafety(objectNames);
+            List<RiskLevel> dangerousObjects = JsonSerializer.Deserialize<List<RiskLevel>>(checkedSafety);
+
+            foreach (var obj in dangerousObjects)
+            {
+                if (obj.Level == "High")
+                {
+                    await INotificationService.SendNotificationAsync($"Dangerous object detected: {obj.Name}", "2");
+                }
+            }
 
             return detectedObjects;
         }
