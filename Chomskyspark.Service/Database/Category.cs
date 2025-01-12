@@ -10,5 +10,7 @@ namespace Chomskyspark.Services.Database
     {
         public int Id { get; set; }  // This will be the primary key
         public string Name { get; set; }
+        public virtual ICollection<LearnedWord> LearnedWords { get; set; }
+              = new List<LearnedWord>();
     }
 }

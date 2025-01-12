@@ -20,5 +20,10 @@ namespace Chomskyspark.Controllers
         {
             this.IObjectDetectionAttemptService = IObjectDetectionAttemptService;
         }
+        [AllowAnonymous]
+        public override ObjectDetectionAttempt Insert([FromBody] ObjectDetectionAttemptUpsertRequest request)
+        {
+            return base.Insert(request);
+        }
     }
 }

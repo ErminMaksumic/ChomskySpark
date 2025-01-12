@@ -305,7 +305,187 @@ namespace Chomskyspark.Controllers
                 Message = "No significant issues detected."
             });
         }
-   
+        [HttpGet("statistics/categories")]
+        public async Task<IActionResult> GetCategoryStatisticsForAllUsers()
+        {
+            var result = await _context.ObjectDetectionAttempts
+                .Join(_context.LearnedWords,
+                    oda => oda.TargetWord,
+                    lw => lw.Word,
+                    (oda, lw) => new
+                    {
+                        CategoryId = lw.CategoryId,  // Povezivanje sa kategorijama
+                        Success = oda.Success,
+                        ElapsedTimeInSeconds = oda.ElapsedTimeInSeconds
+                    })
+                .GroupBy(oda => oda.CategoryId)
+                .Select(group => new
+                {
+                    CategoryId = group.Key,
+                    TotalAttempts = group.Count(),
+                    SuccessfulAttempts = group.Count(oda => oda.Success),
+                    AverageElapsedTime = group.Average(oda => oda.ElapsedTimeInSeconds),
+                    SuccessRate = (group.Count(oda => oda.Success) * 1.0 / group.Count()) * 100
+                })
+                .ToListAsync();
+
+            if (result == null || !result.Any())
+            {
+                return NotFound("No data found.");
+            }
+
+            return Ok(result);
+        }
+        [HttpGet("statistics/categories1")]
+        public async Task<IActionResult> GetCategoryStatisticsForAllUsers1()
+        {
+                    var result = await _context.ObjectDetectionAttempts
+            .Join(_context.LearnedWords,
+                oda => oda.TargetWord,
+                lw => lw.Word,
+                (oda, lw) => new
+                {
+                    CategoryId = lw.CategoryId,  
+                    Success = oda.Success,
+                    ElapsedTimeInSeconds = oda.ElapsedTimeInSeconds
+                })
+            .Join(_context.Categories, 
+                lw => lw.CategoryId,
+                c => c.Id,
+                (oda, c) => new
+                {
+                    CategoryId = oda.CategoryId,
+                    CategoryName = c.Name,  
+                    Success = oda.Success,
+                    ElapsedTimeInSeconds = oda.ElapsedTimeInSeconds
+                })
+            .GroupBy(oda => oda.CategoryId)
+            .Select(group => new
+            {
+                CategoryId = group.Key,
+                CategoryName = group.First().CategoryName,  
+                TotalAttempts = group.Count(),
+                SuccessfulAttempts = group.Count(oda => oda.Success),
+                AverageElapsedTime = group.Average(oda => oda.ElapsedTimeInSeconds),
+                SuccessRate = (group.Count(oda => oda.Success) * 1.0 / group.Count()) * 100
+            })
+            .ToListAsync();
+            if (result == null || !result.Any())
+            {
+                return NotFound("No data found.");
+            }
+
+            return Ok(result);
+        }
+        [HttpGet("statistics/user/{userId}/daily-progress")]
+        public async Task<IActionResult> GetDailyProgressForUser(int userId)
+        {
+            var result = await _context.ObjectDetectionAttempts
+                .Where(oda => oda.UserId == userId)
+                .Join(_context.LearnedWords.Include(lw => lw.Category),
+                    oda => oda.TargetWord,
+                    lw => lw.Word,
+                    (oda, lw) => new
+                    {
+                        Date = oda.Timestamp.Date, 
+                        CategoryId = lw.CategoryId,
+                        CategoryName = lw.Category.Name,
+                        Success = oda.Success,
+                        ElapsedTimeInSeconds = oda.ElapsedTimeInSeconds
+                    })
+                .GroupBy(oda => new { oda.Date, oda.CategoryId })
+                .Select(group => new
+                {
+                    Date = group.Key.Date,
+                    CategoryName = group.First().CategoryName,
+                    TotalAttempts = group.Count(),
+                    SuccessfulAttempts = group.Count(oda => oda.Success),
+                    AverageElapsedTime = group.Average(oda => oda.ElapsedTimeInSeconds),
+                    SuccessRate = (group.Count(oda => oda.Success) * 1.0 / group.Count()) * 100
+                })
+                .OrderBy(x => x.Date)
+                .ToListAsync();
+
+            if (result == null || !result.Any())
+            {
+                return NotFound("No data found.");
+            }
+
+            return Ok(result);
+        }
+        [HttpGet("statistics/user/{userId}/daily-progress-by-category")]
+        public async Task<IActionResult> GetDailyProgressByCategoryForUser(int userId)
+        {
+            var result = await _context.LearnedWords
+                .Where(lw => lw.UserId == userId)
+                .GroupBy(lw => new { lw.CategoryId, lw.DateTime.Date }) 
+                .Select(group => new
+                {
+                    Date = group.Key.Date, 
+                    CategoryId = group.Key.CategoryId, 
+                    CategoryName = group.First().Category.Name, 
+                    NewWordsLearned = group.Count() 
+                })
+                .OrderBy(x => x.Date)
+                .ToListAsync();
+
+            if (result == null || !result.Any())
+            {
+                return NotFound("No data found.");
+            }
+
+            return Ok(result);
+        }
+        [HttpGet("statistics/user/{userId}/daily-progress/{month}/{year}")]
+        public async Task<IActionResult> GetDailyProgressForUserInMonth(int userId, int month, int year)
+        {
+            try
+            {
+                var result = await _context.ObjectDetectionAttempts
+                    .Where(oda => oda.UserId == userId && oda.Timestamp.Month == month && oda.Timestamp.Year == year) 
+                    .Join(_context.LearnedWords.Include(lw => lw.Category),
+                        oda => oda.TargetWord,
+                        lw => lw.Word,
+                        (oda, lw) => new
+                        {
+                            Date = oda.Timestamp.Date, 
+                            CategoryId = lw.CategoryId,
+                            CategoryName = lw.Category.Name,
+                            Success = oda.Success,
+                            ElapsedTimeInSeconds = oda.ElapsedTimeInSeconds
+                        })
+                    .GroupBy(oda => new { oda.Date, oda.CategoryId })
+                    .Select(group => new
+                    {
+                        Date = group.Key.Date,
+                        CategoryName = group.First().CategoryName,
+                        TotalAttempts = group.Count(),
+                        SuccessfulAttempts = group.Count(oda => oda.Success),
+                        AverageElapsedTime = group.Average(oda => oda.ElapsedTimeInSeconds),
+                        SuccessRate = (group.Count(oda => oda.Success) * 1.0 / group.Count()) * 100
+                    })
+                    .OrderBy(x => x.Date) 
+                    .ToListAsync();
+
+                if (result == null || !result.Any())
+                {
+                    return NotFound("No data found.");
+                }
+
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+       
+
+       
+
+
+
+
 
     }
 
