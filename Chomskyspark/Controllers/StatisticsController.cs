@@ -314,7 +314,7 @@ namespace Chomskyspark.Controllers
                     lw => lw.Word,
                     (oda, lw) => new
                     {
-                        CategoryId = lw.CategoryId,  // Povezivanje sa kategorijama
+                        CategoryId = lw.CategoryId,  
                         Success = oda.Success,
                         ElapsedTimeInSeconds = oda.ElapsedTimeInSeconds
                     })
@@ -479,12 +479,110 @@ namespace Chomskyspark.Controllers
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
-       
-
-       
 
 
+      
+        // najteze kategorije po broju pogadanja objekata iz tih kategorija
+        [HttpGet("statistics/hardest-categories")]
+        public async Task<IActionResult> GetHardestCategoriesForChild()
+        {
+            var result = await _context.ObjectDetectionAttempts
+                .Join(_context.LearnedWords,
+                    oda => oda.TargetWord,
+                    lw => lw.Word,
+                    (oda, lw) => new
+                    {
+                        CategoryId = lw.CategoryId,
+                        CategoryName = lw.Category.Name,  
+                        ElapsedTimeInSeconds = oda.ElapsedTimeInSeconds
+                    })
+                .GroupBy(oda => new { oda.CategoryId, oda.CategoryName })  
+                .Select(group => new
+                {
+                    CategoryId = group.Key.CategoryId,
+                    CategoryName = group.Key.CategoryName,  
+                    TotalAttempts = group.Count(),
+                    AverageElapsedTime = group.Average(oda => oda.ElapsedTimeInSeconds)
+                })
+                .OrderByDescending(category => category.TotalAttempts)  
+                .Take(5)  
+                .ToListAsync();
 
+            if (result == null || !result.Any())
+            {
+                return NotFound("No data found.");
+            }
+
+            return Ok(result);
+        }
+        
+        [HttpGet("statistics/easiest-categories")]
+        public async Task<IActionResult> GetEasiestCategoriesForChild()
+        {
+            var result = await _context.ObjectDetectionAttempts
+                .Join(_context.LearnedWords,
+                    oda => oda.TargetWord,
+                    lw => lw.Word,
+                    (oda, lw) => new
+                    {
+                        CategoryId = lw.CategoryId,
+                        CategoryName = lw.Category.Name, 
+                        ElapsedTimeInSeconds = oda.ElapsedTimeInSeconds
+                    })
+                .GroupBy(oda => new { oda.CategoryId, oda.CategoryName })  
+                .Select(group => new
+                {
+                    CategoryId = group.Key.CategoryId,
+                    CategoryName = group.Key.CategoryName, 
+                    TotalAttempts = group.Count(),
+                    AverageElapsedTime = group.Average(oda => oda.ElapsedTimeInSeconds)
+                })
+                .OrderBy(category => category.TotalAttempts)  
+                .Take(5)  
+                .ToListAsync();
+
+            if (result == null || !result.Any())
+            {
+                return NotFound("No data found.");
+            }
+
+            return Ok(result);
+        }
+
+        // object na kojem je dijete najvise grijesilo
+        [HttpGet("statistics/hardest-object")]
+        public async Task<IActionResult> GetHardestObjectForChild()
+        {
+            var result = await _context.ObjectDetectionAttempts
+                .Where(oda => !oda.Success)  
+                .Join(_context.LearnedWords,
+                    oda => oda.TargetWord,
+                    lw => lw.Word,
+                    (oda, lw) => new
+                    {
+                        Word = oda.TargetWord,  
+                        CategoryName = lw.Category.Name, 
+                        ElapsedTimeInSeconds = oda.ElapsedTimeInSeconds  
+                    })
+                .GroupBy(oda => new { oda.Word, oda.CategoryName })  
+                .Select(group => new
+                {
+                    Word = group.Key.Word,
+                    CategoryName = group.Key.CategoryName,
+                    TotalFailedAttempts = group.Count(), 
+                    AverageElapsedTime = group.Average(oda => oda.ElapsedTimeInSeconds)  
+                })
+                .OrderByDescending(x => x.TotalFailedAttempts)  
+                .FirstOrDefaultAsync();
+
+            if (result == null)
+            {
+                return NotFound("No problematic object found.");
+            }
+
+            return Ok(result);
+        }
+      
 
 
     }
