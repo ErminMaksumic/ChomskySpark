@@ -10,6 +10,7 @@ class UserLanguage {
   User? user;
   int? languageId;
   Language? language;
+  String? type;
 
   UserLanguage();
 

@@ -8,6 +8,7 @@ part of 'user_language.dart';
 
 UserLanguage _$UserLanguageFromJson(Map<String, dynamic> json) => UserLanguage()
   ..userId = (json['userId'] as num?)?.toInt()
+  ..type = (json['type'] as String?)?.toString()
   ..user = json['user'] == null
       ? null
       : User.fromJson(json['user'] as Map<String, dynamic>)

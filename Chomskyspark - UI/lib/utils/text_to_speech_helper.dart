@@ -37,17 +37,28 @@ class TextToSpeechHelper {
   Future<void> findObject(String word, {String? sentenceTemplate}) async {
     if (word.isEmpty) return;
 
-    for (String languageCode in languageCodes) {
-      String? translatedWord =
-          await _languageProvider.translateWord(word, languageCode);
+    String translatedWords = word;
 
-      String sentence = sentenceTemplate != null
-          ? sentenceTemplate.replaceAll("{word}", translatedWord!)
-          : "Find the $translatedWord.";
+    if (Authorization.useBothLanguages){
+      translatedWords = "";
+      for (UserLanguage userLanguage in Authorization.user!.userLanguages!) {
 
-      await _flutterTts.speak(sentence);
-      await _flutterTts.awaitSpeakCompletion(true);
+        if (userLanguage.type == "Secondary"){
+          translatedWords += ". In ${userLanguage.language!.name}";
+          translatedWords += await _languageProvider.translateWord(word, userLanguage.language!.code!) ?? "";
+        }
+        else{
+          translatedWords += word;
+        }
+      }
     }
+
+    String sentence = sentenceTemplate != null
+        ? sentenceTemplate.replaceAll("{word}", translatedWords!)
+        : "Find the $translatedWords.";
+
+    await _flutterTts.speak(sentence);
+    await _flutterTts.awaitSpeakCompletion(true);
   }
 
   Future<void> stop() async {

@@ -19,7 +19,7 @@ namespace Chomskyspark.Controllers
         [HttpPost]
         public virtual Task<IEnumerable<RecognizedObject>> DetectImage([FromBody] string imageUrl)
         {
-            return IObjectionService.DetectImageAsync(imageUrl);
+            return IObjectionService.DetectImageAsync(imageUrl, false);
         }
 
         [HttpGet]
@@ -33,11 +33,18 @@ namespace Chomskyspark.Controllers
                 "https://api.thorhof-bestellungen.at/uploads/chomskyspark/find-object/2.png",
                 "https://api.thorhof-bestellungen.at/uploads/chomskyspark/find-object/3.jpg",
                 "https://api.thorhof-bestellungen.at/uploads/chomskyspark/find-object/4.jpg",
+                "https://api.thorhof-bestellungen.at/uploads/chomskyspark/find-object/5.png",
+                "https://api.thorhof-bestellungen.at/uploads/chomskyspark/find-object/6.png",
+                "https://api.thorhof-bestellungen.at/uploads/chomskyspark/find-object/7.png",
+                "https://api.thorhof-bestellungen.at/uploads/chomskyspark/find-object/8.png",
+                "https://api.thorhof-bestellungen.at/uploads/chomskyspark/find-object/9.png",
+                "https://api.thorhof-bestellungen.at/uploads/chomskyspark/find-object/10.png",
+
             };
 
             var random = new Random();
             var imageUrl = images[random.Next(images.Count)];
-            var recognizedObjects = await IObjectionService.DetectImageAsync(imageUrl);
+            var recognizedObjects = await IObjectionService.DetectImageAsync(imageUrl, false);
 #else
             var imagesFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads", "images");
 

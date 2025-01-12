@@ -4,6 +4,6 @@ namespace Chomskyspark.Services.Interfaces
 {
     public interface IObjectDetectionService
     {
-        Task<IEnumerable<RecognizedObject>> DetectImageAsync(string imageUrl);
+        Task<IEnumerable<RecognizedObject>> DetectImageAsync(string imageUrl, bool evaluateCategoriesSafety);
     }
 }
