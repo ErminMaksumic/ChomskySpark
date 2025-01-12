@@ -582,9 +582,66 @@ namespace Chomskyspark.Controllers
 
             return Ok(result);
         }
+
+        // u kojoj mjeri je dijete bilo izlozeno opasnim objektima 
+        [HttpGet("statistics/exposure-to-dangerous-items")]
+        public async Task<IActionResult> GetExposureToDangerousItems()
+        {
+             var dangerousItems = new List<string>
+             {
+               "plug", "socket", "outlet", "cord", "electrical appliance", "charger", // Electrical items
+               "knife", "scissors", "razor", "broken glass", // Sharp objects
+               "cleaning chemical", "bleach", "medication", "pills", // Toxic or harmful items
+               "small toy", "button", "bead", "coin", // Choking hazards
+               "heavy furniture", "sharp edge", "heavy tool", // Heavy or sharp-edged objects
+               "matches", "lighter", "candle", // Flammable items
+               "stove", "oven", "iron", "radiator", "microwave" // Heat sources
+                    };
+
+            var result = await _context.ObjectDetectionAttempts
+                .Join(_context.LearnedWords,
+                    oda => oda.TargetWord,
+                    lw => lw.Word,
+                    (oda, lw) => new
+                    {
+                        Word = oda.TargetWord,
+                        Success = oda.Success,
+                        CategoryName = lw.Category.Name,
+                        DateTime = oda.Timestamp
+                    })
+                .Where(oda => dangerousItems.Contains(oda.Word.ToLower()))  
+                .GroupBy(oda => new
+                {
+                    oda.Word,
+                    oda.CategoryName,
+                    oda.DateTime.Date 
+                })
+                .Select(group => new
+                {
+                    Word = group.Key.Word,
+                    CategoryName = group.Key.CategoryName,
+                    ExposureDate = group.Key.Date, 
+                    TotalAttempts = group.Count(),
+                    SuccessfulAttempts = group.Count(oda => oda.Success),
+                    ExposureRate = (group.Count(oda => oda.Success) * 1.0 / group.Count()) * 100 
+                })
+                .OrderBy(oda => oda.ExposureDate)  
+                .ToListAsync();
+
+            if (result == null || !result.Any())
+            {
+                return NotFound("No data found.");
+            }
+
+            return Ok(result);
+        }
+
       
 
 
+
+
     }
+
 
 }
