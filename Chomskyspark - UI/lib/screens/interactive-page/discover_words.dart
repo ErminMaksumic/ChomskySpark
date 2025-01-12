@@ -89,6 +89,17 @@ class _DiscoverWordsPageState extends State<DiscoverWordsPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Discover Words'),
+        actions: [
+          Switch(
+            value: Authorization.useBothLanguages,
+            onChanged: (value) {
+              setState(() {
+                Authorization.useBothLanguages = value;
+              });
+            },
+            activeColor: Colors.purple,
+          ),
+        ],
       ),
       body: isLoading
           ? Center(
@@ -156,7 +167,7 @@ class _DiscoverWordsPageState extends State<DiscoverWordsPage> {
             child: ElevatedButton(
               onPressed: () {
                 if (objectRecognized) {
-                  ttsService.findObject(word, sentenceTemplate: SpeechMessages.Success);
+                  ttsService.findObject(word, sentenceTemplate: SpeechMessages.Find);
                 }
               },
               child: Text(word),

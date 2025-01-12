@@ -1,4 +1,5 @@
 ﻿using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Formats.Jpeg;
 using SixLabors.ImageSharp.Processing;
 
 namespace Chomskyspark.Helpers.FileManager
@@ -17,14 +18,15 @@ namespace Chomskyspark.Helpers.FileManager
         public async Task<string> UploadFile(IFormFile file)
         {
             var filePath = GetFilePath(file);
-            await using (var fileStream = new FileStream(filePath, FileMode.Create))
+            using (var image = await Image.LoadAsync(file.OpenReadStream()))
             {
-                await file.CopyToAsync(fileStream);
+                await using (var outputStream = new FileStream(filePath, FileMode.Create))
+                {
+                    await image.SaveAsync(outputStream, new JpegEncoder { Quality = 50 });
+                }
             }
 
-            var path = NormalizePath(Path.GetRelativePath(_webHostEnvironment.WebRootPath, filePath));
-
-            return path;
+            return NormalizePath(Path.GetRelativePath(_webHostEnvironment.WebRootPath, filePath));
         }
 
         public async Task<string> UploadThumbnailPhoto(IFormFile file)

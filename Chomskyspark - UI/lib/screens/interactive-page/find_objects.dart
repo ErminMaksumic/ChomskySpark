@@ -93,6 +93,17 @@ class _FindObjectsPageState extends State<FindObjectsPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Find Objects'),
+        actions: [
+          Switch(
+            value: Authorization.useBothLanguages,
+            onChanged: (value) {
+              setState(() {
+                Authorization.useBothLanguages = value;
+              });
+            },
+            activeColor: Colors.purple,
+          ),
+        ],
       ),
       body: isLoading
           ? Center(
@@ -161,7 +172,7 @@ class _FindObjectsPageState extends State<FindObjectsPage> {
                     onPressed: () {
                       if (objectRecognized) {
                         ttsService.findObject(randomWord,
-                            sentenceTemplate: SpeechMessages.Success);
+                            sentenceTemplate: SpeechMessages.Find);
                       }
                     },
                     child: Text(randomWord),

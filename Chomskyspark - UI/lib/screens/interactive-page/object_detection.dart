@@ -78,7 +78,7 @@ class _ObjectDetectionPageState extends State<ObjectDetectionPage> {
       });
       if (objectRecognized) {
         ttsService.findObject(randomWord,
-            sentenceTemplate: SpeechMessages.Success);
+            sentenceTemplate: SpeechMessages.Find);
       }
     }
   }
@@ -95,6 +95,17 @@ class _ObjectDetectionPageState extends State<ObjectDetectionPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Object Detection'),
+        actions: [
+          Switch(
+            value: Authorization.useBothLanguages,
+            onChanged: (value) {
+              setState(() {
+                Authorization.useBothLanguages = value;
+              });
+            },
+            activeColor: Colors.purple,
+          ),
+        ],
       ),
       body: isLoading
           ? Center(
@@ -166,7 +177,7 @@ class _ObjectDetectionPageState extends State<ObjectDetectionPage> {
                     onPressed: () {
                       if (objectRecognized) {
                         ttsService.findObject(randomWord,
-                            sentenceTemplate: SpeechMessages.Success);
+                            sentenceTemplate: SpeechMessages.Find );
                       }
                     },
                     child: Text(randomWord),
