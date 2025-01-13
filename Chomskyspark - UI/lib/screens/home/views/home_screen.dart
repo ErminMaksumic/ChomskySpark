@@ -2,10 +2,14 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shop/providers/file_provider.dart';
-import 'package:shop/providers/object_detection_provider.dart';
 import 'package:shop/screens/interactive-page/discover_words.dart';
 import 'package:shop/screens/interactive-page/find_objects.dart';
 import 'package:shop/screens/interactive-page/object_detection.dart';
+import 'package:shop/screens/paretns-monitoring/child_improvement_areas.dart';
+import 'package:shop/screens/paretns-monitoring/child_statistics.dart';
+import 'package:shop/screens/paretns-monitoring/child_words_statistics.dart';
+import 'package:shop/screens/paretns-monitoring/child_daily_statistics.dart';
+import '../../../utils/auth_helper.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -15,9 +19,81 @@ class HomeScreen extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
+        drawer: Drawer(
+          child: ListView(
+            padding: EdgeInsets.zero,
+            children: [
+              DrawerHeader(
+                decoration: BoxDecoration(
+                  color: Colors.purple,
+                ),
+                child: Text(
+                  'Chomskyspark',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 24,
+                  ),
+                ),
+              ),
+              ListTile(
+                leading: Icon(Icons.pie_chart),
+                title: Text('Child Statistic'),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => ChildStatisticsPage(userId: Authorization.user!.id!,)
+                    ),
+                  );
+                },
+              ),
+              ListTile(
+                leading: Icon(Icons.format_quote),
+                title: Text('Child Word Statistic'),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => ChildWordsStatisticsPage(userId: Authorization.user!.id!)
+
+                    ),
+                  );
+                },
+              ),
+
+              ListTile(
+                leading: Icon(Icons.date_range),
+                title: Text('Child Daily Statistic'),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => ChildDailyStatistics(userId: Authorization.user!.id!)
+
+                    ),
+                  );
+                },
+              ),
+
+              ListTile(
+                leading: Icon(Icons.show_chart_outlined),
+                title: Text('Child Improvement Areas'),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => ChildImprovementAreasPage(userId: Authorization.user!.id!)
+
+                    ),
+                  );
+                },
+              ),
+
+            ],
+          ),
+        ),
         body: Stack(
           children: [
-            // Background Image
             Container(
               decoration: BoxDecoration(
                 image: DecorationImage(
@@ -28,7 +104,6 @@ class HomeScreen extends StatelessWidget {
             ),
             Column(
               children: [
-                // Header Container with Menu
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
                   margin: const EdgeInsets.only(top: 20.0),
@@ -46,9 +121,13 @@ class HomeScreen extends StatelessWidget {
                           color: Colors.white,
                         ),
                       ),
-                      IconButton(
-                        onPressed: () {},
-                        icon: Icon(Icons.menu, color: Colors.white),
+                      Builder(
+                        builder: (context) => IconButton(
+                          onPressed: () {
+                            Scaffold.of(context).openDrawer();
+                          },
+                          icon: Icon(Icons.menu, color: Colors.white),
+                        ),
                       ),
                     ],
                   ),

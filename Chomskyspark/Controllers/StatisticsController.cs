@@ -93,10 +93,27 @@ namespace Chomskyspark.Controllers
         }
 
      
-        [HttpGet("words")]
-        public async Task<IActionResult> GetAllWordsStatistics()
+        [HttpGet("words/{userId}")]
+        public async Task<IActionResult> GetAllWordsStatistics(int userId, string? targetWord, DateTime? startDate, DateTime? endDate)
         {
-            var result = await _context.ObjectDetectionAttempts
+            var query = _context.ObjectDetectionAttempts.Where(oda => oda.UserId == userId);
+
+            if (!string.IsNullOrEmpty(targetWord))
+            {
+                query = query.Where(oda => oda.TargetWord.ToLower() == targetWord.ToLower());
+            }
+
+            if (startDate.HasValue)
+            {
+                query = query.Where(oda => oda.Timestamp >= startDate);
+            }
+
+            if (endDate.HasValue)
+            {
+                query = query.Where(oda => oda.Timestamp <= endDate);
+            }
+
+            var result = await query
                 .GroupBy(oda => oda.TargetWord)
                 .Select(group => new
                 {
@@ -111,37 +128,8 @@ namespace Chomskyspark.Controllers
             return Ok(result);
         }
 
-        [HttpGet("word/{targetWord}/date")]
-           public async Task<IActionResult> GetWordStatisticsByDate(string targetWord, DateTime? startDate, DateTime? endDate)
-        {
-            var query = _context.ObjectDetectionAttempts.Where(oda => oda.TargetWord == targetWord);
 
-            if (startDate.HasValue)
-                query = query.Where(oda => oda.Timestamp >= startDate);
-
-            if (endDate.HasValue)
-                query = query.Where(oda => oda.Timestamp <= endDate);
-
-            var result = await query
-                .GroupBy(oda => oda.TargetWord)
-                .Select(group => new
-                {
-                    TargetWord = group.Key,
-                    TotalAttempts = group.Count(),
-                    SuccessfulAttempts = group.Count(oda => oda.Success),
-                    AverageElapsedTime = group.Average(oda => oda.ElapsedTimeInSeconds),
-                    SuccessRate = (group.Count(oda => oda.Success) * 1.0 / group.Count()) * 100
-                })
-                .FirstOrDefaultAsync();
-
-            if (result == null)
-            {
-                return NotFound($"No data found for word {targetWord}");
-            }
-
-            return Ok(result);
-        }
-        [HttpGet("statistics/user/{userId}/improvement-areas")]
+        [HttpGet("user/{userId}/improvement-areas")]
         public async Task<IActionResult> GetImprovementAreasForUser(int userId)
         {
             var result = await _context.ObjectDetectionAttempts
@@ -188,7 +176,7 @@ namespace Chomskyspark.Controllers
 
             return Ok(result);
         }
-        [HttpGet("statistics/user/{userId}/daily")]
+        [HttpGet("user/{userId}/daily")]
         public async Task<IActionResult> GetDailyStatisticsForUser(int userId)
         {
             var result = await _context.ObjectDetectionAttempts
@@ -202,6 +190,7 @@ namespace Chomskyspark.Controllers
                     SuccessRate = (group.Count(oda => oda.Success) * 1.0 / group.Count()) * 100
                 })
                 .OrderBy(x => x.Date)
+                .Take(7)
                 .ToListAsync();
 
             return Ok(result);
