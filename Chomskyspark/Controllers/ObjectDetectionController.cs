@@ -36,10 +36,17 @@ namespace Chomskyspark.Controllers
                 "https://api.thorhof-bestellungen.at/uploads/chomskyspark/find-object/5.png",
                 "https://api.thorhof-bestellungen.at/uploads/chomskyspark/find-object/6.png",
                 "https://api.thorhof-bestellungen.at/uploads/chomskyspark/find-object/7.png",
-                "https://api.thorhof-bestellungen.at/uploads/chomskyspark/find-object/8.png",
-                "https://api.thorhof-bestellungen.at/uploads/chomskyspark/find-object/9.png",
-                "https://api.thorhof-bestellungen.at/uploads/chomskyspark/find-object/10.png",
-
+                //"https://api.thorhof-bestellungen.at/uploads/chomskyspark/find-object/8.png",
+                //"https://api.thorhof-bestellungen.at/uploads/chomskyspark/find-object/9.png",
+                //"https://api.thorhof-bestellungen.at/uploads/chomskyspark/find-object/10.png",
+                //"https://api.thorhof-bestellungen.at/uploads/chomskyspark/find-object/11.png",
+                //"https://api.thorhof-bestellungen.at/uploads/chomskyspark/find-object/12.png",
+                //"https://api.thorhof-bestellungen.at/uploads/chomskyspark/find-object/13.png",
+                //"https://api.thorhof-bestellungen.at/uploads/chomskyspark/find-object/14.png",
+                //"https://api.thorhof-bestellungen.at/uploads/chomskyspark/find-object/15.png",
+                //"https://api.thorhof-bestellungen.at/uploads/chomskyspark/find-object/16.png",
+                //"https://api.thorhof-bestellungen.at/uploads/chomskyspark/find-object/17.png",
+                //"https://api.thorhof-bestellungen.at/uploads/chomskyspark/find-object/18.png",
             };
 
             var random = new Random();
