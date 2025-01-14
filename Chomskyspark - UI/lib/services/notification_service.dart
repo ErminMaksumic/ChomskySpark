@@ -2,6 +2,8 @@ import 'dart:io';
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/io_client.dart';
 import 'package:shop/utils/auth_helper.dart';
@@ -9,7 +11,7 @@ import 'package:shop/utils/auth_helper.dart';
 class NotificationService {
   final FirebaseMessaging _messaging = FirebaseMessaging.instance;
   var _baseUrl = const String.fromEnvironment("baseUrl",
-        defaultValue: "https://10.0.2.2:7164/api");
+      defaultValue: "https://10.0.2.2:7164/api");
 
   Future<void> initialize() async {
     await Firebase.initializeApp();
@@ -25,6 +27,14 @@ class NotificationService {
 
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       print("Message received: ${message.notification?.body}");
+      Fluttertoast.showToast(
+          msg: message.notification?.body ?? "No message body",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.TOP,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.red,
+          textColor: Colors.white,
+          fontSize: 16.0);
     });
   }
 
@@ -36,7 +46,7 @@ class NotificationService {
     client.badCertificateCallback = ((cert, host, port) => true);
     var httpClient = IOClient(client);
 
-    await httpClient
-        .post(Uri.parse(url), body: {'token': token, 'tag': Authorization.user!.id.toString()});
+    await httpClient.post(Uri.parse(url),
+        body: {'token': token, 'tag': Authorization.user!.id.toString()});
   }
 }

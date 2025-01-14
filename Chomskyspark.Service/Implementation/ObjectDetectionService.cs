@@ -48,13 +48,17 @@ namespace Chomskyspark.Services.Implementation
                 var checkedSafety = ISafetyService.EvaluateObjectSafety(objectNames);
                 List<RiskLevel> dangerousObjects = JsonSerializer.Deserialize<List<RiskLevel>>(checkedSafety);
 
-                foreach (var obj in dangerousObjects)
+                var highRiskObjects = dangerousObjects
+                 .Where(obj => obj.Level == "High")
+                 .Select(obj => obj.Name)
+                 .ToList();
+
+                if (highRiskObjects.Any())
                 {
-                    if (obj.Level == "High")
-                    {
-                        await INotificationService.SendNotificationAsync($"Dangerous object detected: {obj.Name}", parent.Id.ToString());
-                    }
+                    string notificationMessage = $"Dangerous objects detected: {string.Join(", ", highRiskObjects)}";
+                    await INotificationService.SendNotificationAsync(notificationMessage, parent.Id.ToString());
                 }
+
                 return detectedObjects;
             }
             return null;
