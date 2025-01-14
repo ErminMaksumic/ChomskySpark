@@ -1,52 +1,63 @@
 ﻿using Chomskyspark.Model;
+using Chomskyspark.Services.Database;
 using Chomskyspark.Services.Interfaces;
 using Microsoft.Azure.CognitiveServices.Vision.ComputerVision;
 using Microsoft.Azure.CognitiveServices.Vision.ComputerVision.Models;
 using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json.Linq;
+using System.IdentityModel.Tokens.Jwt;
 using System.Text.Json;
 
 namespace Chomskyspark.Services.Implementation
 {
-    public class ObjectDetectionService(IConfiguration configuration, ISafetyService ISafetyService) : IObjectDetectionService
+    public class ObjectDetectionService(IConfiguration configuration, ISafetyService ISafetyService,
+        IUserService IUserService, INotificationService INotificationService) : IObjectDetectionService
     {
-        private readonly INotificationService INotificationService;
         private readonly string endpoint = configuration["ObjectDetection:Endpoint"] ?? "";
         private readonly string key = configuration["ObjectDetection:Key"] ?? "";
 
-
-        public async Task<IEnumerable<RecognizedObject>> DetectImageAsync(string imageUrl)
+        public async Task<IEnumerable<RecognizedObject>> DetectImageAsync(string imageUrl, string token)
         {
             var client = new ComputerVisionClient(new ApiKeyServiceClientCredentials(key))
             {
                 Endpoint = endpoint
             };
 
-            ImageAnalysis analysis = await client.AnalyzeImageAsync(imageUrl, [VisualFeatureTypes.Objects, VisualFeatureTypes.Categories]);
-
-            var detectedObjects = analysis.Objects.Select(o => new RecognizedObject
+            var tokenHandler = new JwtSecurityTokenHandler();
+            if (!string.IsNullOrEmpty(token))
             {
-                Name = o.ObjectProperty,
-                X = o.Rectangle.X.ToString(),
-                Y = o.Rectangle.Y.ToString(),
-                H = o.Rectangle.H.ToString(),
-                W = o.Rectangle.H.ToString(),
-                Confidence = (o.Confidence * 100).ToString("F2"),
-            }).ToList();
+                var jwtToken = tokenHandler.ReadToken(token) as JwtSecurityToken;
 
+                var userIdClaim = jwtToken.Claims.FirstOrDefault(c => c.Type == "userId");
 
-            List<string> objectNames = detectedObjects.Select(obj => obj.Name).ToList();
-            var checkedSafety = ISafetyService.EvaluateObjectSafety(objectNames);
-            List<RiskLevel> dangerousObjects = JsonSerializer.Deserialize<List<RiskLevel>>(checkedSafety);
+                Model.User parent = IUserService.GetById(int.Parse(userIdClaim.Value));
 
-            foreach (var obj in dangerousObjects)
-            {
-                if (obj.Level == "High")
+                ImageAnalysis analysis = await client.AnalyzeImageAsync(imageUrl, [VisualFeatureTypes.Objects, VisualFeatureTypes.Categories]);
+
+                var detectedObjects = analysis.Objects.Select(o => new RecognizedObject
                 {
-                    await INotificationService.SendNotificationAsync($"Dangerous object detected: {obj.Name}", "2");
-                }
-            }
+                    Name = o.ObjectProperty,
+                    X = o.Rectangle.X.ToString(),
+                    Y = o.Rectangle.Y.ToString(),
+                    H = o.Rectangle.H.ToString(),
+                    W = o.Rectangle.H.ToString(),
+                    Confidence = (o.Confidence * 100).ToString("F2"),
+                }).ToList();
 
-            return detectedObjects;
+                List<string> objectNames = detectedObjects.Select(obj => obj.Name).ToList();
+                var checkedSafety = ISafetyService.EvaluateObjectSafety(objectNames);
+                List<RiskLevel> dangerousObjects = JsonSerializer.Deserialize<List<RiskLevel>>(checkedSafety);
+
+                foreach (var obj in dangerousObjects)
+                {
+                    if (obj.Level == "High")
+                    {
+                        await INotificationService.SendNotificationAsync($"Dangerous object detected: {obj.Name}", parent.Id.ToString());
+                    }
+                }
+                return detectedObjects;
+            }
+            return null;
         }
     }
 }

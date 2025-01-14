@@ -7,5 +7,6 @@
         public string LastName { get; set; }
         public string Email { get; set; }
         public virtual ICollection<UserLanguage> UserLanguages { get; set; }
+        public int? ParentUserId { get; set; }
     }
 }

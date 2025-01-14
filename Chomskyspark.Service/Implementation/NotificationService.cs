@@ -19,7 +19,7 @@ namespace Chomskyspark.Services.Implementation
 
         public async Task SendNotificationAsync(string message, string tag)
         {
-            var androidNotification = "{\"data\":{\"message\":\"" + message + "\"}}";
+            var androidNotification = "{\"message\":{\"notification\":{\"body\":\"" + message + "\"}}}";
             await _hub.SendFcmV1NativeNotificationAsync(androidNotification, tag);
         }
 

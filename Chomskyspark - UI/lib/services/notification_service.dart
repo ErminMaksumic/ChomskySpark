@@ -37,6 +37,6 @@ class NotificationService {
     var httpClient = IOClient(client);
 
     await httpClient
-        .post(Uri.parse(url), body: {'token': token, 'tag': Authorization.user!.id});
+        .post(Uri.parse(url), body: {'token': token, 'tag': Authorization.user!.id.toString()});
   }
 }

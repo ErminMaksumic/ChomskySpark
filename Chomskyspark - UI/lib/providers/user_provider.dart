@@ -26,6 +26,7 @@ class UserProvider extends BaseProvider<User> {
       var data = jsonDecode(response.body);
       print(data);
       Authorization.jwt = JWT()..token = data['token'];
+      Authorization.user = await User.fromJson(data['user']);
       NotificationService notificationService = NotificationService();
       await notificationService.initialize();
       return User.fromJson(data['user']);

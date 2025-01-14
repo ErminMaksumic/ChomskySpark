@@ -1,4 +1,5 @@
-﻿namespace Chomskyspark.Services.Interfaces
+﻿
+namespace Chomskyspark.Services.Interfaces
 {
     public interface INotificationService
     {
