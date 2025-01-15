@@ -36,7 +36,7 @@ namespace Chomskyspark.Services.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Category");
+                    b.ToTable("Categories");
                 });
 
             modelBuilder.Entity("Chomskyspark.Services.Database.Language", b =>
@@ -68,6 +68,9 @@ namespace Chomskyspark.Services.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int?>("CategoryId")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("DateTime")
                         .HasColumnType("datetime2");
 
@@ -79,6 +82,8 @@ namespace Chomskyspark.Services.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CategoryId");
 
                     b.ToTable("LearnedWords");
                 });
@@ -176,6 +181,15 @@ namespace Chomskyspark.Services.Migrations
                     b.ToTable("UserLanguages");
                 });
 
+            modelBuilder.Entity("Chomskyspark.Services.Database.LearnedWord", b =>
+                {
+                    b.HasOne("Chomskyspark.Services.Database.Category", "Category")
+                        .WithMany("LearnedWords")
+                        .HasForeignKey("CategoryId");
+
+                    b.Navigation("Category");
+                });
+
             modelBuilder.Entity("Chomskyspark.Services.Database.User", b =>
                 {
                     b.HasOne("Chomskyspark.Services.Database.User", "ParentUser")
@@ -203,6 +217,11 @@ namespace Chomskyspark.Services.Migrations
                     b.Navigation("Language");
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Chomskyspark.Services.Database.Category", b =>
+                {
+                    b.Navigation("LearnedWords");
                 });
 
             modelBuilder.Entity("Chomskyspark.Services.Database.Language", b =>
