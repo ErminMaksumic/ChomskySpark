@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shop/entry_point.dart';
+import 'package:shop/screens/home/views/child_home_screen.dart';
 import 'screen_export.dart';
 
 // Yuo will get 50+ screens and more once you have the full template
@@ -145,6 +146,10 @@ Route<dynamic> generateRoute(RouteSettings settings) {
     case homeScreenRoute:
       return MaterialPageRoute(
         builder: (context) => const HomeScreen(),
+      );
+    case childHomeScreenRoute:
+      return MaterialPageRoute(
+        builder: (context) => const ChildHomeScreen(),
       );
     // case brandScreenRoute:
     //   return MaterialPageRoute(

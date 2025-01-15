@@ -300,7 +300,7 @@ class _ObjectDetectionPageState extends State<ObjectDetectionPage> {
                 Navigator.of(context).pop();
 
                 if (foundObjects.length == recognizedObjects.length) {
-                  Navigator.of(context).pushReplacementNamed(homeScreenRoute);
+                  Navigator.of(context).pushReplacementNamed(Authorization.childLogged ? childHomeScreenRoute : homeScreenRoute);
                 } else {
                   setState(() {
                     randomWord = getRandomObjectName(recognizedObjects);

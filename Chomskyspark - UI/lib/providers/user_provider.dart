@@ -51,4 +51,23 @@ class UserProvider extends BaseProvider<User> {
       return null;
     }
   }
+
+  Future<User> loginChild(int id) async {
+    var url = "$fullUrl/login-child";
+    String queryString =
+    getQueryString({'id': id});
+    url = "$url?$queryString";
+    var uri = Uri.parse(url);
+
+    var response = await httpClient!.get(uri);
+
+    if (isValidResponseCode(response)) {
+      var data = jsonDecode(response.body);
+      print(data);
+      Authorization.jwt = JWT()..token = data['token'];
+      return User.fromJson(data['user']);
+    } else {
+      throw Exception("An error occured!");
+    }
+  }
 }

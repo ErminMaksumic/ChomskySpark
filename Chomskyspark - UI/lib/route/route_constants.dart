@@ -19,6 +19,7 @@ const String productDetailsScreenRoute = "product_details";
 const String productReviewsScreenRoute = "product_reviews";
 const String addReviewsScreenRoute = "add_reviews";
 const String homeScreenRoute = "home";
+const String childHomeScreenRoute = "child-home";
 const String brandScreenRoute = "brand";
 const String discoverWithImageScreenRoute = "discover_with_image";
 const String subDiscoverScreenRoute = "sub_discover";

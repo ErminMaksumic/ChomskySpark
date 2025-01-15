@@ -47,6 +47,15 @@ namespace Chomskyspark.Services.Implementation
             return Convert.ToBase64String(inArray);
         }
 
+        public override Model.User GetById(int id)
+        {
+            var entity = Context.Users
+             .Include(u => u.UserLanguages)
+             .ThenInclude(x => x.Language)
+             .FirstOrDefault(u => u.Id == id);
+
+            return IMapper.Map<Model.User>(entity);
+        }
 
         public override Model.User Insert(UserInsertRequest request)
         {

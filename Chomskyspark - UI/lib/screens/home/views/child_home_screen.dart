@@ -12,101 +12,14 @@ import 'package:shop/screens/paretns-monitoring/child_daily_statistics.dart';
 import 'package:shop/screens/qr_code/generate_qr.dart';
 import '../../../utils/auth_helper.dart';
 
-class HomeScreen extends StatelessWidget {
-  const HomeScreen({super.key});
+class ChildHomeScreen extends StatelessWidget {
+  const ChildHomeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
-        drawer: Drawer(
-          child: ListView(
-            padding: EdgeInsets.zero,
-            children: [
-              DrawerHeader(
-                decoration: BoxDecoration(
-                  color: Colors.purple,
-                ),
-                child: Text(
-                  'Chomskyspark',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 24,
-                  ),
-                ),
-              ),
-              ListTile(
-                leading: Icon(Icons.pie_chart),
-                title: Text('Child Statistic'),
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => ChildStatisticsPage(userId: Authorization.user!.id!,)
-                    ),
-                  );
-                },
-              ),
-              ListTile(
-                leading: Icon(Icons.format_quote),
-                title: Text('Child Word Statistic'),
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => ChildWordsStatisticsPage(userId: Authorization.user!.id!)
-
-                    ),
-                  );
-                },
-              ),
-
-              ListTile(
-                leading: Icon(Icons.date_range),
-                title: Text('Child Daily Statistic'),
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => ChildDailyStatistics(userId: Authorization.user!.id!)
-
-                    ),
-                  );
-                },
-              ),
-
-              ListTile(
-                leading: Icon(Icons.show_chart_outlined),
-                title: Text('Child Improvement Areas'),
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => ChildImprovementAreasPage(userId: Authorization.user!.id!)
-
-                    ),
-                  );
-                },
-              ),
-
-              ListTile(
-                leading: Icon(Icons.qr_code),
-                title: Text("Connect your child's device"),
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => GenerateQrPage()
-
-                    ),
-                  );
-                },
-              ),
-
-            ],
-          ),
-        ),
         body: Stack(
           children: [
             Container(
@@ -134,14 +47,6 @@ class HomeScreen extends StatelessWidget {
                           fontSize: 20,
                           fontFamily: 'Pacifico',
                           color: Colors.white,
-                        ),
-                      ),
-                      Builder(
-                        builder: (context) => IconButton(
-                          onPressed: () {
-                            Scaffold.of(context).openDrawer();
-                          },
-                          icon: Icon(Icons.menu, color: Colors.white),
                         ),
                       ),
                     ],
