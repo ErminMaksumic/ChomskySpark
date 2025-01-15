@@ -8,6 +8,7 @@ namespace Chomskyspark.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize]
     public class ObjectDetectionController : ControllerBase
     {
         public readonly IObjectDetectionService IObjectionService;
@@ -19,7 +20,8 @@ namespace Chomskyspark.Controllers
         [HttpPost]
         public virtual Task<IEnumerable<RecognizedObject>> DetectImage([FromBody] string imageUrl)
         {
-            return IObjectionService.DetectImageAsync(imageUrl, false);
+            var token = Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
+            return IObjectionService.DetectImageAsync(imageUrl, false, token);
         }
 
         [HttpGet]
@@ -51,7 +53,7 @@ namespace Chomskyspark.Controllers
 
             var random = new Random();
             var imageUrl = images[random.Next(images.Count)];
-            var recognizedObjects = await IObjectionService.DetectImageAsync(imageUrl, false);
+            var recognizedObjects = await IObjectionService.DetectImageAsync(imageUrl, false, "");
 #else
             var imagesFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads", "images");
 

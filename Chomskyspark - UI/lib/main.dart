@@ -1,3 +1,4 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart'; // Import Provider package
 import 'package:shop/providers/file_provider.dart';
@@ -6,9 +7,13 @@ import 'package:shop/providers/language_provider.dart';
 import 'package:shop/providers/user_provider.dart'; // Import your UserProvider
 import 'package:shop/route/route_constants.dart';
 import 'package:shop/route/router.dart' as router;
+import 'package:shop/services/notification_service.dart';
 import 'package:shop/theme/app_theme.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+
   runApp(
     MultiProvider(
       providers: [
@@ -37,7 +42,7 @@ class MyApp extends StatelessWidget {
       // Dark theme is inclided in the Full template
       themeMode: ThemeMode.light,
       onGenerateRoute: router.generateRoute,
-      initialRoute:  logInScreenRoute,
+      initialRoute: logInScreenRoute,
     );
   }
 }
