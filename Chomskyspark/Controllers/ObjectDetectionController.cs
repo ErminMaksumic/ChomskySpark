@@ -53,7 +53,6 @@ namespace Chomskyspark.Controllers
 
             var random = new Random();
             var imageUrl = images[random.Next(images.Count)];
-            var recognizedObjects = await IObjectionService.DetectImageAsync(imageUrl);
             var recognizedObjects = await IObjectionService.DetectImageAsync(imageUrl, false, "");
 #else
             var imagesFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads", "images");

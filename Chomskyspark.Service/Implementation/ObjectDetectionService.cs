@@ -45,25 +45,7 @@ namespace Chomskyspark.Services.Implementation
                 .DistinctBy(o => o.Name
                 ).ToList();
 
-            // todo - check if needed
-            if (evaluateCategoriesSafety)
-            {
-                var checkedSafety = ISafetyService.EvaluateCategoriesSafety(analysis.Categories.Select(o=> o.Name));
-            }
-
                 Model.User parent = IUserService.GetById(int.Parse(userIdClaim.Value));
-
-                ImageAnalysis analysis = await client.AnalyzeImageAsync(imageUrl, [VisualFeatureTypes.Objects, VisualFeatureTypes.Categories]);
-
-                var detectedObjects = analysis.Objects.Select(o => new RecognizedObject
-                {
-                    Name = o.ObjectProperty,
-                    X = o.Rectangle.X.ToString(),
-                    Y = o.Rectangle.Y.ToString(),
-                    H = o.Rectangle.H.ToString(),
-                    W = o.Rectangle.H.ToString(),
-                    Confidence = (o.Confidence * 100).ToString("F2"),
-                }).ToList();
 
                 List<string> objectNames = detectedObjects.Select(obj => obj.Name).ToList();
                 var checkedSafety = ISafetyService.EvaluateObjectSafety(objectNames);
