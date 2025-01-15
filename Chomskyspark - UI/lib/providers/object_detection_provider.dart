@@ -3,6 +3,8 @@ import 'package:shop/models/recognized_object.dart';
 import 'package:shop/providers/base_provider.dart';
 import 'dart:io';
 
+import 'package:shop/utils/auth_helper.dart';
+
 class ObjectDetectionProvider extends BaseProvider<File> {
   ObjectDetectionProvider() : super("ObjectDetection");
 
@@ -16,6 +18,7 @@ class ObjectDetectionProvider extends BaseProvider<File> {
         headers: {
           'accept': 'text/plain',
           'Content-Type': 'application/json',
+          'Authorization': 'Bearer ${Authorization.jwt!.token}'
         },
         body: body,
       );

@@ -4,11 +4,7 @@ import 'package:shop/constants.dart';
 import 'package:shop/providers/language_provider.dart';
 import 'package:shop/providers/user_provider.dart';
 import 'package:shop/route/route_constants.dart';
-import 'package:shop/screens/qr_code/generate_qr.dart';
-import 'package:shop/screens/qr_code/qr-code-scan-2.dart';
 import 'package:shop/screens/qr_code/qr_code_scan.dart';
-import 'package:shop/screens/qr_code/qr_code_scan_test.dart';
-import 'package:shop/screens/qr_code/scan_screen.dart';
 import 'package:shop/utils/auth_helper.dart';
 import 'components/login_form.dart';
 
