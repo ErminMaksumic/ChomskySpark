@@ -2,7 +2,8 @@
 {
     public class ObjectDetectionAttemptUpsertRequest
     {
-        public int Id { get; set; }
+        
+      //  public int Id { get; set; }
         public int? UserId { get; set; }
         public string TargetWord { get; set; } = string.Empty;
         public string SelectedWord { get; set; } = string.Empty;
@@ -10,5 +11,7 @@
         public int AttemptNumber { get; set; }
         public int ElapsedTimeInSeconds { get; set; }
         public DateTime Timestamp { get; set; } = DateTime.UtcNow;
+        public int? CategoryId { get; set; }
     }
+    
 }

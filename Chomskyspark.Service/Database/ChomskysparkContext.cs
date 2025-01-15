@@ -1,5 +1,7 @@
-﻿using Microsoft.Azure.CognitiveServices.Vision.ComputerVision.Models;
+﻿using Mapster.Models;
+using Microsoft.Azure.CognitiveServices.Vision.ComputerVision.Models;
 using Microsoft.EntityFrameworkCore;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace Chomskyspark.Services.Database
 {
@@ -16,8 +18,10 @@ namespace Chomskyspark.Services.Database
             if (!optionsBuilder.IsConfigured)
             {
                 optionsBuilder.UseSqlServer(
-                    "Server=.;Database=ChomskySpark;User ID=sqladmin;Password=Azure@2024;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;",
-                    options => options.EnableRetryOnFailure()
+                     "Data Source=localhost;Database=ChomskySpark;Trusted_Connection=True;TrustServerCertificate=True;",
+                // "Server=tcp:chomskydbserver.database.windows.net,1433;Database=ChomskySpark;User ID=sqladmin;Password=Azure@2024;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;",
+                //  Server = tcp:chomsky1.database.windows.net, 1433; User ID = sqladmin; Password = Azure@2024; Encrypt = True; TrustServerCertificate = False; Connection Timeout = 30;
+                options => options.EnableRetryOnFailure()
                 );
             }
         }
@@ -28,7 +32,7 @@ namespace Chomskyspark.Services.Database
         public virtual DbSet<Language> Languages { get; set; } = null!;
         public virtual DbSet<UserLanguage> UserLanguages { get; set; } = null!;
         public virtual DbSet<User> Users { get; set; }
-        public DbSet<Category> Category { get; set; }
+        public DbSet<Category> Categories { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -52,6 +56,15 @@ namespace Chomskyspark.Services.Database
                .WithMany(u => u.ChildUsers)
                .HasForeignKey(u => u.ParentUserId)
                .OnDelete(DeleteBehavior.Restrict);
+               
+            modelBuilder.Entity<LearnedWord>()
+                .HasOne(lw => lw.Category)
+                .WithMany(c => c.LearnedWords)
+                .HasForeignKey(lw => lw.CategoryId);
+
+
         }
+
+
     }
     }

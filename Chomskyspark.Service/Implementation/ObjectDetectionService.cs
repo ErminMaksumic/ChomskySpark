@@ -15,8 +15,9 @@ namespace Chomskyspark.Services.Implementation
     {
         private readonly string endpoint = configuration["ObjectDetection:Endpoint"] ?? "";
         private readonly string key = configuration["ObjectDetection:Key"] ?? "";
+        private readonly string[] restrictedObjects = configuration["ObjectDetection:RestrictedObjects"]?.Split(",") ?? [];
 
-        public async Task<IEnumerable<RecognizedObject>> DetectImageAsync(string imageUrl, string token)
+        public async Task<IEnumerable<RecognizedObject>> DetectImageAsync(string imageUrl, bool evaluateCategoriesSafety, string token)
         {
             var client = new ComputerVisionClient(new ApiKeyServiceClientCredentials(key))
             {
@@ -29,6 +30,26 @@ namespace Chomskyspark.Services.Implementation
                 var jwtToken = tokenHandler.ReadToken(token) as JwtSecurityToken;
 
                 var userIdClaim = jwtToken.Claims.FirstOrDefault(c => c.Type == "userId");
+            ImageAnalysis analysis = await client.AnalyzeImageAsync(imageUrl, [VisualFeatureTypes.Objects, VisualFeatureTypes.Categories]);
+
+            var detectedObjects = analysis.Objects.Select(o => new RecognizedObject
+                {
+                    Name = o.ObjectProperty,
+                    X = o.Rectangle.X.ToString(),
+                    Y = o.Rectangle.Y.ToString(),
+                    H = o.Rectangle.H.ToString(),
+                    W = o.Rectangle.H.ToString(),
+                    Confidence = (o.Confidence * 100).ToString("F2"),
+                })
+                .Where(o => !restrictedObjects.Contains(o.Name.ToLower()))
+                .DistinctBy(o => o.Name
+                ).ToList();
+
+            // todo - check if needed
+            if (evaluateCategoriesSafety)
+            {
+                var checkedSafety = ISafetyService.EvaluateCategoriesSafety(analysis.Categories.Select(o=> o.Name));
+            }
 
                 Model.User parent = IUserService.GetById(int.Parse(userIdClaim.Value));
 
