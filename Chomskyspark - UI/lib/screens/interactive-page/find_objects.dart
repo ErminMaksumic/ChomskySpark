@@ -52,8 +52,7 @@ class _FindObjectsPageState extends State<FindObjectsPage> {
     try {
       foundObjects = [];
 
-      ObjectDetectionProvider objectDetectionProvider =
-          ObjectDetectionProvider();
+      ObjectDetectionProvider objectDetectionProvider = ObjectDetectionProvider();
       var response = await objectDetectionProvider.getRandomRecognizedObject();
 
       if (response.isNotEmpty) {
@@ -298,7 +297,7 @@ class _FindObjectsPageState extends State<FindObjectsPage> {
                 Navigator.of(context).pop();
 
                 if (foundObjects.length == recognizedObjects.length) {
-                  Navigator.of(context).pushReplacementNamed(homeScreenRoute);
+                  Navigator.of(context).pushReplacementNamed(Authorization.childLogged ? childHomeScreenRoute : homeScreenRoute);
                 } else {
                   setState(() {
                     randomWord = getRandomObjectName(recognizedObjects);

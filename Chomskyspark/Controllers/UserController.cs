@@ -41,5 +41,19 @@ namespace Chomskyspark.Controllers
             var token = IUserService.GenerateToken(user);
             return Ok(new { token = token, user = user });
         }
+
+        [HttpGet("login-child")]
+        [AllowAnonymous]
+        public IActionResult Login(int id)
+        {
+            var user = IUserService.GetById(id);
+            if (user == null)
+            {
+                return BadRequest("User doesn't exist!");
+            }
+
+            var token = IUserService.GenerateToken(user);
+            return Ok(new { token = token, user = user });
+        }
     }
 }

@@ -4,6 +4,11 @@ import 'package:shop/constants.dart';
 import 'package:shop/providers/language_provider.dart';
 import 'package:shop/providers/user_provider.dart';
 import 'package:shop/route/route_constants.dart';
+import 'package:shop/screens/qr_code/generate_qr.dart';
+import 'package:shop/screens/qr_code/qr-code-scan-2.dart';
+import 'package:shop/screens/qr_code/qr_code_scan.dart';
+import 'package:shop/screens/qr_code/qr_code_scan_test.dart';
+import 'package:shop/screens/qr_code/scan_screen.dart';
 import 'package:shop/utils/auth_helper.dart';
 import 'components/login_form.dart';
 
@@ -116,6 +121,28 @@ class _LoginScreenState extends State<LoginScreen> {
                       )
                     ],
                   ),
+
+                  Padding(
+                    padding: const EdgeInsets.all(defaultPadding),
+                    child: InkWell(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => QrCodeScanPage()),
+                        );
+                      },
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: const [
+                          Icon(Icons.qr_code_2, size: 24, color: Colors.purple), // Icon with color
+                          SizedBox(width: 8), // Space between icon and text
+                          Text("Log in with QR Code", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.purple)),
+                        ],
+                      ),
+                    ),
+                  ),
+
+
                 ],
               ),
             )
