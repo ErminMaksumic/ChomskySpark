@@ -12,207 +12,14 @@ import 'package:shop/screens/paretns-monitoring/child_daily_statistics.dart';
 import 'package:shop/screens/qr_code/generate_qr.dart';
 import '../../../utils/auth_helper.dart';
 
-class HomeScreen extends StatelessWidget {
-  const HomeScreen({super.key});
+class ChildHomeScreen extends StatelessWidget {
+  const ChildHomeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
-        drawer: Drawer(
-          child: Stack(
-            children: [
-              // Background with Scattered Yellow Stars
-              Container(
-                decoration: BoxDecoration(
-                  color: Color(0xFF422A74), // Your preferred color
-                ),
-                child: Stack(
-                  children: [
-                    // Scattered Yellow Stars
-                    Positioned(
-                      top: 20,
-                      left: 20,
-                      child: Icon(
-                        Icons.star,
-                        color: Colors.yellow, // Yellow stars
-                        size: 24,
-                      ),
-                    ),
-                    Positioned(
-                      top: 50,
-                      right: 30,
-                      child: Icon(
-                        Icons.star,
-                        color: Colors.yellow, // Yellow stars
-                        size: 18,
-                      ),
-                    ),
-                    Positioned(
-                      bottom: 40,
-                      left: 40,
-                      child: Icon(
-                        Icons.star,
-                        color: Colors.yellow, // Yellow stars
-                        size: 22,
-                      ),
-                    ),
-                    Positioned(
-                      bottom: 80,
-                      right: 20,
-                      child: Icon(
-                        Icons.star,
-                        color: Colors.yellow, // Yellow stars
-                        size: 20,
-                      ),
-                    ),
-                    Positioned(
-                      top: 100,
-                      left: 100,
-                      child: Icon(
-                        Icons.star,
-                        color: Colors.yellow, // Yellow stars
-                        size: 16,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              // Drawer Content
-              ListView(
-                padding: EdgeInsets.zero,
-                children: [
-                  // Custom Header (Replaces DrawerHeader)
-                  Container(
-                    height: 150, // Adjust height as needed
-                    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(
-                          Icons.star, // Yellow star icon
-                          size: 48,
-                          color: Colors.yellow, // Yellow stars
-                        ),
-                      ],
-                    ),
-                  ),
-                  // QR Code Section
-                  Container(
-                    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                    child: Column(
-                      children: [
-                        // QR Code Placeholder (Replace with actual QR code widget)
-                        Container(
-                          width: 150,
-                          height: 150,
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          child: Center(
-                            child: Icon(
-                              Icons.qr_code,
-                              size: 100,
-                              color: Colors.black,
-                            ),
-                          ),
-                        ),
-                        SizedBox(height: 10),
-                        Text(
-                          'Link the child\'s device',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  // Menu Items
-                  _buildDrawerItem(
-                    context,
-                    icon: Icons.pie_chart,
-                    title: 'Child Statistic',
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => ChildStatisticsPage(
-                            userId: Authorization.user!.id!,
-                          ),
-                        ),
-                      );
-                    },
-                  ),
-                  _buildDrawerItem(
-                    context,
-                    icon: Icons.format_quote,
-                    title: 'Child Word Statistic',
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => ChildWordsStatisticsPage(
-                            userId: Authorization.user!.id!,
-                          ),
-                        ),
-                      );
-                    },
-                  ),
-                  _buildDrawerItem(
-                    context,
-                    icon: Icons.date_range,
-                    title: 'Child Daily Statistic',
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => ChildDailyStatistics(
-                            userId: Authorization.user!.id!,
-                          ),
-                        ),
-                      );
-                    },
-                  ),
-                  _buildDrawerItem(
-                    context,
-                    icon: Icons.show_chart_outlined,
-                    title: 'Child Improvement Areas',
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => ChildImprovementAreasPage(
-                            userId: Authorization.user!.id!,
-                          ),
-                        ),
-                      );
-                    },
-                  ),
-                ],
-              ),
-
-              ListTile(
-                leading: Icon(Icons.qr_code),
-                title: Text("Connect your child's device"),
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => GenerateQrPage()
-
-                    ),
-                  );
-                },
-              ),
-
-            ],
-          ),
-        ),
         body: Stack(
           children: [
             Container(
@@ -240,14 +47,6 @@ class HomeScreen extends StatelessWidget {
                           fontSize: 20,
                           fontFamily: 'Pacifico',
                           color: Colors.white,
-                        ),
-                      ),
-                      Builder(
-                        builder: (context) => IconButton(
-                          onPressed: () {
-                            Scaffold.of(context).openDrawer();
-                          },
-                          icon: Icon(Icons.menu, color: Colors.white),
                         ),
                       ),
                     ],
@@ -461,32 +260,10 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  // Helper method to build Drawer items
-  Widget _buildDrawerItem(BuildContext context,
-      {required IconData icon, required String title, required VoidCallback onTap}) {
-    return ListTile(
-      leading: Icon(
-        icon,
-        color: Colors.white, // Changed to white
-      ),
-      title: Text(
-        title,
-        style: TextStyle(
-          fontSize: 16,
-          fontWeight: FontWeight.bold,
-          color: Colors.white, // White text color
-        ),
-      ),
-      onTap: onTap,
-      hoverColor: Colors.purple.withOpacity(0.1), // Hover effect
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10), // Rounded corners
-      ),
-    );
-  }
-
   Future<void> testFileUpload(BuildContext context) async {
+
     final picker = ImagePicker();
+
     final pickedFile = await picker.pickImage(source: ImageSource.camera);
 
     if (pickedFile != null) {
@@ -511,7 +288,8 @@ class HomeScreen extends StatelessWidget {
 
   //TODO: Remove after testing
   Future<void> testFileUpload2(BuildContext context) async {
-    var imageUrl = "/uploads/chomskyspark/20250107_001739_914122bb-47ac-4e9b-b112-48c8598e56f3(1).jpg";
+
+    var imageUrl = "/uploads/chomskyspark/20250107_001739_914122bb-47ac-4e9b-b112-48c8598e56f3(1).jpg";//await fileProvider.sendFile(file);
     imageUrl = "/uploads/chomskyspark/20250107_152052_1bdf3a8f-2d6e-48b2-bc5e-b0eeffa5ac29.jpg";
     Navigator.push(
       context,

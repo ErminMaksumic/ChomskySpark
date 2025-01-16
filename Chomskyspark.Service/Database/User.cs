@@ -16,5 +16,9 @@ namespace Chomskyspark.Services.Database
         public string PasswordSalt { get; set; }
         public virtual ICollection<UserLanguage> UserLanguages { get; set; }
 
+        public int? ParentUserId { get; set; }
+        public virtual User ParentUser { get; set; }
+        public virtual ICollection<User> ChildUsers { get; set; }
+
     }
 }

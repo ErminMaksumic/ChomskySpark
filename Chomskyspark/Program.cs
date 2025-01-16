@@ -23,7 +23,7 @@ builder.Services.AddSingleton<EmailSenderService>();
 builder.Services.AddTransient<IObjectDetectionAttemptService, ObjectDetectionAttemptService>();
 builder.Services.AddTransient<ILanguageService, LanguageService>();
 builder.Services.AddTransient<ILearnedWordService, LearnedWordService>();
-
+builder.Services.AddTransient<INotificationService, NotificationService>();
 builder.Services.AddControllers(x =>
 {
     x.Filters.Add<ExceptionFilter>();

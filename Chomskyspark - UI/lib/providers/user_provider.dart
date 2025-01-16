@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:shop/models/user.dart';
 import 'package:shop/providers/base_provider.dart';
+import 'package:shop/services/notification_service.dart';
 import 'package:shop/utils/auth_helper.dart';
 
 class UserProvider extends BaseProvider<User> {
@@ -25,6 +26,9 @@ class UserProvider extends BaseProvider<User> {
       var data = jsonDecode(response.body);
       print(data);
       Authorization.jwt = JWT()..token = data['token'];
+      Authorization.user = await User.fromJson(data['user']);
+      NotificationService notificationService = NotificationService();
+      await notificationService.initialize();
       return User.fromJson(data['user']);
     } else {
       throw Exception("An error occured!");
@@ -45,6 +49,25 @@ class UserProvider extends BaseProvider<User> {
       return fromJson(data);
     } else {
       return null;
+    }
+  }
+
+  Future<User> loginChild(int id) async {
+    var url = "$fullUrl/login-child";
+    String queryString =
+    getQueryString({'id': id});
+    url = "$url?$queryString";
+    var uri = Uri.parse(url);
+
+    var response = await httpClient!.get(uri);
+
+    if (isValidResponseCode(response)) {
+      var data = jsonDecode(response.body);
+      print(data);
+      Authorization.jwt = JWT()..token = data['token'];
+      return User.fromJson(data['user']);
+    } else {
+      throw Exception("An error occured!");
     }
   }
 }

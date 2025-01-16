@@ -51,6 +51,12 @@ namespace Chomskyspark.Services.Database
                 .WithMany(l => l.UserLanguages)
                 .HasForeignKey(ul => ul.LanguageId);
 
+            modelBuilder.Entity<User>()
+               .HasOne(u => u.ParentUser)
+               .WithMany(u => u.ChildUsers)
+               .HasForeignKey(u => u.ParentUserId)
+               .OnDelete(DeleteBehavior.Restrict);
+               
             modelBuilder.Entity<LearnedWord>()
                 .HasOne(lw => lw.Category)
                 .WithMany(c => c.LearnedWords)
@@ -61,5 +67,4 @@ namespace Chomskyspark.Services.Database
 
 
     }
-}
-
+    }

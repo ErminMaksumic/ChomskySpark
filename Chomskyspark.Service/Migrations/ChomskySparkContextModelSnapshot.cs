@@ -36,30 +36,7 @@ namespace Chomskyspark.Services.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Category");
-                });
-
-            modelBuilder.Entity("Chomskyspark.Services.Database.LearnedWord", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("DateTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int?>("UserId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Word")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("LearnedWords");
+                    b.ToTable("Categories");
                 });
 
             modelBuilder.Entity("Chomskyspark.Services.Database.Language", b =>
@@ -81,6 +58,34 @@ namespace Chomskyspark.Services.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Languages");
+                });
+
+            modelBuilder.Entity("Chomskyspark.Services.Database.LearnedWord", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int?>("CategoryId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("DateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("UserId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Word")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CategoryId");
+
+                    b.ToTable("LearnedWords");
                 });
 
             modelBuilder.Entity("Chomskyspark.Services.Database.ObjectDetectionAttempt", b =>
@@ -139,6 +144,9 @@ namespace Chomskyspark.Services.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("ParentUserId")
+                        .HasColumnType("int");
+
                     b.Property<string>("PasswordHash")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -148,6 +156,8 @@ namespace Chomskyspark.Services.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ParentUserId");
 
                     b.ToTable("Users");
                 });
@@ -171,6 +181,25 @@ namespace Chomskyspark.Services.Migrations
                     b.ToTable("UserLanguages");
                 });
 
+            modelBuilder.Entity("Chomskyspark.Services.Database.LearnedWord", b =>
+                {
+                    b.HasOne("Chomskyspark.Services.Database.Category", "Category")
+                        .WithMany("LearnedWords")
+                        .HasForeignKey("CategoryId");
+
+                    b.Navigation("Category");
+                });
+
+            modelBuilder.Entity("Chomskyspark.Services.Database.User", b =>
+                {
+                    b.HasOne("Chomskyspark.Services.Database.User", "ParentUser")
+                        .WithMany("ChildUsers")
+                        .HasForeignKey("ParentUserId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("ParentUser");
+                });
+
             modelBuilder.Entity("Chomskyspark.Services.Database.UserLanguage", b =>
                 {
                     b.HasOne("Chomskyspark.Services.Database.Language", "Language")
@@ -190,6 +219,11 @@ namespace Chomskyspark.Services.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("Chomskyspark.Services.Database.Category", b =>
+                {
+                    b.Navigation("LearnedWords");
+                });
+
             modelBuilder.Entity("Chomskyspark.Services.Database.Language", b =>
                 {
                     b.Navigation("UserLanguages");
@@ -197,6 +231,8 @@ namespace Chomskyspark.Services.Migrations
 
             modelBuilder.Entity("Chomskyspark.Services.Database.User", b =>
                 {
+                    b.Navigation("ChildUsers");
+
                     b.Navigation("UserLanguages");
                 });
 #pragma warning restore 612, 618

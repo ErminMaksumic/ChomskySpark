@@ -8,6 +8,7 @@ namespace Chomskyspark.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize]
     public class ObjectDetectionController : ControllerBase
     {
         public readonly IObjectDetectionService IObjectionService;
@@ -19,12 +20,14 @@ namespace Chomskyspark.Controllers
         [HttpPost]
         public virtual Task<IEnumerable<RecognizedObject>> DetectImage([FromBody] string imageUrl)
         {
-            return IObjectionService.DetectImageAsync(imageUrl, false);
+            var token = Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
+            return IObjectionService.DetectImageAsync(imageUrl, false, token);
         }
 
         [HttpGet]
         public virtual async Task<IActionResult> GetRandomRecognizedObject()
         {
+            var token = Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
 
 #if DEBUG
             var images = new List<string>()
@@ -51,7 +54,7 @@ namespace Chomskyspark.Controllers
 
             var random = new Random();
             var imageUrl = images[random.Next(images.Count)];
-            var recognizedObjects = await IObjectionService.DetectImageAsync(imageUrl, false);
+            var recognizedObjects = await IObjectionService.DetectImageAsync(imageUrl, false, token);
 #else
             var imagesFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads", "images");
 
@@ -70,7 +73,7 @@ namespace Chomskyspark.Controllers
             var random = new Random();
             var randomImageFile = imageFiles[random.Next(imageFiles.Length)];
             var imageUrl = randomImageFile.Replace(Directory.GetCurrentDirectory(), "").Replace("\\", "/");
-            var recognizedObjects = await IObjectionService.DetectImageAsync(imageUrl);
+            var recognizedObjects = await IObjectionService.DetectImageAsync(imageUrl, false, token);
 #endif
 
             return Ok(new { recognizedObjects, imageUrl });
