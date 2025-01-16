@@ -33,6 +33,7 @@ namespace Chomskyspark.Services.Database
         public virtual DbSet<UserLanguage> UserLanguages { get; set; } = null!;
         public virtual DbSet<User> Users { get; set; }
         public DbSet<Category> Categories { get; set; }
+        public DbSet<WordForImage> WordForImages { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

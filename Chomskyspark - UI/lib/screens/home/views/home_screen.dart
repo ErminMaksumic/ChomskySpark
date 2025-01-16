@@ -9,6 +9,7 @@ import 'package:shop/screens/paretns-monitoring/child_improvement_areas.dart';
 import 'package:shop/screens/paretns-monitoring/child_statistics.dart';
 import 'package:shop/screens/paretns-monitoring/child_words_statistics.dart';
 import 'package:shop/screens/paretns-monitoring/child_daily_statistics.dart';
+import 'package:shop/screens/paretns-monitoring/word_for_image.dart';
 import 'package:shop/screens/qr_code/generate_qr.dart';
 import '../../../utils/auth_helper.dart';
 
@@ -194,6 +195,20 @@ class HomeScreen extends StatelessWidget {
                     },
                   ),
                 ],
+              ),
+
+              ListTile(
+                leading: Icon(Icons.my_library_books_rounded),
+                title: Text('Words for images'),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => WordForImagePage()
+
+                    ),
+                  );
+                },
               ),
 
               ListTile(
@@ -508,11 +523,12 @@ class HomeScreen extends StatelessWidget {
   Future<void> testFileUpload2(BuildContext context) async {
     var imageUrl = "/uploads/chomskyspark/20250107_001739_914122bb-47ac-4e9b-b112-48c8598e56f3(1).jpg";
     imageUrl = "/uploads/chomskyspark/20250107_152052_1bdf3a8f-2d6e-48b2-bc5e-b0eeffa5ac29.jpg";
+    imageUrl = "https://plus.unsplash.com/premium_photo-1663075817635-90ecf218ee5f?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D";
     Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => ObjectDetectionPage(
-          imageUrl: "https://api.thorhof-bestellungen.at${imageUrl}",
+          imageUrl: "${imageUrl}",
         ),
       ),
     );

@@ -30,6 +30,10 @@ namespace Chomskyspark.Services
                 .ForMember(x => x.Word, opt => opt.MapFrom(x => x.TargetWord))
                 .ForMember(x => x.DateTime, opt => opt.MapFrom(x => x.Timestamp))
                 .ReverseMap();
+
+            //WordForImage
+            CreateMap<Database.WordForImage, WordForImage>().ReverseMap();
+            CreateMap<Database.WordForImage, WordForImageUpsertRequest>().ReverseMap();
         }
     }
 }
