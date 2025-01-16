@@ -44,18 +44,22 @@ namespace Chomskyspark.Services.Implementation
             Model.User parent = IUserService.GetById(userId);
 
             List<string> objectNames = detectedObjects.Select(obj => obj.Name).ToList();
-            var checkedSafety = ISafetyService.EvaluateObjectSafety(objectNames);
-            List<RiskLevel> dangerousObjects = JsonSerializer.Deserialize<List<RiskLevel>>(checkedSafety);
 
-            var highRiskObjects = dangerousObjects
-                .Where(obj => obj.Level == "High")
-                .Select(obj => obj.Name)
-                .ToList();
+            if (objectNames.Count > 0) 
+            { 
+                var checkedSafety = ISafetyService.EvaluateObjectSafety(objectNames);
+                List<RiskLevel> dangerousObjects = JsonSerializer.Deserialize<List<RiskLevel>>(checkedSafety);
 
-            if (highRiskObjects.Any())
-            {
-                string notificationMessage = $"Dangerous objects detected: {string.Join(", ", highRiskObjects)}";
-                await INotificationService.SendNotificationAsync(notificationMessage, parent.Id.ToString());
+                var highRiskObjects = dangerousObjects
+                    .Where(obj => obj.Level == "High")
+                    .Select(obj => obj.Name)
+                    .ToList();
+
+                if (highRiskObjects.Any())
+                {
+                    string notificationMessage = $"Dangerous objects detected: {string.Join(", ", highRiskObjects)}";
+                    await INotificationService.SendNotificationAsync(notificationMessage, parent.Id.ToString());
+                }
             }
 
             return detectedObjects;
