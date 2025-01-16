@@ -1,9 +1,17 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:shop/constants.dart';
+import 'package:shop/providers/file_provider.dart';
 import 'package:shop/providers/language_provider.dart';
+import 'package:shop/providers/object_detection_provider.dart';
 import 'package:shop/providers/user_provider.dart';
 import 'package:shop/route/route_constants.dart';
+import 'package:shop/route/screen_export.dart';
+import 'package:shop/screens/home/views/child_home_screen.dart';
+import 'package:shop/screens/interactive-page/object_detection.dart';
 import 'package:shop/screens/qr_code/qr_code_scan.dart';
 import 'package:shop/utils/auth_helper.dart';
 import 'components/login_form.dart';
@@ -86,16 +94,6 @@ class _LoginScreenState extends State<LoginScreen> {
                   SizedBox(
                     height: defaultPadding / 2,  // Reduced space
                   ),
-                  ElevatedButton(
-                    onPressed: () async {
-                      try {
-                        if (_formKey.currentState!.validate()) {
-                          Authorization.user = await _userProvider.login(
-                              _emailController.text, _passwordController.text);
-                            await _languageProvider.translateWord("kuca", "spanish");
-                          Navigator.popAndPushNamed(
-                              context, homeScreenRoute);
-                  // Redesigned Log In Button
                   Container(
                     decoration: BoxDecoration(
                       color: Color(0xFF9D58D5), // Use your color palette
@@ -115,8 +113,10 @@ class _LoginScreenState extends State<LoginScreen> {
                           if (_formKey.currentState!.validate()) {
                             Authorization.user = await _userProvider.login(
                                 _emailController.text, _passwordController.text);
-                            Navigator.popAndPushNamed(
-                                context, emptyPaymentScreenRoute);
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => HomeScreen()),
+                            );
                           }
                         } on Exception {
                           _emailController.text = _passwordController.text = "";
@@ -167,7 +167,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       onTap: () {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => QrCodeScanPage()),
+                          MaterialPageRoute(builder: (context) => ChildHomeScreen()),
                         );
                       },
                       child: Row(
@@ -180,8 +180,6 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                     ),
                   ),
-
-
                 ],
               ),
             )
@@ -192,7 +190,7 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 }
 
-  Future<void> testFileUpload() async {
+  Future<void> testFileUpload(context) async {
     final picker = ImagePicker();
     final pickedFile = await picker.pickImage(source: ImageSource.camera);
 
@@ -210,7 +208,6 @@ class _LoginScreenState extends State<LoginScreen> {
         context,
         MaterialPageRoute(
           builder: (context) => ObjectDetectionPage(
-            recognizedObjects: recognizedObjects,
             imageUrl: imageUrl,
           ),
         ),

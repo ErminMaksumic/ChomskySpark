@@ -320,7 +320,7 @@ class HomeScreen extends StatelessWidget {
                                 ),
                               ],
                             ),
-                            child: ElevatedButton(
+                            child: ElevatedButton.icon(
                               onPressed: () {
                                 Navigator.push(
                                   context,
@@ -329,9 +329,6 @@ class HomeScreen extends StatelessWidget {
                                   ),
                                 );
                               },
-                              child: Text('Find Objects'),
-                            child: ElevatedButton.icon(
-                              onPressed: () {},
                               icon: Icon(Icons.search, color: Colors.white),
                               label: Text(
                                 'Find Object',
@@ -364,18 +361,14 @@ class HomeScreen extends StatelessWidget {
                                 ),
                               ],
                             ),
-                            child: ElevatedButton(
+                            child: ElevatedButton.icon(
                               onPressed: () {
                                 Navigator.push(
                                   context,
-                                  MaterialPageRoute(
-                                    builder: (context) => DiscoverWordsPage(),
+                                  MaterialPageRoute(builder: (context) => DiscoverWordsPage(),
                                   ),
                                 );
                               },
-                              child: Text('Discover a Word'),
-                            child: ElevatedButton.icon(
-                              onPressed: () {},
                               icon: Icon(Icons.lightbulb_outline, color: Colors.white),
                               label: Text(
                                 'Discover a Word',
@@ -433,7 +426,6 @@ class HomeScreen extends StatelessWidget {
                           onPressed: () {
                             testFileUpload2(context);
                           },
-                          onPressed: () {},
                           icon: Icon(Icons.camera_alt, color: Colors.white),
                           label: Text(
                             'Take a Picture',

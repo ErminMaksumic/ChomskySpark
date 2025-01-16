@@ -187,7 +187,7 @@ class _ChildWordsStatisticsPageState extends State<ChildWordsStatisticsPage> {
                 },
                 child: Text('Apply Filters'),
                 style: ElevatedButton.styleFrom(
-                  primary: Color(0xFF6A0DAD), // Purple button
+                  backgroundColor: Color(0xFF6A0DAD), // Purple button
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8),
                   ),
