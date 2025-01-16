@@ -25,7 +25,6 @@ class ObjectDetectionProvider extends BaseProvider<File> {
 
       if (response.statusCode == 200) {
         final List<dynamic> jsonResponse = jsonDecode(response.body);
-        print(jsonResponse);
         return jsonResponse.map((json) => RecognizedObject.fromJson(json)).toList();
       } else {
         return [];

@@ -24,6 +24,7 @@ builder.Services.AddTransient<IObjectDetectionAttemptService, ObjectDetectionAtt
 builder.Services.AddTransient<ILanguageService, LanguageService>();
 builder.Services.AddTransient<ILearnedWordService, LearnedWordService>();
 builder.Services.AddTransient<INotificationService, NotificationService>();
+builder.Services.AddTransient<IWordForImageService, WordForImageService>();
 builder.Services.AddControllers(x =>
 {
     x.Filters.Add<ExceptionFilter>();
@@ -79,6 +80,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     });
 
 var app = builder.Build();
+app.UseMiddleware<AuthMiddleware>();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

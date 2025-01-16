@@ -1,9 +1,7 @@
 ﻿using Chomskyspark.Model;
-using Chomskyspark.Services.Database;
 using Chomskyspark.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json.Linq;
 namespace Chomskyspark.Controllers
 {
     [ApiController]
@@ -20,15 +18,12 @@ namespace Chomskyspark.Controllers
         [HttpPost]
         public virtual Task<IEnumerable<RecognizedObject>> DetectImage([FromBody] string imageUrl)
         {
-            var token = Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
-            return IObjectionService.DetectImageAsync(imageUrl, false, token);
+            return IObjectionService.DetectImageAsync(imageUrl, false, int.Parse(HttpContext.Items["UserId"] as string));
         }
 
         [HttpGet]
         public virtual async Task<IActionResult> GetRandomRecognizedObject()
         {
-            var token = Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
-
 #if DEBUG
             var images = new List<string>()
             {
@@ -54,7 +49,7 @@ namespace Chomskyspark.Controllers
 
             var random = new Random();
             var imageUrl = images[random.Next(images.Count)];
-            var recognizedObjects = await IObjectionService.DetectImageAsync(imageUrl, false, token);
+            var recognizedObjects = await IObjectionService.DetectImageAsync(imageUrl, false, int.Parse(HttpContext.Items["UserId"] as string));
 #else
             var imagesFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads", "images");
 
@@ -73,7 +68,7 @@ namespace Chomskyspark.Controllers
             var random = new Random();
             var randomImageFile = imageFiles[random.Next(imageFiles.Length)];
             var imageUrl = randomImageFile.Replace(Directory.GetCurrentDirectory(), "").Replace("\\", "/");
-            var recognizedObjects = await IObjectionService.DetectImageAsync(imageUrl, false, token);
+            var recognizedObjects = await IObjectionService.DetectImageAsync(imageUrl, false,   int.Parse(HttpContext.Items["UserId"] as string));
 #endif
 
             return Ok(new { recognizedObjects, imageUrl });

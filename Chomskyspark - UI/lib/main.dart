@@ -3,11 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart'; // Import Provider package
 import 'package:shop/providers/file_provider.dart';
 import 'package:shop/providers/language_provider.dart';
-//import 'package:shop/providers/file_provider%20copy.dart';
 import 'package:shop/providers/user_provider.dart'; // Import your UserProvider
+import 'package:shop/providers/word_for_image_provider.dart';
 import 'package:shop/route/route_constants.dart';
 import 'package:shop/route/router.dart' as router;
-import 'package:shop/services/notification_service.dart';
 import 'package:shop/theme/app_theme.dart';
 
 void main() async {
@@ -20,6 +19,7 @@ void main() async {
         ChangeNotifierProvider(create: (_) => UserProvider()),
         ChangeNotifierProvider(create: (_) => FileProvider()),
         ChangeNotifierProvider(create: (_) => LanguageProvider()),
+        ChangeNotifierProvider(create: (_) => WordForImageProvider()),
       ],
       child: const MyApp(),
     ),

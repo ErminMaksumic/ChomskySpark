@@ -101,6 +101,22 @@ abstract class BaseProvider<T> with ChangeNotifier {
     }
   }
 
+  Future<T?> delete(int id) async {
+    var url = "$_baseUrl$_endPoint/$id";
+    var uri = Uri.parse(url);
+
+    Map<String, String> headers = createHeaders();
+
+    var response = await httpClient!.delete(uri, headers: headers);
+
+    if (isValidResponseCode(response)) {
+      var data = jsonDecode(response.body);
+      return fromJson(data);
+    } else {
+      return null;
+    }
+  }
+
   Map<String, String> createHeaders() {
     String jwtToken = Authorization?.jwt?.token ?? '';
     return {
