@@ -24,6 +24,7 @@ builder.Services.AddTransient<IObjectDetectionAttemptService, ObjectDetectionAtt
 builder.Services.AddTransient<ILanguageService, LanguageService>();
 builder.Services.AddTransient<ILearnedWordService, LearnedWordService>();
 builder.Services.AddTransient<INotificationService, NotificationService>();
+builder.Services.AddSingleton<ImageService>();
 builder.Services.AddControllers(x =>
 {
     x.Filters.Add<ExceptionFilter>();
