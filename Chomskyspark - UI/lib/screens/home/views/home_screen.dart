@@ -218,7 +218,7 @@ class HomeScreen extends StatelessWidget {
             Container(
               decoration: BoxDecoration(
                 image: DecorationImage(
-                  image: AssetImage('assets/images/background.png'),
+                  image: AssetImage('assets/images/bg.png'),
                   fit: BoxFit.cover,
                 ),
               ),
@@ -229,7 +229,7 @@ class HomeScreen extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
                   margin: const EdgeInsets.only(top: 20.0),
                   decoration: BoxDecoration(
-                    color: Colors.blue.withOpacity(0.02),
+                    color: Color(0xFF422A74).withOpacity(0.2),
                   ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -253,24 +253,20 @@ class HomeScreen extends StatelessWidget {
                     ],
                   ),
                 ),
-
-                // Counter Circle with Shadow
                 Padding(
                   padding: const EdgeInsets.only(top: 9.0),
                   child: Center(
                     child: GestureDetector(
-                      onTap: () {
-                        // Add button functionality
-                      },
+                      onTap: () {},
                       child: Container(
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.blue.withOpacity(0.2),
+                              color: Color(0xFF9D58D5).withOpacity(0.3),
                               spreadRadius: 4,
                               blurRadius: 8,
-                              offset: Offset(4, 4), // Shadow position
+                              offset: Offset(4, 4),
                             ),
                           ],
                         ),
@@ -285,9 +281,17 @@ class HomeScreen extends StatelessWidget {
                                 style: TextStyle(
                                   fontSize: 30,
                                   fontWeight: FontWeight.bold,
+                                  color: Color(0xFF422A74),
                                 ),
                               ),
-                              Text('Counter'),
+                              Text(
+                                'Counter',
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  color: Color(0xFF422A74),
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
                             ],
                           ),
                         ),
@@ -296,45 +300,23 @@ class HomeScreen extends StatelessWidget {
                   ),
                 ),
                 Spacer(),
-
-                // Main Content
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20.0),
                   child: Column(
                     children: [
-                      // Welcome Text
-                      Text(
-                        'You are doing Excellent,',
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      Text(
-                        'Nickname',
-                        style: TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.blueAccent,
-                        ),
-                      ),
-                      SizedBox(height: 20),
-
-                      // Buttons Row
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          // Find Object Button
                           Container(
                             decoration: BoxDecoration(
-                              color: Colors.purple,
-                              borderRadius: BorderRadius.circular(10),
+                              color: Color(0xFF9D58D5),
+                              borderRadius: BorderRadius.circular(15),
                               boxShadow: [
                                 BoxShadow(
                                   color: Colors.black.withOpacity(0.2),
                                   spreadRadius: 2,
                                   blurRadius: 2,
-                                  offset: Offset(2, 4), // Drop shadow position
+                                  offset: Offset(2, 4),
                                 ),
                               ],
                             ),
@@ -348,29 +330,37 @@ class HomeScreen extends StatelessWidget {
                                 );
                               },
                               child: Text('Find Objects'),
+                            child: ElevatedButton.icon(
+                              onPressed: () {},
+                              icon: Icon(Icons.search, color: Colors.white),
+                              label: Text(
+                                'Find Object',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  color: Colors.white,
+                                ),
+                              ),
                               style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.transparent, // Set background to transparent to show the shadow
+                                backgroundColor: Colors.transparent,
                                 foregroundColor: Colors.white,
                                 shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10),
+                                  borderRadius: BorderRadius.circular(15),
                                 ),
-                                padding: EdgeInsets.symmetric(horizontal: 23, vertical: 10),
+                                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
                               ),
                             ),
                           ),
                           SizedBox(width: 10),
-
-                          // Discover a Word Button
                           Container(
                             decoration: BoxDecoration(
-                              color: Colors.purple,
-                              borderRadius: BorderRadius.circular(10),
+                              color: Color(0xFF9D58D5),
+                              borderRadius: BorderRadius.circular(15),
                               boxShadow: [
                                 BoxShadow(
                                   color: Colors.black.withOpacity(0.2),
                                   spreadRadius: 2,
                                   blurRadius: 2,
-                                  offset: Offset(2, 4), // Drop shadow position
+                                  offset: Offset(2, 4),
                                 ),
                               ],
                             ),
@@ -384,27 +374,35 @@ class HomeScreen extends StatelessWidget {
                                 );
                               },
                               child: Text('Discover a Word'),
+                            child: ElevatedButton.icon(
+                              onPressed: () {},
+                              icon: Icon(Icons.lightbulb_outline, color: Colors.white),
+                              label: Text(
+                                'Discover a Word',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  color: Colors.white,
+                                ),
+                              ),
                               style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.transparent, // Set background to transparent to show the shadow
+                                backgroundColor: Colors.transparent,
                                 foregroundColor: Colors.white,
                                 shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10),
+                                  borderRadius: BorderRadius.circular(15),
                                 ),
-                                padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+                                padding: EdgeInsets.symmetric(horizontal: 15, vertical: 12),
                               ),
                             ),
                           ),
                         ],
                       ),
                       SizedBox(height: 20),
-
-                      // Image Container with Shadow
                       Container(
-                        height: 245,
+                        height: 300,
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(15),
                           image: DecorationImage(
-                            image: AssetImage('assets/images/try_image.png'),
+                            image: AssetImage('assets/images/image.png'),
                             fit: BoxFit.cover,
                           ),
                           boxShadow: [
@@ -412,18 +410,16 @@ class HomeScreen extends StatelessWidget {
                               color: Colors.black.withOpacity(0.3),
                               spreadRadius: 2,
                               blurRadius: 8,
-                              offset: Offset(4, 4), // Position of the shadow
+                              offset: Offset(4, 4),
                             ),
                           ],
                         ),
                       ),
                       SizedBox(height: 20),
-
-                      // Take a Picture Button with Shadow
                       Container(
                         decoration: BoxDecoration(
-                          color: Colors.purple,
-                          borderRadius: BorderRadius.circular(10),
+                          color: Color(0xFF9D58D5),
+                          borderRadius: BorderRadius.circular(15),
                           boxShadow: [
                             BoxShadow(
                               color: Colors.black.withOpacity(0.3),
@@ -437,13 +433,20 @@ class HomeScreen extends StatelessWidget {
                           onPressed: () {
                             testFileUpload2(context);
                           },
+                          onPressed: () {},
                           icon: Icon(Icons.camera_alt, color: Colors.white),
-                          label: Text('Take a Picture'),
+                          label: Text(
+                            'Take a Picture',
+                            style: TextStyle(
+                              fontSize: 16,
+                              color: Colors.white,
+                            ),
+                          ),
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.transparent, // Set background to transparent to show the shadow
+                            backgroundColor: Colors.transparent,
                             foregroundColor: Colors.white,
                             shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10),
+                              borderRadius: BorderRadius.circular(15),
                             ),
                             padding: EdgeInsets.symmetric(horizontal: 60, vertical: 15),
                           ),

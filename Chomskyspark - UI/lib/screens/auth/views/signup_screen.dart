@@ -51,24 +51,47 @@ class _SignUpScreenState extends State<SignUpScreen> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            Image.asset(
-              "assets/images/signup.png",
-              height: MediaQuery.of(context).size.height * 0.35, // Adjusted height
-              width: double.infinity,
-              fit: BoxFit.cover, // Ensures the image is fully visible and fits the space
+            // Modern Image Styling (Rounded Corners and Shadow)
+            Container(
+              margin: const EdgeInsets.all(defaultPadding),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(25), // Rounded corners
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.3), // Shadow color
+                    spreadRadius: 2,
+                    blurRadius: 8,
+                    offset: Offset(4, 4), // Shadow position
+                  ),
+                ],
+              ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(25), // Match container radius
+                child: Image.asset(
+                  "assets/images/p.jpg",
+                  height: MediaQuery.of(context).size.height * 0.25, // Reduced height
+                  width: double.infinity,
+                  fit: BoxFit.cover,
+                ),
+              ),
             ),
             Padding(
               padding: const EdgeInsets.all(defaultPadding),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  // "Let’s get started!" Text in Purple and Bold
                   Text(
                     "Let’s get started!",
-                    style: Theme.of(context).textTheme.headlineSmall,
+                    style: TextStyle(
+                      fontSize: 28,
+                      fontWeight: FontWeight.bold,
+                      color: Color(0xFF422A74), // Purple color
+                    ),
                   ),
                   const SizedBox(height: defaultPadding / 2),
                   const Text(
-                    "Please complete the form below to register your account.",
+                    "Fill out the form to create your account.", // Shorter and concise
                   ),
                   const SizedBox(height: defaultPadding),
                   FutureBuilder<List<Language>>(
@@ -99,23 +122,43 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     },
                   ),
                   const SizedBox(height: defaultPadding * 2),
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.purple, // Purple background color
-                      foregroundColor: Colors.white, // White text color
-                      padding: EdgeInsets.symmetric(horizontal: 60, vertical: 15), // Padding similar to HomeScreen button
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10), // Rounded corners
-                      ),
-                      shadowColor: Colors.black.withOpacity(0.4), // Increased shadow opacity
-                      elevation: 15, // Increased elevation for stronger shadow
+                  // Redesigned Submit Button
+                  Container(
+                    decoration: BoxDecoration(
+                      color: Color(0xFF9D58D5), // Use your color palette
+                      borderRadius: BorderRadius.circular(15), // Rounded corners
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.2),
+                          spreadRadius: 2,
+                          blurRadius: 2,
+                          offset: Offset(2, 4), // Drop shadow position
+                        ),
+                      ],
                     ),
-                    onPressed: () {
-                      if (_formKey.currentState!.validate()) {
-                        _register();
-                      }
-                    },
-                    child: const Text("Submit", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                    child: ElevatedButton(
+                      onPressed: () {
+                        if (_formKey.currentState!.validate()) {
+                          _register();
+                        }
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.transparent, // Transparent to show shadow
+                        foregroundColor: Colors.white, // White text color
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(15), // Rounded corners
+                        ),
+                        padding: EdgeInsets.symmetric(vertical: 15), // Button height
+                        minimumSize: Size(double.infinity, 50), // Full width
+                      ),
+                      child: const Text(
+                        "Submit",
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
