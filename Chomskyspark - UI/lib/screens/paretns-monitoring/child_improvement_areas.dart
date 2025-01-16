@@ -43,22 +43,19 @@ class _ChildImprovementAreasPageState extends State<ChildImprovementAreasPage> {
     return Scaffold(
       body: Container(
         decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [Colors.blue.shade100, Colors.blue.shade400],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-          ),
+          color: const Color(0xFF6A0DAD), // Page background color
         ),
         child: SafeArea(
           child: Column(
             children: [
-              Padding(
-                padding: const EdgeInsets.all(16.0),
+              Container(
+                color: Colors.white, // Top bar background color
+                padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     IconButton(
-                      icon: const Icon(Icons.arrow_back, color: Colors.white),
+                      icon: const Icon(Icons.arrow_back, color: Colors.black), // Icon color
                       onPressed: () => Navigator.pop(context),
                     ),
                     const Text(
@@ -66,7 +63,7 @@ class _ChildImprovementAreasPageState extends State<ChildImprovementAreasPage> {
                       style: TextStyle(
                         fontSize: 24,
                         fontWeight: FontWeight.bold,
-                        color: Colors.white,
+                        color: Colors.black, // Text color
                       ),
                     ),
                     const SizedBox(width: 48), // For symmetry
@@ -77,48 +74,60 @@ class _ChildImprovementAreasPageState extends State<ChildImprovementAreasPage> {
                 child: _isLoading
                     ? const Center(child: CircularProgressIndicator(color: Colors.white))
                     : _error != null
-                    ? Center(
-                  child: Text(
-                    'Error: $_error',
-                    style: const TextStyle(color: Colors.red, fontSize: 18),
-                    textAlign: TextAlign.center,
-                  ),
-                )
-                    : _wordsStatistics != null && _wordsStatistics!.isNotEmpty
-                    ? ListView.builder(
-                  itemCount: _wordsStatistics!.length,
-                  itemBuilder: (context, index) {
-                    final stat = _wordsStatistics![index];
-                    return Card(
-                      margin: const EdgeInsets.all(10),
-                      color: Colors.white,
-                      elevation: 8,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(20.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Text(stat.targetWord, style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-                            const Divider(),
-                            _buildStatisticRow('Total Failed Attempts', '${stat.totalFailedAttempts}'),
-                            const Divider(),
-                            _buildStatisticRow('Failed Percentage', '${stat.failedPercentage.round()} %'),
-                            LinearProgressIndicator(
-                              value: stat.failedPercentage.toDouble() / 100,
-                              backgroundColor: Colors.grey.shade300,
-                              valueColor: AlwaysStoppedAnimation<Color>(Colors.blue),
-                              minHeight: 10,
+                        ? Center(
+                            child: Text(
+                              'Error: $_error',
+                              style: const TextStyle(color: Colors.red, fontSize: 18),
+                              textAlign: TextAlign.center,
                             ),
-                          ],
-                        ),
-                      ),
-                    );
-                  },
-                )
-                    : const Center(child: Text('No data available.', style: TextStyle(color: Colors.white, fontSize: 18))),
+                          )
+                        : _wordsStatistics != null && _wordsStatistics!.isNotEmpty
+                            ? ListView.builder(
+                                itemCount: _wordsStatistics!.length,
+                                itemBuilder: (context, index) {
+                                  final stat = _wordsStatistics![index];
+                                  return Card(
+                                    margin: const EdgeInsets.all(10),
+                                    color: Colors.white,
+                                    elevation: 8,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(20),
+                                    ),
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(20.0),
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.center,
+                                        children: [
+                                          Text(stat.targetWord,
+                                              style: const TextStyle(
+                                                  fontSize: 24,
+                                                  fontWeight: FontWeight.bold)),
+                                          const Divider(),
+                                          _buildStatisticRow(
+                                              'Total Failed Attempts',
+                                              '${stat.totalFailedAttempts}'),
+                                          const Divider(),
+                                          _buildStatisticRow(
+                                              'Failed Percentage',
+                                              '${stat.failedPercentage.round()} %'),
+                                          LinearProgressIndicator(
+                                            value: stat.failedPercentage.toDouble() / 100,
+                                            backgroundColor: Colors.grey.shade300,
+                                            valueColor:
+                                                AlwaysStoppedAnimation<Color>(Colors.blue),
+                                            minHeight: 10,
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  );
+                                },
+                              )
+                            : const Center(
+                                child: Text('No data available.',
+                                    style: TextStyle(
+                                        color: Colors.white, fontSize: 18)),
+                              ),
               ),
             ],
           ),
@@ -135,7 +144,8 @@ class _ChildImprovementAreasPageState extends State<ChildImprovementAreasPage> {
         children: [
           Text(
             label,
-            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500, color: Colors.black87),
+            style: const TextStyle(
+                fontSize: 18, fontWeight: FontWeight.w500, color: Colors.black87),
           ),
           Text(
             value,

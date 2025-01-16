@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:shop/models/user_statistics.dart';
-
 import 'package:shop/providers/statistics_provider.dart';
 
 class ChildStatisticsPage extends StatefulWidget {
@@ -44,11 +43,7 @@ class _ChildStatisticsPageState extends State<ChildStatisticsPage> {
     return Scaffold(
       body: Container(
         decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [Colors.blue.shade100, Colors.blue.shade400],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-          ),
+          color: const Color(0xFF6A0DAD), // Updated background color
         ),
         child: SafeArea(
           child: Column(
@@ -78,51 +73,59 @@ class _ChildStatisticsPageState extends State<ChildStatisticsPage> {
                 child: _isLoading
                     ? const Center(child: CircularProgressIndicator(color: Colors.white))
                     : _error != null
-                    ? Center(
-                  child: Text(
-                    'Error: $_error',
-                    style: const TextStyle(color: Colors.red, fontSize: 18),
-                    textAlign: TextAlign.center,
-                  ),
-                )
-                    : _userStatistics != null
-                    ? Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Card(
-                    color: Colors.white,
-                    elevation: 8,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(20.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          const CircleAvatar(
-                            radius: 40,
-                            backgroundColor: Colors.blueAccent,
-                            child: Icon(
-                              Icons.person,
-                              color: Colors.white,
-                              size: 40,
+                        ? Center(
+                            child: Text(
+                              'Error: $_error',
+                              style: const TextStyle(color: Colors.red, fontSize: 18),
+                              textAlign: TextAlign.center,
                             ),
-                          ),
-                          const SizedBox(height: 20),
-                          _buildStatisticRow('Child', 'John Smith'),
-                          const Divider(),
-                          _buildStatisticRow('Total Attempts', '${_userStatistics!.totalAttempts}'),
-                          const Divider(),
-                          _buildStatisticRow('Successful Attempts', '${_userStatistics!.successfulAttempts}'),
-                          const Divider(),
-                          _buildStatisticRow(
-                              'Avg Elapsed Time', '${_userStatistics!.averageElapsedTime.toStringAsFixed(2)} seconds'),
-                        ],
-                      ),
-                    ),
-                  ),
-                )
-                    : const Center(child: Text('No data available.', style: TextStyle(color: Colors.white, fontSize: 18))),
+                          )
+                        : _userStatistics != null
+                            ? Padding(
+                                padding: const EdgeInsets.all(16.0),
+                                child: Card(
+                                  color: Colors.white,
+                                  elevation: 8,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(20),
+                                  ),
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(20.0),
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      children: [
+                                        const CircleAvatar(
+                                          radius: 40,
+                                          backgroundColor: Colors.blueAccent,
+                                          child: Icon(
+                                            Icons.person,
+                                            color: Colors.white,
+                                            size: 40,
+                                          ),
+                                        ),
+                                        const SizedBox(height: 20),
+                                        _buildStatisticRow('Child', 'John Smith'),
+                                        const Divider(),
+                                        _buildStatisticRow('Total Attempts',
+                                            '${_userStatistics!.totalAttempts}'),
+                                        const Divider(),
+                                        _buildStatisticRow('Successful Attempts',
+                                            '${_userStatistics!.successfulAttempts}'),
+                                        const Divider(),
+                                        _buildStatisticRow(
+                                            'Avg Elapsed Time',
+                                            '${_userStatistics!.averageElapsedTime.toStringAsFixed(2)} seconds'),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              )
+                            : const Center(
+                                child: Text(
+                                  'No data available.',
+                                  style: TextStyle(color: Colors.white, fontSize: 18),
+                                ),
+                              ),
               ),
             ],
           ),
@@ -139,7 +142,8 @@ class _ChildStatisticsPageState extends State<ChildStatisticsPage> {
         children: [
           Text(
             label,
-            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500, color: Colors.black87),
+            style: const TextStyle(
+                fontSize: 18, fontWeight: FontWeight.w500, color: Colors.black87),
           ),
           Text(
             value,

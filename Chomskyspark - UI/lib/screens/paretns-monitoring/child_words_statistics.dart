@@ -9,7 +9,8 @@ class ChildWordsStatisticsPage extends StatefulWidget {
   ChildWordsStatisticsPage({required this.userId});
 
   @override
-  _ChildWordsStatisticsPageState createState() => _ChildWordsStatisticsPageState();
+  _ChildWordsStatisticsPageState createState() =>
+      _ChildWordsStatisticsPageState();
 }
 
 class _ChildWordsStatisticsPageState extends State<ChildWordsStatisticsPage> {
@@ -27,7 +28,8 @@ class _ChildWordsStatisticsPageState extends State<ChildWordsStatisticsPage> {
     _fetchWordsStatistics();
   }
 
-  Future<void> _fetchWordsStatistics({String? word, DateTime? startDate, DateTime? endDate}) async {
+  Future<void> _fetchWordsStatistics(
+      {String? word, DateTime? startDate, DateTime? endDate}) async {
     try {
       final stats = await wordsStatisticsProvider.fetchWordsStatistics(
         widget.userId,
@@ -51,20 +53,18 @@ class _ChildWordsStatisticsPageState extends State<ChildWordsStatisticsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Word Statistics'),
+        title: Text(
+          'Word Statistics',
+          style: TextStyle(color: Colors.black), // Black text in AppBar
+        ),
+        backgroundColor: Colors.white, // White background for AppBar
         leading: IconButton(
-          icon: Icon(Icons.arrow_back),
+          icon: Icon(Icons.arrow_back, color: Colors.black), // Black back icon
           onPressed: () => Navigator.of(context).pop(),
         ),
       ),
       body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [Colors.blue.shade100, Colors.blue.shade400],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-          ),
-        ),
+        color: Color(0xFF6A0DAD), // Purple background for the page
         child: SafeArea(
           child: Column(
             children: [
@@ -73,46 +73,54 @@ class _ChildWordsStatisticsPageState extends State<ChildWordsStatisticsPage> {
                 child: _isLoading
                     ? Center(child: CircularProgressIndicator(color: Colors.white))
                     : _error != null
-                    ? Center(
-                  child: Text(
-                    'Error: $_error',
-                    style: TextStyle(color: Colors.red, fontSize: 18),
-                    textAlign: TextAlign.center,
-                  ),
-                )
-                    : _wordsStatistics != null && _wordsStatistics!.isNotEmpty
-                    ? ListView.builder(
-                  itemCount: _wordsStatistics!.length,
-                  itemBuilder: (context, index) {
-                    final stat = _wordsStatistics![index];
-                    return Card(
-                      margin: const EdgeInsets.all(10),
-                      color: Colors.white,
-                      elevation: 8,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(20.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Text(stat.targetWord, style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-                            Divider(),
-                            _buildStatisticRow('Total Attempts', '${stat.totalAttempts}'),
-                            Divider(),
-                            _buildStatisticRow('Successful Attempts', '${stat.successfulAttempts}'),
-                            Divider(),
-                            _buildStatisticRow('Average Elapsed Time', '${stat.averageElapsedTime.toStringAsFixed(2)} seconds'),
-                            Divider(),
-                            _buildStatisticRow('Success Rate', '${stat.successRate.toStringAsFixed(2)}%'),
-                          ],
-                        ),
-                      ),
-                    );
-                  },
-                )
-                    : Center(child: Text('No data available.', style: TextStyle(color: Colors.white, fontSize: 18))),
+                        ? Center(
+                            child: Text(
+                              'Error: $_error',
+                              style: TextStyle(color: Colors.red, fontSize: 18),
+                              textAlign: TextAlign.center,
+                            ),
+                          )
+                        : _wordsStatistics != null && _wordsStatistics!.isNotEmpty
+                            ? ListView.builder(
+                                itemCount: _wordsStatistics!.length,
+                                itemBuilder: (context, index) {
+                                  final stat = _wordsStatistics![index];
+                                  return Card(
+                                    margin: const EdgeInsets.all(10),
+                                    color: Colors.white,
+                                    elevation: 8,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(20),
+                                    ),
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(20.0),
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.center,
+                                        children: [
+                                          Text(stat.targetWord,
+                                              style: TextStyle(
+                                                  fontSize: 24,
+                                                  fontWeight: FontWeight.bold)),
+                                          Divider(),
+                                          _buildStatisticRow('Total Attempts', '${stat.totalAttempts}'),
+                                          Divider(),
+                                          _buildStatisticRow('Successful Attempts', '${stat.successfulAttempts}'),
+                                          Divider(),
+                                          _buildStatisticRow('Average Elapsed Time', '${stat.averageElapsedTime.toStringAsFixed(2)} seconds'),
+                                          Divider(),
+                                          _buildStatisticRow('Success Rate', '${stat.successRate.toStringAsFixed(2)}%'),
+                                        ],
+                                      ),
+                                    ),
+                                  );
+                                },
+                              )
+                            : Center(
+                                child: Text(
+                                  'No data available.',
+                                  style: TextStyle(color: Colors.white, fontSize: 18),
+                                ),
+                              ),
               ),
             ],
           ),
@@ -167,15 +175,19 @@ class _ChildWordsStatisticsPageState extends State<ChildWordsStatisticsPage> {
               SizedBox(height: 20),
               ElevatedButton(
                 onPressed: () {
-                    _fetchWordsStatistics(
-                      word: _wordController.text,
-                      startDate: _startDateController.text.isEmpty ? null : DateFormat('yyyy-MM-dd').parse(_startDateController.text),
-                      endDate: _endDateController.text.isEmpty ? null : DateFormat('yyyy-MM-dd').parse(_endDateController.text),
-                    );
+                  _fetchWordsStatistics(
+                    word: _wordController.text,
+                    startDate: _startDateController.text.isEmpty
+                        ? null
+                        : DateFormat('yyyy-MM-dd').parse(_startDateController.text),
+                    endDate: _endDateController.text.isEmpty
+                        ? null
+                        : DateFormat('yyyy-MM-dd').parse(_endDateController.text),
+                  );
                 },
                 child: Text('Apply Filters'),
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.blue.shade700,
+                  primary: Color(0xFF6A0DAD), // Purple button
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8),
                   ),
