@@ -101,41 +101,68 @@ class _WordForImagePageState extends State<WordForImagePage> {
     );
   }
 
-  void _deleteWord(int id) {
-    setState(() {
-      words.removeWhere((word) => word.id == id);
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Words for Generating Image'),
-      ),
-      body: _isLoading
-          ? Center(child: CircularProgressIndicator())
-          : ListView.builder(
-        itemCount: words.length,
-        itemBuilder: (context, index) {
-          WordForImage word = words[index];
-          return ListTile(
-            title: Text(word.name),
-            trailing: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                IconButton(
-                  icon: Icon(Icons.edit),
-                  onPressed: () => _addOrUpdateWord(word),
+      body: Container(
+        decoration: BoxDecoration(
+          color: const Color(0xFF6A0DAD), // Page background color
+        ),
+        child: SafeArea(
+          child: Column(
+            children: [
+              Container(
+                padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    IconButton(
+                      icon: const Icon(Icons.arrow_back, color: Colors.white), // Icon color
+                      onPressed: () => Navigator.pop(context),
+                    ),
+                    const Text(
+                      'Words for AI Image',
+                      style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white, // Text color
+                      ),
+                    ),
+                    const SizedBox(width: 48), // For symmetry
+                  ],
                 ),
-                IconButton(
-                  icon: Icon(Icons.delete),
-                  onPressed: () => _confirmDelete(word.id),
+              ),
+              Expanded(
+                child: _isLoading
+                    ? Center(child: CircularProgressIndicator())
+                    : ListView.builder(
+                  itemCount: words.length,
+                  itemBuilder: (context, index) {
+                    WordForImage word = words[index];
+                    return ListTile(
+                      title: Text(word.name, style: TextStyle(color: Colors.white),),
+                      trailing: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: <Widget>[
+                          IconButton(
+                            icon: Icon(Icons.edit),
+                            color: Colors.white,
+                            onPressed: () => _addOrUpdateWord(word),
+                          ),
+                          IconButton(
+                            color: Colors.white,
+                            icon: Icon(Icons.delete),
+                            onPressed: () => _confirmDelete(word.id),
+                          ),
+                        ],
+                      ),
+                    );
+                  },
                 ),
-              ],
-            ),
-          );
-        },
+              ),
+            ],
+          ),
+        ),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => _addOrUpdateWord(),
@@ -144,4 +171,5 @@ class _WordForImagePageState extends State<WordForImagePage> {
       ),
     );
   }
+
 }

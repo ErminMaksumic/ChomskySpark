@@ -52,22 +52,32 @@ class _ChildWordsStatisticsPageState extends State<ChildWordsStatisticsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          'Word Statistics',
-          style: TextStyle(color: Colors.black), // Black text in AppBar
-        ),
-        backgroundColor: Colors.white, // White background for AppBar
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.black), // Black back icon
-          onPressed: () => Navigator.of(context).pop(),
-        ),
-      ),
       body: Container(
         color: Color(0xFF6A0DAD), // Purple background for the page
         child: SafeArea(
           child: Column(
             children: [
+              Container(
+                padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    IconButton(
+                      icon: const Icon(Icons.arrow_back, color: Colors.white), // Icon color
+                      onPressed: () => Navigator.pop(context),
+                    ),
+                    const Text(
+                      'Word Statistics',
+                      style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white, // Text color
+                      ),
+                    ),
+                    const SizedBox(width: 48), // For symmetry
+                  ],
+                ),
+              ),
               _buildFilterSection(),
               Expanded(
                 child: _isLoading
@@ -100,7 +110,8 @@ class _ChildWordsStatisticsPageState extends State<ChildWordsStatisticsPage> {
                                           Text(stat.targetWord,
                                               style: TextStyle(
                                                   fontSize: 24,
-                                                  fontWeight: FontWeight.bold)),
+                                                  fontWeight: FontWeight.bold,
+                                              color: Colors.purple)),
                                           Divider(),
                                           _buildStatisticRow('Total Attempts', '${stat.totalAttempts}'),
                                           Divider(),
@@ -131,7 +142,7 @@ class _ChildWordsStatisticsPageState extends State<ChildWordsStatisticsPage> {
 
   Widget _buildFilterSection() {
     return ExpansionTile(
-      title: Text("Show Filters", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+      title: Text("Show Filters", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white)),
       initiallyExpanded: false,
       children: <Widget>[
         Padding(

@@ -77,7 +77,7 @@ namespace Chomskyspark.Controllers
             var userId = int.Parse(HttpContext.Items["UserId"] as string);
             string imageUrl = string.Empty;
             IEnumerable<RecognizedObject> recognizedObjects = new List<RecognizedObject>();
-            while (recognizedObjects.Count() == 0) 
+            while (recognizedObjects.Count() <= 1) 
             { 
                 imageUrl = await IImageGeneratorService.GenerateImage(userId);
                 recognizedObjects = await IObjectionService.DetectImageAsync(imageUrl, false, userId);

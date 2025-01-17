@@ -26,6 +26,7 @@ class _ChildImprovementAreasPageState extends State<ChildImprovementAreasPage> {
   Future<void> _fetchWordsStatistics() async {
     try {
       final stats = await statisticsProvider.fetchImprovementAreas(widget.userId);
+      print(stats);
       setState(() {
         _wordsStatistics = stats;
         _isLoading = false;
@@ -49,13 +50,12 @@ class _ChildImprovementAreasPageState extends State<ChildImprovementAreasPage> {
           child: Column(
             children: [
               Container(
-                color: Colors.white, // Top bar background color
                 padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     IconButton(
-                      icon: const Icon(Icons.arrow_back, color: Colors.black), // Icon color
+                      icon: const Icon(Icons.arrow_back, color: Colors.white), // Icon color
                       onPressed: () => Navigator.pop(context),
                     ),
                     const Text(
@@ -63,7 +63,7 @@ class _ChildImprovementAreasPageState extends State<ChildImprovementAreasPage> {
                       style: TextStyle(
                         fontSize: 24,
                         fontWeight: FontWeight.bold,
-                        color: Colors.black, // Text color
+                        color: Colors.white, // Text color
                       ),
                     ),
                     const SizedBox(width: 48), // For symmetry

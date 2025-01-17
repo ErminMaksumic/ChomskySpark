@@ -9,6 +9,7 @@ import 'package:shop/screens/paretns-monitoring/child_improvement_areas.dart';
 import 'package:shop/screens/paretns-monitoring/child_statistics.dart';
 import 'package:shop/screens/paretns-monitoring/child_words_statistics.dart';
 import 'package:shop/screens/paretns-monitoring/child_daily_statistics.dart';
+import 'package:shop/screens/paretns-monitoring/word_for_image.dart';
 import 'package:shop/screens/qr_code/generate_qr.dart';
 import '../../../utils/auth_helper.dart';
 
@@ -25,7 +26,7 @@ class ChildHomeScreen extends StatelessWidget {
             Container(
               decoration: BoxDecoration(
                 image: DecorationImage(
-                  image: AssetImage('assets/images/background.png'),
+                  image: AssetImage('assets/images/bg.png'),
                   fit: BoxFit.cover,
                 ),
               ),
@@ -36,7 +37,7 @@ class ChildHomeScreen extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
                   margin: const EdgeInsets.only(top: 20.0),
                   decoration: BoxDecoration(
-                    color: Colors.blue.withOpacity(0.02),
+                    color: Color(0xFF422A74).withOpacity(0.2),
                   ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -52,24 +53,20 @@ class ChildHomeScreen extends StatelessWidget {
                     ],
                   ),
                 ),
-
-                // Counter Circle with Shadow
                 Padding(
                   padding: const EdgeInsets.only(top: 9.0),
                   child: Center(
                     child: GestureDetector(
-                      onTap: () {
-                        // Add button functionality
-                      },
+                      onTap: () {},
                       child: Container(
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.blue.withOpacity(0.2),
+                              color: Color(0xFF9D58D5).withOpacity(0.3),
                               spreadRadius: 4,
                               blurRadius: 8,
-                              offset: Offset(4, 4), // Shadow position
+                              offset: Offset(4, 4),
                             ),
                           ],
                         ),
@@ -84,9 +81,17 @@ class ChildHomeScreen extends StatelessWidget {
                                 style: TextStyle(
                                   fontSize: 30,
                                   fontWeight: FontWeight.bold,
+                                  color: Color(0xFF422A74),
                                 ),
                               ),
-                              Text('Counter'),
+                              Text(
+                                'Counter',
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  color: Color(0xFF422A74),
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
                             ],
                           ),
                         ),
@@ -95,49 +100,27 @@ class ChildHomeScreen extends StatelessWidget {
                   ),
                 ),
                 Spacer(),
-
-                // Main Content
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20.0),
                   child: Column(
                     children: [
-                      // Welcome Text
-                      Text(
-                        'You are doing Excellent,',
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      Text(
-                        'Nickname',
-                        style: TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.blueAccent,
-                        ),
-                      ),
-                      SizedBox(height: 20),
-
-                      // Buttons Row
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          // Find Object Button
                           Container(
                             decoration: BoxDecoration(
-                              color: Colors.purple,
-                              borderRadius: BorderRadius.circular(10),
+                              color: Color(0xFF9D58D5),
+                              borderRadius: BorderRadius.circular(15),
                               boxShadow: [
                                 BoxShadow(
                                   color: Colors.black.withOpacity(0.2),
                                   spreadRadius: 2,
                                   blurRadius: 2,
-                                  offset: Offset(2, 4), // Drop shadow position
+                                  offset: Offset(2, 4),
                                 ),
                               ],
                             ),
-                            child: ElevatedButton(
+                            child: ElevatedButton.icon(
                               onPressed: () {
                                 Navigator.push(
                                   context,
@@ -146,64 +129,73 @@ class ChildHomeScreen extends StatelessWidget {
                                   ),
                                 );
                               },
-                              child: Text('Find Objects'),
+                              icon: Icon(Icons.search, color: Colors.white),
+                              label: Text(
+                                'Find Object',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  color: Colors.white,
+                                ),
+                              ),
                               style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.transparent, // Set background to transparent to show the shadow
+                                backgroundColor: Colors.transparent,
                                 foregroundColor: Colors.white,
                                 shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10),
+                                  borderRadius: BorderRadius.circular(15),
                                 ),
-                                padding: EdgeInsets.symmetric(horizontal: 23, vertical: 10),
+                                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
                               ),
                             ),
                           ),
                           SizedBox(width: 10),
-
-                          // Discover a Word Button
                           Container(
                             decoration: BoxDecoration(
-                              color: Colors.purple,
-                              borderRadius: BorderRadius.circular(10),
+                              color: Color(0xFF9D58D5),
+                              borderRadius: BorderRadius.circular(15),
                               boxShadow: [
                                 BoxShadow(
                                   color: Colors.black.withOpacity(0.2),
                                   spreadRadius: 2,
                                   blurRadius: 2,
-                                  offset: Offset(2, 4), // Drop shadow position
+                                  offset: Offset(2, 4),
                                 ),
                               ],
                             ),
-                            child: ElevatedButton(
+                            child: ElevatedButton.icon(
                               onPressed: () {
                                 Navigator.push(
                                   context,
-                                  MaterialPageRoute(
-                                    builder: (context) => DiscoverWordsPage(),
+                                  MaterialPageRoute(builder: (context) => DiscoverWordsPage(),
                                   ),
                                 );
                               },
-                              child: Text('Discover a Word'),
+                              icon: Icon(Icons.lightbulb_outline, color: Colors.white),
+                              label: Text(
+                                'Discover a Word',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  color: Colors.white,
+                                ),
+                              ),
                               style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.transparent, // Set background to transparent to show the shadow
+                                backgroundColor: Colors.transparent,
                                 foregroundColor: Colors.white,
                                 shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10),
+                                  borderRadius: BorderRadius.circular(15),
                                 ),
-                                padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+                                padding: EdgeInsets.symmetric(horizontal: 15, vertical: 12),
                               ),
                             ),
                           ),
                         ],
                       ),
                       SizedBox(height: 20),
-
-                      // Image Container with Shadow
                       Container(
-                        height: 245,
+                        height: 300,
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(15),
                           image: DecorationImage(
-                            image: AssetImage('assets/images/try_image.png'),
+                            image: AssetImage('assets/images/image.png'),
                             fit: BoxFit.cover,
                           ),
                           boxShadow: [
@@ -211,18 +203,16 @@ class ChildHomeScreen extends StatelessWidget {
                               color: Colors.black.withOpacity(0.3),
                               spreadRadius: 2,
                               blurRadius: 8,
-                              offset: Offset(4, 4), // Position of the shadow
+                              offset: Offset(4, 4),
                             ),
                           ],
                         ),
                       ),
                       SizedBox(height: 20),
-
-                      // Take a Picture Button with Shadow
                       Container(
                         decoration: BoxDecoration(
-                          color: Colors.purple,
-                          borderRadius: BorderRadius.circular(10),
+                          color: Color(0xFF9D58D5),
+                          borderRadius: BorderRadius.circular(15),
                           boxShadow: [
                             BoxShadow(
                               color: Colors.black.withOpacity(0.3),
@@ -237,12 +227,18 @@ class ChildHomeScreen extends StatelessWidget {
                             testFileUpload2(context);
                           },
                           icon: Icon(Icons.camera_alt, color: Colors.white),
-                          label: Text('Take a Picture'),
+                          label: Text(
+                            'Take a Picture',
+                            style: TextStyle(
+                              fontSize: 16,
+                              color: Colors.white,
+                            ),
+                          ),
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.transparent, // Set background to transparent to show the shadow
+                            backgroundColor: Colors.transparent,
                             foregroundColor: Colors.white,
                             shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10),
+                              borderRadius: BorderRadius.circular(15),
                             ),
                             padding: EdgeInsets.symmetric(horizontal: 60, vertical: 15),
                           ),
@@ -260,10 +256,32 @@ class ChildHomeScreen extends StatelessWidget {
     );
   }
 
+  // Helper method to build Drawer items
+  Widget _buildDrawerItem(BuildContext context,
+      {required IconData icon, required String title, required VoidCallback onTap}) {
+    return ListTile(
+      leading: Icon(
+        icon,
+        color: Colors.white, // Changed to white
+      ),
+      title: Text(
+        title,
+        style: TextStyle(
+          fontSize: 16,
+          fontWeight: FontWeight.bold,
+          color: Colors.white, // White text color
+        ),
+      ),
+      onTap: onTap,
+      hoverColor: Colors.purple.withOpacity(0.1), // Hover effect
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10), // Rounded corners
+      ),
+    );
+  }
+
   Future<void> testFileUpload(BuildContext context) async {
-
     final picker = ImagePicker();
-
     final pickedFile = await picker.pickImage(source: ImageSource.camera);
 
     if (pickedFile != null) {
@@ -288,14 +306,14 @@ class ChildHomeScreen extends StatelessWidget {
 
   //TODO: Remove after testing
   Future<void> testFileUpload2(BuildContext context) async {
-
-    var imageUrl = "/uploads/chomskyspark/20250107_001739_914122bb-47ac-4e9b-b112-48c8598e56f3(1).jpg";//await fileProvider.sendFile(file);
+    var imageUrl = "/uploads/chomskyspark/20250107_001739_914122bb-47ac-4e9b-b112-48c8598e56f3(1).jpg";
     imageUrl = "/uploads/chomskyspark/20250107_152052_1bdf3a8f-2d6e-48b2-bc5e-b0eeffa5ac29.jpg";
+    imageUrl = "https://plus.unsplash.com/premium_photo-1663075817635-90ecf218ee5f?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D";
     Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => ObjectDetectionPage(
-          imageUrl: "https://api.thorhof-bestellungen.at${imageUrl}",
+          imageUrl: "${imageUrl}",
         ),
       ),
     );

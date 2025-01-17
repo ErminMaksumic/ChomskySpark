@@ -1,4 +1,6 @@
 import 'dart:async';
+import 'dart:math';
+import 'package:confetti/confetti.dart';
 import 'package:flutter/material.dart';
 import 'package:shop/models/learned_word.dart';
 import 'package:shop/models/recognized_object.dart';
@@ -21,7 +23,7 @@ class DiscoverWordsPage extends StatefulWidget {
 class _DiscoverWordsPageState extends State<DiscoverWordsPage> {
   late List<RecognizedObject> recognizedObjects = [];
   late String imageUrl = "";
-
+  late ConfettiController _confettiController = ConfettiController(duration: const Duration(seconds: 10));
   final TextToSpeechHelper ttsService = TextToSpeechHelper();
   final ObjectDetectionAttemptProvider objectDetectionAttemptProvider = ObjectDetectionAttemptProvider();
   final LearnedWordProvider learnedWordProvider = LearnedWordProvider();
@@ -81,6 +83,7 @@ class _DiscoverWordsPageState extends State<DiscoverWordsPage> {
   void dispose() {
     timer?.cancel();
     ttsService.stop();
+    _confettiController.dispose();
     super.dispose();
   }
 
@@ -90,6 +93,7 @@ class _DiscoverWordsPageState extends State<DiscoverWordsPage> {
       appBar: AppBar(
         title: Text('Discover Words'),
         actions: [
+          Text("Both languages"),
           Switch(
             value: Authorization.useBothLanguages,
             onChanged: (value) {
@@ -204,11 +208,17 @@ class _DiscoverWordsPageState extends State<DiscoverWordsPage> {
               learnedWordProvider.insert(insertData);
             }
 
-            if (recognizedObjects.length == foundObjects.length && timer!.isActive) {
-              timer!.cancel();
-              Future.delayed(Duration(seconds: 2), () {
-                _showDialog();
-              });
+            print(recognizedObjects.length == foundObjects.length);
+            print(timer!.isActive);
+
+            if (timer!.isActive) {
+              _showDialogCongratulations();
+              if (recognizedObjects.length == foundObjects.length) {
+                timer!.cancel();
+                Future.delayed(Duration(seconds: 6), () {
+                  _showDialogDiscoveredWords();
+                });
+              }
             }
           },
 
@@ -226,7 +236,7 @@ class _DiscoverWordsPageState extends State<DiscoverWordsPage> {
     }).toList();
   }
 
-  void _showDialog() {
+  void _showDialogDiscoveredWords() {
     var objects = foundObjects.join(",");
     showDialog(
       context: context,
@@ -290,6 +300,91 @@ class _DiscoverWordsPageState extends State<DiscoverWordsPage> {
 
     ttsService.speak("Well done! You discovered the following words: ${objects}");
   }
+
+  void _showDialogCongratulations() {
+
+    var objects = foundObjects.join(",");
+
+    showDialog(
+      context: context,
+      barrierDismissible: false, // Prevent closing the dialog without interaction
+      builder: (context) => AlertDialog(
+        contentPadding: const EdgeInsets.all(16.0),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        content: SizedBox(
+          height: 200,
+          child: Stack(
+            alignment: Alignment.center,
+            children: [
+              // Confetti animation with star-shaped particles
+              ConfettiWidget(
+                confettiController: _confettiController,
+                blastDirectionality: BlastDirectionality.explosive,
+                shouldLoop: false,
+                // Custom colors (purple and other playful colors)
+                colors: [Color(0xFF9D58D5), Color(0xFF422A74), Colors.yellow, Colors.pink, Colors.blue],
+                emissionFrequency: 0.1, // More frequent emissions
+                gravity: 0.5, // Increased gravity for faster fall
+                maxBlastForce: 30, // Maximum blast force
+                minBlastForce: 10, // Minimum blast force
+                numberOfParticles: 25, // More particles per emission
+                maximumSize: const Size(25, 25), // Larger stars
+                minimumSize: const Size(15, 15), // Smaller stars
+                particleDrag: 0.02, // Reduced drag for smoother movement
+                strokeWidth: 0, // Remove borders
+                createParticlePath: (Size size) {
+                  // Create a star-shaped path for the particles
+                  double degToRad(double deg) => deg * (pi / 180.0);
+
+                  const numberOfPoints = 5;
+                  final halfWidth = size.width / 2;
+                  final externalRadius = halfWidth;
+                  final internalRadius = halfWidth / 2.5;
+                  final degreesPerStep = degToRad(360 / numberOfPoints);
+                  final halfDegreesPerStep = degreesPerStep / 2;
+                  final path = Path();
+                  final fullAngle = degToRad(360);
+
+                  path.moveTo(size.width, halfWidth);
+
+                  for (double step = 0; step < fullAngle; step += degreesPerStep) {
+                    path.lineTo(
+                        halfWidth + externalRadius * cos(step),
+                        halfWidth + externalRadius * sin(step));
+                    path.lineTo(
+                        halfWidth + internalRadius * cos(step + halfDegreesPerStep),
+                        halfWidth + internalRadius * sin(step + halfDegreesPerStep));
+                  }
+                  path.close();
+                  return path;
+                },
+              ),
+              // Text in the pop-up
+              const Text(
+                "Congratulations! 🎉",
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black),
+              ),
+            ],
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+              _confettiController.stop();
+            },
+            child: const Text("OK", style: TextStyle(fontSize: 18)),
+          ),
+        ],
+      ),
+    );
+
+    _confettiController.play();
+
+    ttsService.findObject(objects, sentenceTemplate: SpeechMessages.Success);
+  }
+
 
   String _formatDuration(Duration duration) {
     final minutes = duration.inMinutes;

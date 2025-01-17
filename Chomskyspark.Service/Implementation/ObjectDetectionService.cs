@@ -45,7 +45,7 @@ namespace Chomskyspark.Services.Implementation
 
             List<string> objectNames = detectedObjects.Select(obj => obj.Name).ToList();
 
-            if (objectNames.Count > 0) 
+            if (evaluateCategoriesSafety && objectNames.Count > 0) 
             { 
                 var checkedSafety = ISafetyService.EvaluateObjectSafety(objectNames);
                 List<RiskLevel> dangerousObjects = JsonSerializer.Deserialize<List<RiskLevel>>(checkedSafety);

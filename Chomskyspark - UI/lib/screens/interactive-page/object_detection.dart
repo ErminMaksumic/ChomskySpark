@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:math';
+import 'package:confetti/confetti.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shop/models/object_detection_attempt_model.dart';
@@ -24,8 +25,8 @@ class ObjectDetectionPage extends StatefulWidget {
 
 class _ObjectDetectionPageState extends State<ObjectDetectionPage> {
   final TextToSpeechHelper ttsService = TextToSpeechHelper();
-  final ObjectDetectionAttemptProvider objectDetectionAttemptProvider =
-      ObjectDetectionAttemptProvider();
+  final ObjectDetectionAttemptProvider objectDetectionAttemptProvider = ObjectDetectionAttemptProvider();
+  final ConfettiController _confettiController = ConfettiController(duration: const Duration(seconds: 10));
   late String randomWord;
   late List<String> foundObjects;
   late List<RecognizedObject> recognizedObjects = [];
@@ -87,6 +88,7 @@ class _ObjectDetectionPageState extends State<ObjectDetectionPage> {
   void dispose() {
     timer?.cancel();
     ttsService.stop();
+    _confettiController.dispose();
     super.dispose();
   }
 
@@ -96,6 +98,7 @@ class _ObjectDetectionPageState extends State<ObjectDetectionPage> {
       appBar: AppBar(
         title: Text('Object Detection'),
         actions: [
+          Text("Both languages"),
           Switch(
             value: Authorization.useBothLanguages,
             onChanged: (value) {
@@ -255,73 +258,90 @@ class _ObjectDetectionPageState extends State<ObjectDetectionPage> {
 
     showDialog(
       context: context,
+      barrierDismissible: false, // Prevent closing the dialog without interaction
       builder: (context) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        backgroundColor: Colors.white,
-        title: Center(
-          child: Text(
-            "\uD83C\uDF89 Great Job!",
-            style: TextStyle(
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
-              color: Colors.purple,
-            ),
+        contentPadding: const EdgeInsets.all(16.0),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        content: SizedBox(
+          height: 200,
+          child: Stack(
+            alignment: Alignment.center,
+            children: [
+              // Confetti animation with star-shaped particles
+              ConfettiWidget(
+                confettiController: _confettiController,
+                blastDirectionality: BlastDirectionality.explosive,
+                shouldLoop: false,
+                // Custom colors (purple and other playful colors)
+                colors: [Color(0xFF9D58D5), Color(0xFF422A74), Colors.yellow, Colors.pink, Colors.blue],
+                emissionFrequency: 0.1, // More frequent emissions
+                gravity: 0.5, // Increased gravity for faster fall
+                maxBlastForce: 30, // Maximum blast force
+                minBlastForce: 10, // Minimum blast force
+                numberOfParticles: 25, // More particles per emission
+                maximumSize: const Size(25, 25), // Larger stars
+                minimumSize: const Size(15, 15), // Smaller stars
+                particleDrag: 0.02, // Reduced drag for smoother movement
+                strokeWidth: 0, // Remove borders
+                createParticlePath: (Size size) {
+                  // Create a star-shaped path for the particles
+                  double degToRad(double deg) => deg * (pi / 180.0);
+
+                  const numberOfPoints = 5;
+                  final halfWidth = size.width / 2;
+                  final externalRadius = halfWidth;
+                  final internalRadius = halfWidth / 2.5;
+                  final degreesPerStep = degToRad(360 / numberOfPoints);
+                  final halfDegreesPerStep = degreesPerStep / 2;
+                  final path = Path();
+                  final fullAngle = degToRad(360);
+
+                  path.moveTo(size.width, halfWidth);
+
+                  for (double step = 0; step < fullAngle; step += degreesPerStep) {
+                    path.lineTo(
+                        halfWidth + externalRadius * cos(step),
+                        halfWidth + externalRadius * sin(step));
+                    path.lineTo(
+                        halfWidth + internalRadius * cos(step + halfDegreesPerStep),
+                        halfWidth + internalRadius * sin(step + halfDegreesPerStep));
+                  }
+                  path.close();
+                  return path;
+                },
+              ),
+              // Text in the pop-up
+              const Text(
+                "Congratulations! 🎉",
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black),
+              ),
+            ],
           ),
         ),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Image.asset(
-              'assets/images/congrats.png',
-              height: 100,
-              fit: BoxFit.cover,
-            ),
-            SizedBox(height: 10),
-            Text(
-              "You found the object: $objectName",
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 18,
-                color: Colors.black87,
-              ),
-            ),
-          ],
-        ),
         actions: [
-          Center(
-            child: ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(15),
-                ),
-                backgroundColor: Colors.purple,
-              ),
-              onPressed: () {
-                Navigator.of(context).pop();
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop();
 
-                if (foundObjects.length == recognizedObjects.length) {
-                  Navigator.of(context).pushReplacementNamed(Authorization.childLogged ? childHomeScreenRoute : homeScreenRoute);
-                } else {
-                  setState(() {
-                    randomWord = getRandomObjectName(recognizedObjects);
-                    ttsService.findObject(randomWord,
-                        sentenceTemplate: SpeechMessages.Find);
-                  });
-                }
-              },
-              child: Text(
-                "Continue",
-                style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 16,
-                ),
-              ),
-            ),
+              if (foundObjects.length == recognizedObjects.length) {
+                Navigator.of(context).pushReplacementNamed(Authorization.childLogged ? childHomeScreenRoute : homeScreenRoute);
+              } else {
+                setState(() {
+                  randomWord = getRandomObjectName(recognizedObjects);
+                  ttsService.findObject(randomWord,
+                      sentenceTemplate: SpeechMessages.Find);
+                });
+              }
+              _confettiController.stop();
+            },
+            child: const Text("OK", style: TextStyle(fontSize: 18)),
           ),
         ],
       ),
     );
+
+    _confettiController.play();
 
     ttsService.findObject(randomWord, sentenceTemplate: SpeechMessages.Success);
   }

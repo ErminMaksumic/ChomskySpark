@@ -105,19 +105,28 @@ class HomeScreen extends StatelessWidget {
                     padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                     child: Column(
                       children: [
-                        // QR Code Placeholder (Replace with actual QR code widget)
-                        Container(
-                          width: 150,
-                          height: 150,
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          child: Center(
-                            child: Icon(
-                              Icons.qr_code,
-                              size: 100,
-                              color: Colors.black,
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => GenerateQrPage()
+                              ),
+                            );
+                          },
+                          child: Container(
+                            width: 150,
+                            height: 150,
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            child: Center(
+                              child: Icon(
+                                Icons.qr_code,
+                                size: 100,
+                                color: Colors.black,
+                              ),
                             ),
                           ),
                         ),
@@ -133,6 +142,7 @@ class HomeScreen extends StatelessWidget {
                       ],
                     ),
                   ),
+
                   // Menu Items
                   _buildDrawerItem(
                     context,
@@ -194,37 +204,21 @@ class HomeScreen extends StatelessWidget {
                       );
                     },
                   ),
+                  _buildDrawerItem(
+                    context,
+                    icon: Icons.bookmarks_outlined,
+                    title: 'Words for Images',
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => WordForImagePage(),
+                        ),
+                      );
+                    },
+                  ),
                 ],
               ),
-
-              ListTile(
-                leading: Icon(Icons.my_library_books_rounded),
-                title: Text('Words for images'),
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => WordForImagePage()
-
-                    ),
-                  );
-                },
-              ),
-
-              ListTile(
-                leading: Icon(Icons.qr_code),
-                title: Text("Connect your child's device"),
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => GenerateQrPage()
-
-                    ),
-                  );
-                },
-              ),
-
             ],
           ),
         ),

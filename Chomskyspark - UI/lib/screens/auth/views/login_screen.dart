@@ -167,7 +167,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       onTap: () {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => ChildHomeScreen()),
+                          MaterialPageRoute(builder: (context) => QrCodeScanPage()),
                         );
                       },
                       child: Row(
