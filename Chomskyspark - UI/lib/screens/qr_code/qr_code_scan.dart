@@ -1,8 +1,8 @@
+import 'package:chomskyspark/screens/home/views/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:provider/provider.dart';
 import 'package:chomskyspark/providers/user_provider.dart';
-import 'package:chomskyspark/screens/home/views/child_home_screen.dart';
 import 'package:chomskyspark/utils/auth_helper.dart';
 
 class QrCodeScanPage extends StatelessWidget {
@@ -30,7 +30,7 @@ class QrCodeScanPage extends StatelessWidget {
                 Authorization.childLogged = true;
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const ChildHomeScreen()),
+                  MaterialPageRoute(builder: (context) => const HomeScreen()),
                 );
               }
             }

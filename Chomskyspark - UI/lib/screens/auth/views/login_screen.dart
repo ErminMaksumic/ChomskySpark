@@ -34,8 +34,6 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     _userProvider = Provider.of(context, listen: false);
     _languageProvider = Provider.of(context, listen: false);
-    _emailController.text = "ermin@edu.fit.ba";
-    _passwordController.text = "ermin123";
     final Size size = MediaQuery.of(context).size;
     return Scaffold(
       body: SingleChildScrollView(
