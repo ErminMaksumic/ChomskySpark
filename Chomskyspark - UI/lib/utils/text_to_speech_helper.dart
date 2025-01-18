@@ -39,15 +39,16 @@ class TextToSpeechHelper {
 
     String translatedWords = word;
 
-    if (Authorization.useBothLanguages){
+    if (Authorization.useBothLanguages) {
       translatedWords = "";
       for (UserLanguage userLanguage in Authorization.user!.userLanguages!) {
-
-        if (userLanguage.type == "Secondary"){
+        if (userLanguage.type == "Secondary") {
+          _setLanguage(userLanguage.language!.code!);
           translatedWords += ". In ${userLanguage.language!.name}";
-          translatedWords += await _languageProvider.translateWord(word, userLanguage.language!.code!) ?? "";
-        }
-        else{
+          translatedWords += await _languageProvider.translateWord(
+                  word, userLanguage.language!.code!) ??
+              "";
+        } else {
           translatedWords += word;
         }
       }
