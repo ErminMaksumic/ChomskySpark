@@ -21,7 +21,7 @@ namespace Chomskyspark.Controllers
         [HttpPost]
         public virtual Task<IEnumerable<RecognizedObject>> DetectImage([FromBody] string imageUrl)
         {
-            return IObjectionService.DetectImageAsync(imageUrl, false, int.Parse(HttpContext.Items["UserId"] as string));
+            return IObjectionService.DetectImageAsync(imageUrl, true, int.Parse(HttpContext.Items["UserId"] as string));
         }
 
         [HttpGet]

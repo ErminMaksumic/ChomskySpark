@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:qr_flutter/qr_flutter.dart';
 import 'package:shop/providers/file_provider.dart';
 import 'package:shop/screens/interactive-page/discover_words.dart';
 import 'package:shop/screens/interactive-page/find_objects.dart';
@@ -115,17 +116,22 @@ class HomeScreen extends StatelessWidget {
                             );
                           },
                           child: Container(
-                            width: 150,
-                            height: 150,
+                            width: 170,
+                            height: 170,
                             decoration: BoxDecoration(
                               color: Colors.white,
                               borderRadius: BorderRadius.circular(10),
                             ),
                             child: Center(
-                              child: Icon(
-                                Icons.qr_code,
-                                size: 100,
-                                color: Colors.black,
+                              child: QrImageView(
+                                data: "${Authorization.user!.id}",
+                                size: 165,
+                                embeddedImageStyle: QrEmbeddedImageStyle(
+                                  size: const Size(
+                                    165,
+                                    165,
+                                  ),
+                                ),
                               ),
                             ),
                           ),
@@ -329,7 +335,7 @@ class HomeScreen extends StatelessWidget {
                                 ),
                               ],
                             ),
-                            child: ElevatedButton.icon(
+                            child: ElevatedButton(
                               onPressed: () {
                                 Navigator.push(
                                   context,
@@ -338,25 +344,29 @@ class HomeScreen extends StatelessWidget {
                                   ),
                                 );
                               },
-                              icon: Icon(Icons.search, color: Colors.white),
-                              label: Text(
-                                'Find Object',
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  color: Colors.white,
-                                ),
-                              ),
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: Colors.transparent,
-                                foregroundColor: Colors.white,
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(15),
                                 ),
-                                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                                padding: EdgeInsets.zero,
+                              ),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(15),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Image.asset(
+                                    'assets/images/find_object.png',
+                                    fit: BoxFit.cover,
+                                    height: 110,
+                                    width: 110,
+                                  ),
+                                ),
                               ),
                             ),
                           ),
-                          SizedBox(width: 10),
+
+                          SizedBox(width: 20),
                           Container(
                             decoration: BoxDecoration(
                               color: Color(0xFF9D58D5),
@@ -370,29 +380,33 @@ class HomeScreen extends StatelessWidget {
                                 ),
                               ],
                             ),
-                            child: ElevatedButton.icon(
+                            child: ElevatedButton(
                               onPressed: () {
                                 Navigator.push(
                                   context,
-                                  MaterialPageRoute(builder: (context) => DiscoverWordsPage(),
+                                  MaterialPageRoute(
+                                    builder: (context) => DiscoverWordsPage(),
                                   ),
                                 );
                               },
-                              icon: Icon(Icons.lightbulb_outline, color: Colors.white),
-                              label: Text(
-                                'Discover a Word',
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  color: Colors.white,
-                                ),
-                              ),
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: Colors.transparent,
-                                foregroundColor: Colors.white,
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(15),
                                 ),
-                                padding: EdgeInsets.symmetric(horizontal: 15, vertical: 12),
+                                padding: EdgeInsets.zero, // Izbjegava dodavanje dodatnih paddinga
+                              ),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(15),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0), // Dodajte padding oko slike
+                                  child: Image.asset(
+                                    'assets/images/discover_word.png',
+                                    fit: BoxFit.cover,
+                                    height: 110, // Prilagodi visinu
+                                    width: 110, // Prilagodi širinu
+                                  ),
+                                ),
                               ),
                             ),
                           ),
@@ -400,7 +414,7 @@ class HomeScreen extends StatelessWidget {
                       ),
                       SizedBox(height: 20),
                       Container(
-                        height: 300,
+                        height: 185,
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(15),
                           image: DecorationImage(
@@ -431,25 +445,25 @@ class HomeScreen extends StatelessWidget {
                             ),
                           ],
                         ),
-                        child: ElevatedButton.icon(
+                        child: ElevatedButton(
                           onPressed: () {
-                            testFileUpload2(context);
+                            testFileUpload(context);
                           },
-                          icon: Icon(Icons.camera_alt, color: Colors.white),
-                          label: Text(
-                            'Take a Picture',
-                            style: TextStyle(
-                              fontSize: 16,
-                              color: Colors.white,
-                            ),
-                          ),
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.transparent,
-                            foregroundColor: Colors.white,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(15),
                             ),
-                            padding: EdgeInsets.symmetric(horizontal: 60, vertical: 15),
+                            padding: EdgeInsets.zero, // Izbjegava dodavanje dodatnih paddinga
+                          ),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(15),
+                            child: Image.asset(
+                              'assets/images/take_photo.png',
+                              fit: BoxFit.cover,
+                              height: 150, // Prilagodi visinu
+                              width: 150, // Prilagodi širinu
+                            ),
                           ),
                         ),
                       ),
