@@ -11,6 +11,7 @@ import 'package:chomskyspark/screens/paretns-monitoring/child_words_statistics.d
 import 'package:chomskyspark/screens/paretns-monitoring/child_daily_statistics.dart';
 import 'package:chomskyspark/screens/paretns-monitoring/word_for_image.dart';
 import 'package:chomskyspark/screens/qr_code/generate_qr.dart';
+import 'package:qr_flutter/qr_flutter.dart';
 import '../../../utils/auth_helper.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -110,22 +111,26 @@ class HomeScreen extends StatelessWidget {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => GenerateQrPage()
-                              ),
+                                  builder: (context) => GenerateQrPage()),
                             );
                           },
                           child: Container(
-                            width: 150,
-                            height: 150,
+                            width: 170,
+                            height: 170,
                             decoration: BoxDecoration(
                               color: Colors.white,
                               borderRadius: BorderRadius.circular(10),
                             ),
                             child: Center(
-                              child: Icon(
-                                Icons.qr_code,
-                                size: 100,
-                                color: Colors.black,
+                              child: QrImageView(
+                                data: "${Authorization.user!.id}",
+                                size: 165,
+                                embeddedImageStyle: QrEmbeddedImageStyle(
+                                  size: const Size(
+                                    165,
+                                    165,
+                                  ),
+                                ),
                               ),
                             ),
                           ),
@@ -235,7 +240,8 @@ class HomeScreen extends StatelessWidget {
             Column(
               children: [
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 20.0, vertical: 10.0),
                   margin: const EdgeInsets.only(top: 20.0),
                   decoration: BoxDecoration(
                     color: Color(0xFF422A74).withOpacity(0.2),
@@ -329,7 +335,7 @@ class HomeScreen extends StatelessWidget {
                                 ),
                               ],
                             ),
-                            child: ElevatedButton.icon(
+                            child: ElevatedButton(
                               onPressed: () {
                                 Navigator.push(
                                   context,
@@ -338,25 +344,28 @@ class HomeScreen extends StatelessWidget {
                                   ),
                                 );
                               },
-                              icon: Icon(Icons.search, color: Colors.white),
-                              label: Text(
-                                'Find Object',
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  color: Colors.white,
-                                ),
-                              ),
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: Colors.transparent,
-                                foregroundColor: Colors.white,
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(15),
                                 ),
-                                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                                padding: EdgeInsets.zero,
+                              ),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(15),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Image.asset(
+                                    'assets/images/find_object.png',
+                                    fit: BoxFit.cover,
+                                    height: 110,
+                                    width: 110,
+                                  ),
+                                ),
                               ),
                             ),
                           ),
-                          SizedBox(width: 10),
+                          SizedBox(width: 20),
                           Container(
                             decoration: BoxDecoration(
                               color: Color(0xFF9D58D5),
@@ -370,29 +379,35 @@ class HomeScreen extends StatelessWidget {
                                 ),
                               ],
                             ),
-                            child: ElevatedButton.icon(
+                            child: ElevatedButton(
                               onPressed: () {
                                 Navigator.push(
                                   context,
-                                  MaterialPageRoute(builder: (context) => DiscoverWordsPage(),
+                                  MaterialPageRoute(
+                                    builder: (context) => DiscoverWordsPage(),
                                   ),
                                 );
                               },
-                              icon: Icon(Icons.lightbulb_outline, color: Colors.white),
-                              label: Text(
-                                'Discover a Word',
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  color: Colors.white,
-                                ),
-                              ),
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: Colors.transparent,
-                                foregroundColor: Colors.white,
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(15),
                                 ),
-                                padding: EdgeInsets.symmetric(horizontal: 15, vertical: 12),
+                                padding: EdgeInsets
+                                    .zero, // Izbjegava dodavanje dodatnih paddinga
+                              ),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(15),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(
+                                      8.0), // Dodajte padding oko slike
+                                  child: Image.asset(
+                                    'assets/images/discover_word.png',
+                                    fit: BoxFit.cover,
+                                    height: 110, // Prilagodi visinu
+                                    width: 110, // Prilagodi širinu
+                                  ),
+                                ),
                               ),
                             ),
                           ),
@@ -400,7 +415,7 @@ class HomeScreen extends StatelessWidget {
                       ),
                       SizedBox(height: 20),
                       Container(
-                        height: 300,
+                        height: 185,
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(15),
                           image: DecorationImage(
@@ -431,25 +446,26 @@ class HomeScreen extends StatelessWidget {
                             ),
                           ],
                         ),
-                        child: ElevatedButton.icon(
+                        child: ElevatedButton(
                           onPressed: () {
-                            testFileUpload2(context);
+                            testFileUpload(context);
                           },
-                          icon: Icon(Icons.camera_alt, color: Colors.white),
-                          label: Text(
-                            'Take a Picture',
-                            style: TextStyle(
-                              fontSize: 16,
-                              color: Colors.white,
-                            ),
-                          ),
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.transparent,
-                            foregroundColor: Colors.white,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(15),
                             ),
-                            padding: EdgeInsets.symmetric(horizontal: 60, vertical: 15),
+                            padding: EdgeInsets
+                                .zero, // Izbjegava dodavanje dodatnih paddinga
+                          ),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(15),
+                            child: Image.asset(
+                              'assets/images/take_photo.png',
+                              fit: BoxFit.cover,
+                              height: 150, // Prilagodi visinu
+                              width: 150, // Prilagodi širinu
+                            ),
                           ),
                         ),
                       ),
@@ -467,7 +483,9 @@ class HomeScreen extends StatelessWidget {
 
   // Helper method to build Drawer items
   Widget _buildDrawerItem(BuildContext context,
-      {required IconData icon, required String title, required VoidCallback onTap}) {
+      {required IconData icon,
+      required String title,
+      required VoidCallback onTap}) {
     return ListTile(
       leading: Icon(
         icon,
@@ -515,9 +533,12 @@ class HomeScreen extends StatelessWidget {
 
   //TODO: Remove after testing
   Future<void> testFileUpload2(BuildContext context) async {
-    var imageUrl = "/uploads/chomskyspark/20250107_001739_914122bb-47ac-4e9b-b112-48c8598e56f3(1).jpg";
-    imageUrl = "/uploads/chomskyspark/20250107_152052_1bdf3a8f-2d6e-48b2-bc5e-b0eeffa5ac29.jpg";
-    imageUrl = "https://plus.unsplash.com/premium_photo-1663075817635-90ecf218ee5f?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D";
+    var imageUrl =
+        "/uploads/chomskyspark/20250107_001739_914122bb-47ac-4e9b-b112-48c8598e56f3(1).jpg";
+    imageUrl =
+        "/uploads/chomskyspark/20250107_152052_1bdf3a8f-2d6e-48b2-bc5e-b0eeffa5ac29.jpg";
+    imageUrl =
+        "https://plus.unsplash.com/premium_photo-1663075817635-90ecf218ee5f?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D";
     Navigator.push(
       context,
       MaterialPageRoute(
