@@ -38,6 +38,7 @@ class TextToSpeechHelper {
       translatedWords = "";
       for (UserLanguage userLanguage in Authorization.user!.userLanguages!) {
         if (userLanguage.type == "Secondary") {
+          _setLanguage(userLanguage.language!.code!);
           translatedWords += ". In ${userLanguage.language!.name}";
           translatedWords += await _languageProvider.translateWord(
                   word, userLanguage.language!.code!) ??
