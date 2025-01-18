@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:shop/models/word_for_image.dart';
-import 'package:shop/providers/word_for_image_provider.dart';
-import 'package:shop/utils/auth_helper.dart';
+import 'package:chomskyspark/models/word_for_image.dart';
+import 'package:chomskyspark/providers/word_for_image_provider.dart';
+import 'package:chomskyspark/utils/auth_helper.dart';
 
 class WordForImagePage extends StatefulWidget {
   @override

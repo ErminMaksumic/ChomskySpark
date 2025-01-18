@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:shop/providers/user_provider.dart';
-import 'package:shop/utils/auth_helper.dart';
+import 'package:chomskyspark/providers/user_provider.dart';
+import 'package:chomskyspark/utils/auth_helper.dart';
 import '../home/views/child_home_screen.dart';
 
 class QrCodeScanTestPage extends StatefulWidget {

@@ -1,17 +1,17 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:chomskyspark/providers/file_provider.dart';
+import 'package:chomskyspark/screens/interactive-page/discover_words.dart';
+import 'package:chomskyspark/screens/interactive-page/find_objects.dart';
+import 'package:chomskyspark/screens/interactive-page/object_detection.dart';
+import 'package:chomskyspark/screens/paretns-monitoring/child_improvement_areas.dart';
+import 'package:chomskyspark/screens/paretns-monitoring/child_statistics.dart';
+import 'package:chomskyspark/screens/paretns-monitoring/child_words_statistics.dart';
+import 'package:chomskyspark/screens/paretns-monitoring/child_daily_statistics.dart';
+import 'package:chomskyspark/screens/paretns-monitoring/word_for_image.dart';
+import 'package:chomskyspark/screens/qr_code/generate_qr.dart';
 import 'package:qr_flutter/qr_flutter.dart';
-import 'package:shop/providers/file_provider.dart';
-import 'package:shop/screens/interactive-page/discover_words.dart';
-import 'package:shop/screens/interactive-page/find_objects.dart';
-import 'package:shop/screens/interactive-page/object_detection.dart';
-import 'package:shop/screens/paretns-monitoring/child_improvement_areas.dart';
-import 'package:shop/screens/paretns-monitoring/child_statistics.dart';
-import 'package:shop/screens/paretns-monitoring/child_words_statistics.dart';
-import 'package:shop/screens/paretns-monitoring/child_daily_statistics.dart';
-import 'package:shop/screens/paretns-monitoring/word_for_image.dart';
-import 'package:shop/screens/qr_code/generate_qr.dart';
 import '../../../utils/auth_helper.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -111,8 +111,7 @@ class HomeScreen extends StatelessWidget {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => GenerateQrPage()
-                              ),
+                                  builder: (context) => GenerateQrPage()),
                             );
                           },
                           child: Container(
@@ -241,7 +240,8 @@ class HomeScreen extends StatelessWidget {
             Column(
               children: [
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 20.0, vertical: 10.0),
                   margin: const EdgeInsets.only(top: 20.0),
                   decoration: BoxDecoration(
                     color: Color(0xFF422A74).withOpacity(0.2),
@@ -365,7 +365,6 @@ class HomeScreen extends StatelessWidget {
                               ),
                             ),
                           ),
-
                           SizedBox(width: 20),
                           Container(
                             decoration: BoxDecoration(
@@ -394,12 +393,14 @@ class HomeScreen extends StatelessWidget {
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(15),
                                 ),
-                                padding: EdgeInsets.zero, // Izbjegava dodavanje dodatnih paddinga
+                                padding: EdgeInsets
+                                    .zero, // Izbjegava dodavanje dodatnih paddinga
                               ),
                               child: ClipRRect(
                                 borderRadius: BorderRadius.circular(15),
                                 child: Padding(
-                                  padding: const EdgeInsets.all(8.0), // Dodajte padding oko slike
+                                  padding: const EdgeInsets.all(
+                                      8.0), // Dodajte padding oko slike
                                   child: Image.asset(
                                     'assets/images/discover_word.png',
                                     fit: BoxFit.cover,
@@ -454,7 +455,8 @@ class HomeScreen extends StatelessWidget {
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(15),
                             ),
-                            padding: EdgeInsets.zero, // Izbjegava dodavanje dodatnih paddinga
+                            padding: EdgeInsets
+                                .zero, // Izbjegava dodavanje dodatnih paddinga
                           ),
                           child: ClipRRect(
                             borderRadius: BorderRadius.circular(15),
@@ -481,7 +483,9 @@ class HomeScreen extends StatelessWidget {
 
   // Helper method to build Drawer items
   Widget _buildDrawerItem(BuildContext context,
-      {required IconData icon, required String title, required VoidCallback onTap}) {
+      {required IconData icon,
+      required String title,
+      required VoidCallback onTap}) {
     return ListTile(
       leading: Icon(
         icon,
@@ -529,9 +533,12 @@ class HomeScreen extends StatelessWidget {
 
   //TODO: Remove after testing
   Future<void> testFileUpload2(BuildContext context) async {
-    var imageUrl = "/uploads/chomskyspark/20250107_001739_914122bb-47ac-4e9b-b112-48c8598e56f3(1).jpg";
-    imageUrl = "/uploads/chomskyspark/20250107_152052_1bdf3a8f-2d6e-48b2-bc5e-b0eeffa5ac29.jpg";
-    imageUrl = "https://plus.unsplash.com/premium_photo-1663075817635-90ecf218ee5f?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D";
+    var imageUrl =
+        "/uploads/chomskyspark/20250107_001739_914122bb-47ac-4e9b-b112-48c8598e56f3(1).jpg";
+    imageUrl =
+        "/uploads/chomskyspark/20250107_152052_1bdf3a8f-2d6e-48b2-bc5e-b0eeffa5ac29.jpg";
+    imageUrl =
+        "https://plus.unsplash.com/premium_photo-1663075817635-90ecf218ee5f?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D";
     Navigator.push(
       context,
       MaterialPageRoute(

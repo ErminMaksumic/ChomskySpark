@@ -1,20 +1,15 @@
 import 'package:flutter_tts/flutter_tts.dart';
-import 'package:shop/models/user_language.dart';
-import 'package:shop/utils/auth_helper.dart';
+import 'package:chomskyspark/models/user_language.dart';
+import 'package:chomskyspark/utils/auth_helper.dart';
 
 import '../providers/language_provider.dart';
 
 class TextToSpeechHelper {
   final FlutterTts _flutterTts = FlutterTts();
   List<UserLanguage>? languages = Authorization.user?.userLanguages;
-  List<String> languageCodes = [];
   final LanguageProvider _languageProvider = LanguageProvider();
   TextToSpeechHelper() {
     _initializeTTS();
-    languageCodes = languages!
-        .where((userLanguage) => userLanguage.language?.code != null)
-        .map((userLanguage) => userLanguage.language!.code!)
-        .toList();
   }
 
   void _initializeTTS() async {

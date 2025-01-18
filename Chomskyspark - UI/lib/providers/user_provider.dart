@@ -1,9 +1,9 @@
 import 'dart:convert';
 
-import 'package:shop/models/user.dart';
-import 'package:shop/providers/base_provider.dart';
-import 'package:shop/services/notification_service.dart';
-import 'package:shop/utils/auth_helper.dart';
+import 'package:chomskyspark/models/user.dart';
+import 'package:chomskyspark/providers/base_provider.dart';
+import 'package:chomskyspark/services/notification_service.dart';
+import 'package:chomskyspark/utils/auth_helper.dart';
 
 class UserProvider extends BaseProvider<User> {
   UserProvider() : super("User");

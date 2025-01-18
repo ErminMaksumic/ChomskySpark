@@ -1,4 +1,4 @@
-import 'package:shop/providers/base_provider.dart';
+import 'package:chomskyspark/providers/base_provider.dart';
 import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';

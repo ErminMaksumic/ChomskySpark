@@ -2,14 +2,14 @@ import 'dart:async';
 import 'dart:math';
 import 'package:confetti/confetti.dart';
 import 'package:flutter/material.dart';
-import 'package:shop/models/object_detection_attempt_model.dart';
-import 'package:shop/models/recognized_object.dart';
-import 'package:shop/providers/object_detection_attempt_provider.dart';
-import 'package:shop/providers/object_detection_provider.dart';
-import 'package:shop/route/route_constants.dart';
-import 'package:shop/utils/auth_helper.dart';
-import 'package:shop/utils/speech_messages.dart';
-import 'package:shop/utils/text_to_speech_helper.dart';
+import 'package:chomskyspark/models/object_detection_attempt_model.dart';
+import 'package:chomskyspark/models/recognized_object.dart';
+import 'package:chomskyspark/providers/object_detection_attempt_provider.dart';
+import 'package:chomskyspark/providers/object_detection_provider.dart';
+import 'package:chomskyspark/route/route_constants.dart';
+import 'package:chomskyspark/utils/auth_helper.dart';
+import 'package:chomskyspark/utils/speech_messages.dart';
+import 'package:chomskyspark/utils/text_to_speech_helper.dart';
 
 class FindObjectsPage extends StatefulWidget {
   FindObjectsPage({Key? key}) : super(key: key);

@@ -1,5 +1,5 @@
-import 'package:shop/models/learned_word.dart';
-import 'package:shop/providers/base_provider.dart';
+import 'package:chomskyspark/models/learned_word.dart';
+import 'package:chomskyspark/providers/base_provider.dart';
 
 class LearnedWordProvider
     extends BaseProvider<LearnedWord> {

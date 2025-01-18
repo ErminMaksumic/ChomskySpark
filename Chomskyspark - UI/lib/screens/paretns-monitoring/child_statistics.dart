@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:shop/models/user_statistics.dart';
-import 'package:shop/providers/statistics_provider.dart';
+import 'package:chomskyspark/models/user_statistics.dart';
+import 'package:chomskyspark/providers/statistics_provider.dart';
 
 class ChildStatisticsPage extends StatefulWidget {
   final int userId;
