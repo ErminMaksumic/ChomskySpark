@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
-import 'package:shop/models/daily_statistic.dart';
-import 'package:shop/providers/statistics_provider.dart';
+import 'package:chomskyspark/models/daily_statistic.dart';
+import 'package:chomskyspark/providers/statistics_provider.dart';
 
 class ChildDailyStatistics extends StatefulWidget {
   final int userId;

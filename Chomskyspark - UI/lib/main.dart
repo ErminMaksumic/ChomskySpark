@@ -1,13 +1,13 @@
+import 'package:chomskyspark/theme/app_theme.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart'; // Import Provider package
-import 'package:shop/providers/file_provider.dart';
-import 'package:shop/providers/language_provider.dart';
-import 'package:shop/providers/user_provider.dart'; // Import your UserProvider
-import 'package:shop/providers/word_for_image_provider.dart';
-import 'package:shop/route/route_constants.dart';
-import 'package:shop/route/router.dart' as router;
-import 'package:shop/theme/app_theme.dart';
+import 'package:chomskyspark/providers/file_provider.dart';
+import 'package:chomskyspark/providers/language_provider.dart';
+import 'package:chomskyspark/providers/user_provider.dart'; // Import your UserProvider
+import 'package:chomskyspark/providers/word_for_image_provider.dart';
+import 'package:chomskyspark/route/route_constants.dart';
+import 'package:chomskyspark/route/router.dart' as router;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

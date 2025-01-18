@@ -1,16 +1,16 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:shop/providers/file_provider.dart';
-import 'package:shop/screens/interactive-page/discover_words.dart';
-import 'package:shop/screens/interactive-page/find_objects.dart';
-import 'package:shop/screens/interactive-page/object_detection.dart';
-import 'package:shop/screens/paretns-monitoring/child_improvement_areas.dart';
-import 'package:shop/screens/paretns-monitoring/child_statistics.dart';
-import 'package:shop/screens/paretns-monitoring/child_words_statistics.dart';
-import 'package:shop/screens/paretns-monitoring/child_daily_statistics.dart';
-import 'package:shop/screens/paretns-monitoring/word_for_image.dart';
-import 'package:shop/screens/qr_code/generate_qr.dart';
+import 'package:chomskyspark/providers/file_provider.dart';
+import 'package:chomskyspark/screens/interactive-page/discover_words.dart';
+import 'package:chomskyspark/screens/interactive-page/find_objects.dart';
+import 'package:chomskyspark/screens/interactive-page/object_detection.dart';
+import 'package:chomskyspark/screens/paretns-monitoring/child_improvement_areas.dart';
+import 'package:chomskyspark/screens/paretns-monitoring/child_statistics.dart';
+import 'package:chomskyspark/screens/paretns-monitoring/child_words_statistics.dart';
+import 'package:chomskyspark/screens/paretns-monitoring/child_daily_statistics.dart';
+import 'package:chomskyspark/screens/paretns-monitoring/word_for_image.dart';
+import 'package:chomskyspark/screens/qr_code/generate_qr.dart';
 import '../../../utils/auth_helper.dart';
 
 class HomeScreen extends StatelessWidget {

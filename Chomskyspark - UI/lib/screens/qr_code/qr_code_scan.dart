@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:provider/provider.dart';
-import 'package:shop/providers/user_provider.dart';
-import 'package:shop/screens/home/views/child_home_screen.dart';
-import 'package:shop/utils/auth_helper.dart';
+import 'package:chomskyspark/providers/user_provider.dart';
+import 'package:chomskyspark/screens/home/views/child_home_screen.dart';
+import 'package:chomskyspark/utils/auth_helper.dart';
 
 class QrCodeScanPage extends StatelessWidget {
   late UserProvider _userProvider;

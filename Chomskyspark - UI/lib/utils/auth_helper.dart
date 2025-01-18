@@ -1,4 +1,4 @@
-import 'package:shop/models/user.dart';
+import 'package:chomskyspark/models/user.dart';
 
 class Authorization {
   static User? user;

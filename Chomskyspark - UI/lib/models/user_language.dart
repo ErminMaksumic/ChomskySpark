@@ -1,7 +1,7 @@
 // ignore: depend_on_referenced_packages
 import 'package:json_annotation/json_annotation.dart';
-import 'package:shop/models/language.dart';
-import 'package:shop/models/user.dart';
+import 'package:chomskyspark/models/language.dart';
+import 'package:chomskyspark/models/user.dart';
 part 'user_language.g.dart';
 
 @JsonSerializable()

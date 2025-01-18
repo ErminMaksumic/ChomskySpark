@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'dart:developer' as developer;
-import 'package:shop/utils/auth_helper.dart';
+import 'package:chomskyspark/utils/auth_helper.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart';
 import 'package:http/io_client.dart';

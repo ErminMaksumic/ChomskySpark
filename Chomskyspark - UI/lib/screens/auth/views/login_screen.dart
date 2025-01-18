@@ -3,17 +3,17 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
-import 'package:shop/constants.dart';
-import 'package:shop/providers/file_provider.dart';
-import 'package:shop/providers/language_provider.dart';
-import 'package:shop/providers/object_detection_provider.dart';
-import 'package:shop/providers/user_provider.dart';
-import 'package:shop/route/route_constants.dart';
-import 'package:shop/route/screen_export.dart';
-import 'package:shop/screens/home/views/child_home_screen.dart';
-import 'package:shop/screens/interactive-page/object_detection.dart';
-import 'package:shop/screens/qr_code/qr_code_scan.dart';
-import 'package:shop/utils/auth_helper.dart';
+import 'package:chomskyspark/constants.dart';
+import 'package:chomskyspark/providers/file_provider.dart';
+import 'package:chomskyspark/providers/language_provider.dart';
+import 'package:chomskyspark/providers/object_detection_provider.dart';
+import 'package:chomskyspark/providers/user_provider.dart';
+import 'package:chomskyspark/route/route_constants.dart';
+import 'package:chomskyspark/route/screen_export.dart';
+import 'package:chomskyspark/screens/home/views/child_home_screen.dart';
+import 'package:chomskyspark/screens/interactive-page/object_detection.dart';
+import 'package:chomskyspark/screens/qr_code/qr_code_scan.dart';
+import 'package:chomskyspark/utils/auth_helper.dart';
 import 'components/login_form.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -34,6 +34,8 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     _userProvider = Provider.of(context, listen: false);
     _languageProvider = Provider.of(context, listen: false);
+    _emailController.text = "ermin@edu.fit.ba";
+    _passwordController.text = "ermin123";
     final Size size = MediaQuery.of(context).size;
     return Scaffold(
       body: SingleChildScrollView(

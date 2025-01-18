@@ -1,5 +1,5 @@
-import 'package:shop/models/word_for_image.dart';
-import 'package:shop/providers/base_provider.dart';
+import 'package:chomskyspark/models/word_for_image.dart';
+import 'package:chomskyspark/providers/base_provider.dart';
 
 class WordForImageProvider
     extends BaseProvider<WordForImage> {

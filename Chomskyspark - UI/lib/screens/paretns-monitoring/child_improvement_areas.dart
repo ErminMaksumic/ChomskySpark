@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:shop/models/child_improvement_area.dart';
-import 'package:shop/providers/statistics_provider.dart';
+import 'package:chomskyspark/models/child_improvement_area.dart';
+import 'package:chomskyspark/providers/statistics_provider.dart';
 
 class ChildImprovementAreasPage extends StatefulWidget {
   final int userId;

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:shop/models/child_word_statistic.dart';
-import 'package:shop/providers/statistics_provider.dart';
+import 'package:chomskyspark/models/child_word_statistic.dart';
+import 'package:chomskyspark/providers/statistics_provider.dart';
 
 class ChildWordsStatisticsPage extends StatefulWidget {
   final int userId;

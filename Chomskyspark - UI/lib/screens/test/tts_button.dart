@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:shop/utils/text_to_speech_helper.dart';
+import 'package:chomskyspark/utils/text_to_speech_helper.dart';
 
 class TTSButton extends StatefulWidget {
   @override
