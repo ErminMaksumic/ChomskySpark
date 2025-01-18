@@ -1,3 +1,5 @@
+import 'package:chomskyspark/screens/home/views/home_screen.dart';
+import 'package:chomskyspark/utils/auth_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:chomskyspark/providers/user_provider.dart';
@@ -183,7 +185,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   Future<void> _register() async {
     try {
-      var user = await _userProvider.register({
+      await _userProvider.register({
         'firstName': _firstNameController.text,
         'lastName': _lastNameController.text,
         'email': _emailController.text,
@@ -193,6 +195,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
         'secondaryLanguageId': secondaryLanguageId,
       });
 
+      Authorization.user = await _userProvider.login(_emailController.text, _passwordController.text);
+
       showDialog(
         context: context,
         builder: (BuildContext context) => AlertDialog(
@@ -201,10 +205,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
               "You are registered as ${_firstNameController.text} ${_lastNameController.text}"),
           actions: [
             TextButton(
-              onPressed: () async => await Navigator.popAndPushNamed(
-                context,
-                emptyPaymentScreenRoute,
-              ),
+              onPressed: (){
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => HomeScreen()),
+                );
+              },
               child: const Text("Ok"),
             ),
           ],

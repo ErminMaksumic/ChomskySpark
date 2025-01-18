@@ -20,5 +20,11 @@ namespace Chomskyspark.Controllers
         {
             this.ILearnedWordService = ILearnedWordService;
         }
+
+        [HttpGet("get-learned-words-count-by-user-id/{userId}")]
+        public async Task<int> RegisterToken(int userId)
+        {
+            return await ILearnedWordService.GetLearnedWordsCountByUserId(userId);
+        }
     }
 }

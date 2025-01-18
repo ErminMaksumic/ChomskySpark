@@ -22,7 +22,7 @@ class _FindObjectsPageState extends State<FindObjectsPage> {
   final TextToSpeechHelper ttsService = TextToSpeechHelper();
   final ObjectDetectionAttemptProvider objectDetectionAttemptProvider = ObjectDetectionAttemptProvider();
   late ConfettiController _confettiController;
-  late String randomWord;
+  late String randomWord = "";
   late List<String> foundObjects;
   late List<RecognizedObject> recognizedObjects = [];
   late String imageUrl = "";

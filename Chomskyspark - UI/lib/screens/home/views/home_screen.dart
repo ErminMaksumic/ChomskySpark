@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:chomskyspark/providers/learned_word_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:chomskyspark/providers/file_provider.dart';
@@ -14,8 +15,33 @@ import 'package:chomskyspark/screens/qr_code/generate_qr.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import '../../../utils/auth_helper.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
+
+  @override
+  _HomeScreenState createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  final LearnedWordProvider learnedWordProvider = LearnedWordProvider();
+  int learnerWordsCounter = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    loadLearnedWordsCounter();
+  }
+
+  Future<void> loadLearnedWordsCounter() async {
+    try {
+      int counter = await learnedWordProvider.getLearnedWordsCount(Authorization.user!.id!);
+      setState(() {
+        learnerWordsCounter = counter;
+      });
+    } catch (error) {
+      print("Error loading learned words counter: $error");
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -293,7 +319,7 @@ class HomeScreen extends StatelessWidget {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Text(
-                                '0',
+                                learnerWordsCounter.toString(),
                                 style: TextStyle(
                                   fontSize: 30,
                                   fontWeight: FontWeight.bold,
@@ -301,7 +327,8 @@ class HomeScreen extends StatelessWidget {
                                 ),
                               ),
                               Text(
-                                'Counter',
+                                'Learned\nWords',
+                                textAlign: TextAlign.center,
                                 style: TextStyle(
                                   fontSize: 14,
                                   color: Color(0xFF422A74),
