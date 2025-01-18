@@ -1,9 +1,9 @@
 import 'dart:convert';
 
-import 'package:shop/models/language.dart';
-import 'package:shop/models/user.dart';
-import 'package:shop/providers/base_provider.dart';
-import 'package:shop/utils/auth_helper.dart';
+import 'package:chomskyspark/models/language.dart';
+import 'package:chomskyspark/models/user.dart';
+import 'package:chomskyspark/providers/base_provider.dart';
+import 'package:chomskyspark/utils/auth_helper.dart';
 
 class LanguageProvider extends BaseProvider<Language> {
   LanguageProvider() : super("Language");

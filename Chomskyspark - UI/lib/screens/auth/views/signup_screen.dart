@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:shop/providers/user_provider.dart';
-import 'package:shop/screens/auth/views/components/sign_up_form.dart';
-import 'package:shop/route/route_constants.dart';
+import 'package:chomskyspark/providers/user_provider.dart';
+import 'package:chomskyspark/screens/auth/views/components/sign_up_form.dart';
+import 'package:chomskyspark/route/route_constants.dart';
 import '../../../constants.dart';
 import '../../../models/language.dart';
 import '../../../providers/language_provider.dart';

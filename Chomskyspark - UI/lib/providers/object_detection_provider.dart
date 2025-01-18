@@ -1,9 +1,9 @@
 import 'dart:convert';
-import 'package:shop/models/recognized_object.dart';
-import 'package:shop/providers/base_provider.dart';
+import 'package:chomskyspark/models/recognized_object.dart';
+import 'package:chomskyspark/providers/base_provider.dart';
 import 'dart:io';
 
-import 'package:shop/utils/auth_helper.dart';
+import 'package:chomskyspark/utils/auth_helper.dart';
 
 class ObjectDetectionProvider extends BaseProvider<File> {
   ObjectDetectionProvider() : super("ObjectDetection");

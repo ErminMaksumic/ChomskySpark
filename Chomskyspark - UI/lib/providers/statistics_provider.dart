@@ -1,11 +1,11 @@
 import 'dart:convert';
 
-import 'package:shop/models/child_average_time.dart';
-import 'package:shop/models/child_improvement_area.dart';
-import 'package:shop/models/child_word_statistic.dart';
-import 'package:shop/models/daily_statistic.dart';
-import 'package:shop/models/user_statistics.dart';
-import 'package:shop/providers/base_provider.dart';
+import 'package:chomskyspark/models/child_average_time.dart';
+import 'package:chomskyspark/models/child_improvement_area.dart';
+import 'package:chomskyspark/models/child_word_statistic.dart';
+import 'package:chomskyspark/models/daily_statistic.dart';
+import 'package:chomskyspark/models/user_statistics.dart';
+import 'package:chomskyspark/providers/base_provider.dart';
 
 class StatisticsProvider
     extends BaseProvider<UserStatistics> {

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:qr_flutter/qr_flutter.dart';
-import 'package:shop/utils/auth_helper.dart';
+import 'package:chomskyspark/utils/auth_helper.dart';
 
 class GenerateQrPage extends StatelessWidget {
 
