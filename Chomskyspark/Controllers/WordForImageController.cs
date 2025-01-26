@@ -19,5 +19,11 @@ namespace Chomskyspark.Controllers
         {
             this.IWordForImageService = IWordForImageService;
         }
+
+        public override Task<IEnumerable<WordForImage>> Get([FromQuery] WordForImageSearchObject search)
+        {
+            search.UserId = int.Parse(HttpContext.Items["UserId"] as string);
+            return base.Get(search);
+        }
     }
 }

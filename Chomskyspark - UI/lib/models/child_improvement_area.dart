@@ -13,7 +13,7 @@ class ChildImprovementArea {
     return ChildImprovementArea(
       targetWord: json['targetWord'] as String,
       totalFailedAttempts: json['totalFailedAttempts'] as int,
-      failedPercentage: json['failedPercentage'] as double,
+      failedPercentage: (json['failedPercentage'] as num).toDouble(),
     );
   }
 

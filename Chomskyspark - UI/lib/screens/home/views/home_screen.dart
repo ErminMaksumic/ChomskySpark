@@ -586,6 +586,8 @@ class _HomeScreenState extends State<HomeScreen> {
       var imageUrl = await fileProvider.sendFile(file);
       imageUrl = "https://api.thorhof-bestellungen.at${imageUrl}";
 
+      //var imageUrl = "https://images.unsplash.com/photo-1592199279376-d48388291e22?q=80&w=2076&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D";
+
       Navigator.push(
         context,
         MaterialPageRoute(
@@ -607,6 +609,7 @@ class _HomeScreenState extends State<HomeScreen> {
         "/uploads/chomskyspark/20250107_152052_1bdf3a8f-2d6e-48b2-bc5e-b0eeffa5ac29.jpg";
     imageUrl =
         "https://plus.unsplash.com/premium_photo-1663075817635-90ecf218ee5f?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D";
+    imageUrl = "https://images.unsplash.com/photo-1592199279376-d48388291e22?q=80&w=2076&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D";
     Navigator.push(
       context,
       MaterialPageRoute(
