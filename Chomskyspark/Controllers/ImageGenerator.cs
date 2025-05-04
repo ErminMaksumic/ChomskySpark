@@ -1,6 +1,7 @@
 ﻿using Chomskyspark.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace Chomskyspark.Controllers
 {
@@ -41,6 +42,13 @@ namespace Chomskyspark.Controllers
         {
             var userId = int.Parse(HttpContext.Items["UserId"] as string);
             return await IImageGeneratorService.GetLearnedWordsCount(userId);
+        }
+
+        [HttpGet("story-strip")]
+        public virtual async Task<List<string>> GenerateStoryStripImages([FromQuery] int count = 5)
+        {
+            var userId = int.Parse(HttpContext.Items["UserId"] as string);
+            return await IImageGeneratorService.GenerateLearnedWordsImages(userId, count);
         }
     }
 }

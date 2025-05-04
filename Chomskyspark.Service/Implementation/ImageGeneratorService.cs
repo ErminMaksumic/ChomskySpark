@@ -52,7 +52,7 @@ namespace Chomskyspark.Services.Implementation
         {
             var client = new AzureOpenAIClient(new Uri(endpoint), new ApiKeyCredential(key));
             ImageClient chatClient = client.GetImageClient(model);
-
+            
             // Get user's learned words
             var learnedWords = await context.LearnedWords
                 .Where(x => x.UserId == userId)
@@ -65,16 +65,19 @@ namespace Chomskyspark.Services.Implementation
                 throw new Exception("No learned words found for this user");
             }
 
+            var prompt = $"Create a {count}-panel comic strip story using these words: {string.Join(", ", learnedWords)}. " +
+                     $"Each panel should be a sequential part of the story, visually connected, and include at least one of the words. " +
+                     $"Panel {{0}} of {count}.";
+
             var imageUrls = new List<string>();
             var random = new Random();
 
-            for (int i = 0; i < count; i++)
+            for (int i = 1; i <= count; i++)
             {
-                var randomWord = learnedWords[random.Next(learnedWords.Count)];
-                var prompt = string.Format(imageGeneratorPromptTemplate, randomWord);
+                var panelPrompt = string.Format(prompt, i);
 
                 var imageGeneration = await chatClient.GenerateImageAsync(
-                    prompt,
+                    panelPrompt,
                     new ImageGenerationOptions()
                     {
                         Size = GeneratedImageSize.W1024xH1024
