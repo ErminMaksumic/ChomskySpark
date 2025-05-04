@@ -3,6 +3,7 @@ using Chomskyspark.Model.Requests;
 using Chomskyspark.Model.SearchObjects;
 using Chomskyspark.Services.Database;
 using Chomskyspark.Services.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace Chomskyspark.Services.Implementation
 {
@@ -10,7 +11,13 @@ namespace Chomskyspark.Services.Implementation
     {
         public LearnedWordService(ChomskySparkContext context, IMapper mapper) : base(context, mapper)
         {
+        }
 
+        public async Task<int> GetCount(int userId)
+        {
+            return await Context.LearnedWords
+                .Where(lw => lw.UserId == userId)
+                .CountAsync();
         }
     }
 }

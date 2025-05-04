@@ -148,7 +148,7 @@ class HomeScreen extends StatelessWidget {
                         onPressed: () => testFileUpload(context),
                       ),
                       _HomeActionButton(
-                        asset: 'assets/images/story.png', // add to pubspec.yaml
+                        asset: 'assets/images/story.png',
                         label: 'Stories',
                         onPressed: () => Navigator.push(
                           context,
@@ -158,8 +158,6 @@ class HomeScreen extends StatelessWidget {
                     ],
                   ),
                 ),
-
-                const SizedBox(height: 30),
 
                 // ---------- promo / hero image -------------------------------------
                 Container(
@@ -427,8 +425,8 @@ class _ScatteredStars extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // just a handful of positioned icons for the decorative background
-    return Stack(
-      children: const [
+    return const Stack(
+      children: [
         Positioned(
             top: 20,
             left: 20,

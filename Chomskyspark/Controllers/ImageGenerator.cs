@@ -20,5 +20,27 @@ namespace Chomskyspark.Controllers
         {
             return IImageGeneratorService.GenerateImage(int.Parse(HttpContext.Items["UserId"] as string));
         }
+
+        [HttpGet("learned-words")]
+        public virtual async Task<IActionResult> GenerateLearnedWordsImages([FromQuery] int count = 5)
+        {
+            try
+            {
+                var userId = int.Parse(HttpContext.Items["UserId"] as string);
+                var imageUrls = await IImageGeneratorService.GenerateLearnedWordsImages(userId, count);
+                return Ok(imageUrls);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpGet("count")]
+        public virtual async Task<int> GetCount()
+        {
+            var userId = int.Parse(HttpContext.Items["UserId"] as string);
+            return await IImageGeneratorService.GetLearnedWordsCount(userId);
+        }
     }
 }
