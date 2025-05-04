@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:math';
+import 'package:chomskyspark/screens/home/views/home_screen.dart';
 import 'package:confetti/confetti.dart';
 import 'package:flutter/material.dart';
 import 'package:chomskyspark/models/object_detection_attempt_model.dart';
@@ -10,6 +11,7 @@ import 'package:chomskyspark/route/route_constants.dart';
 import 'package:chomskyspark/utils/auth_helper.dart';
 import 'package:chomskyspark/utils/speech_messages.dart';
 import 'package:chomskyspark/utils/text_to_speech_helper.dart';
+import 'package:lite_rolling_switch/lite_rolling_switch.dart';
 
 class FindObjectsPage extends StatefulWidget {
   FindObjectsPage({Key? key}) : super(key: key);
@@ -22,10 +24,10 @@ class _FindObjectsPageState extends State<FindObjectsPage> {
   final TextToSpeechHelper ttsService = TextToSpeechHelper();
   final ObjectDetectionAttemptProvider objectDetectionAttemptProvider = ObjectDetectionAttemptProvider();
   late ConfettiController _confettiController;
-  late String randomWord;
+  late String randomWord = "";
   late List<String> foundObjects;
   late List<RecognizedObject> recognizedObjects = [];
-  late String imageUrl = "";
+  late String imageUrl = "https://api.thorhof-bestellungen.at/uploads/chomskyspark/find-object/7.png";
 
   double imageWidth = 1;
   double imageHeight = 1;
@@ -93,104 +95,227 @@ class _FindObjectsPageState extends State<FindObjectsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Find Objects'),
-        actions: [
-          Text("Both languages"),
-          Switch(
-            value: Authorization.useBothLanguages,
-            onChanged: (value) {
-              setState(() {
-                Authorization.useBothLanguages = value;
-              });
-            },
-            activeColor: Colors.purple,
-          ),
-        ],
-      ),
       body: isLoading
-          ? Center(
-              child: CircularProgressIndicator(),
-            )
-          : Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text("Time: ${_formatDuration(elapsedTime)}",
-                          style: TextStyle(
-                              fontSize: 16, fontWeight: FontWeight.bold)),
-                      Text(
-                          "Words: ${foundObjects.length}/${recognizedObjects.length}",
-                          style: TextStyle(
-                              fontSize: 16, fontWeight: FontWeight.bold)),
-                    ],
+          ? Center(child: CircularProgressIndicator())
+          : Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [
+              Color(0xFF9D58D5),
+              Color(0xFF422A74),
+            ],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+        ),
+        child: SafeArea(
+          child: Column(
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  IconButton(
+                    icon: const Icon(Icons.arrow_back, color: Colors.white), // Icon color
+                    onPressed: () => Navigator.pop(context),
                   ),
-                ),
-                Expanded(
-                  child: LayoutBuilder(
-                    builder: (context, constraints) {
-                      return Image.network(
-                        key: imageKey,
-                        imageUrl,
-                        loadingBuilder: (context, child, loadingProgress) {
-                          if (loadingProgress == null) {
-                            WidgetsBinding.instance.addPostFrameCallback((_) {
-                              final imageConfiguration = ImageConfiguration();
-                              final imageStream = NetworkImage(imageUrl)
-                                  .resolve(imageConfiguration);
-                              imageStream.addListener(
-                                ImageStreamListener((ImageInfo image, _) {
-                                  setState(() {
-                                    imageWidth = image.image.width.toDouble();
-                                    imageHeight = image.image.height.toDouble();
-                                  });
-                                }),
-                              );
-                            });
-
-                            return SizedBox.expand(
-                                child: FittedBox(
-                              fit: BoxFit.fill,
-                              alignment: Alignment.center,
-                              child: Stack(
-                                children: [
-                                  child,
-                                  ..._buildBoundingBoxes(),
-                                ],
-                              ),
-                            ));
-                          }
-                          return Center(child: CircularProgressIndicator());
-                        },
-                      );
-                    },
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: ElevatedButton(
-                    onPressed: () {
-                      if (objectRecognized) {
-                        ttsService.findObject(randomWord,
-                            sentenceTemplate: SpeechMessages.Find);
-                      }
-                    },
-                    child: Text(randomWord),
-                    style: ElevatedButton.styleFrom(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(15),
-                      ),
-                      backgroundColor: Colors.purple,
+                  const Text(
+                    'Find Objects',
+                    style: TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white, // Text color
                     ),
                   ),
+                  const SizedBox(width: 48),
+                ],
+              ),
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      children: [
+                        Image.asset(
+                          'assets/images/clock.png',
+                          width: 20,
+                          height: 20,
+                        ),
+                        const SizedBox(width: 8),
+                        Text(
+                          "${_formatDuration(elapsedTime)}",
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ],
+                    ),
+                    //Row(
+                    //  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    //  children: [
+                    //    Text(
+                    //      'Multilingual',
+                    //      style: TextStyle(fontSize: 16),
+                    //    ),
+                    //    Switch(
+                    //      value: Authorization.useBothLanguages,
+                    //      onChanged: (value) {
+                    //        setState(() {
+                    //          Authorization.useBothLanguages = value;
+                    //        });
+                    //      },
+                    //      activeColor: Colors.purple,
+                    //    ),
+                    //  ],
+                    //),
+                    SizedBox(
+                      height: 35, // Podesi željenu visinu
+                      child: LiteRollingSwitch(
+                        value: Authorization.useBothLanguages,
+                        textOn: 'Multilingual',
+                        textOff: 'Multilingual',
+                        iconOn: Icons.done,
+                        iconOff: Icons.remove_circle_outline,
+                        onChanged: (bool value) {
+                          setState(() {
+                            Authorization.useBothLanguages = value;
+                          });
+                        },
+                        textSize: 12.0,
+                        width: 125,
+                        colorOn: Colors.white10,
+                        colorOff: Colors.white54,
+                        onDoubleTap: () {},
+                        onSwipe: () {},
+                        onTap: () {},
+                      ),
+                    ),
+                    Row(
+                      children: [
+                        Image.asset(
+                          'assets/images/archery-board.png',
+                          width: 30,
+                          height: 30,
+                        ),
+                        const SizedBox(width: 2),
+                        Text(
+                          "${foundObjects.length}/${recognizedObjects.length}",
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
-              ],
-            ),
+              ),
+              Expanded(
+                child: Stack(
+                  children: [
+                    ClipRRect(
+                      borderRadius:
+                      BorderRadius.vertical(top: Radius.circular(40)),
+                      child: LayoutBuilder(
+                        builder: (context, constraints) {
+                          return Image.network(
+                            key: imageKey,
+                            imageUrl,
+                            loadingBuilder:
+                                (context, child, loadingProgress) {
+                              if (loadingProgress == null) {
+                                WidgetsBinding.instance.addPostFrameCallback((_) {
+                                      final imageConfiguration = ImageConfiguration();
+                                      final imageStream = NetworkImage(imageUrl).resolve(imageConfiguration);
+                                      imageStream.addListener(
+                                        ImageStreamListener((ImageInfo image, _) {
+                                              setState(() {
+                                                imageWidth = image.image.width.toDouble();
+                                                imageHeight = image.image.height.toDouble();
+                                              });
+                                            }),
+                                      );
+                                    });
+
+                                return SizedBox.expand(
+                                  child: FittedBox(
+                                    fit: BoxFit.fill,
+                                    alignment: Alignment.center,
+                                    child: Stack(
+                                      children: [
+                                        child,
+                                        ..._buildBoundingBoxes(),
+                                      ],
+                                    ),
+                                  ),
+                                );
+                              }
+                              return Center(child: CircularProgressIndicator());
+                            },
+                          );
+                        },
+                      ),
+                    ),
+                    Positioned(
+                      top: 16,
+                      right: 16,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Color(0xFF9D58D5),
+                          shape: BoxShape.circle,
+                        ),
+                        child: IconButton(
+                          icon: Icon(Icons.refresh),
+                          color: Colors.white,
+                          onPressed: () {
+                            setState(() {
+                              _refreshImage();
+                            });
+                          },
+                        ),
+                      ),
+                    ),
+                    Positioned.fill(
+                      child: Align(
+                        alignment: Alignment.bottomCenter,
+                        child: ElevatedButton(
+                          onPressed: () {
+                            if (objectRecognized) {
+                              ttsService.findObject(randomWord,
+                                  sentenceTemplate:
+                                  SpeechMessages.Find);
+                            }
+                          },
+                          child: Text(randomWord),
+                          style: ElevatedButton.styleFrom(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.vertical(
+                                  top: Radius.circular(40)),
+                            ),
+                            backgroundColor: Color(0xFF9D58D5),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
+
+  void _refreshImage() {
+    foundObjects.clear();
+    recognizedObjects.clear();
+    setData();
+  }
+
 
   List<Widget> _buildBoundingBoxes() {
     return recognizedObjects.map((object) {
@@ -225,7 +350,7 @@ class _FindObjectsPageState extends State<FindObjectsPage> {
             decoration: BoxDecoration(
               border: foundObjects.contains(object.name)
                   ? null
-                  : Border.all(color: object.color, width: 4),
+                  : Border.all(color: Colors.transparent, width: 0),
             ),
           ),
         ),
@@ -321,9 +446,7 @@ class _FindObjectsPageState extends State<FindObjectsPage> {
             onPressed: () {
               Navigator.of(context).pop();
 
-              if (foundObjects.length == recognizedObjects.length) {
-                Navigator.of(context).pushReplacementNamed(Authorization.childLogged ? childHomeScreenRoute : homeScreenRoute);
-              } else {
+              if (foundObjects.length != recognizedObjects.length) {
                 setState(() {
                   randomWord = getRandomObjectName(recognizedObjects);
                   ttsService.findObject(randomWord,

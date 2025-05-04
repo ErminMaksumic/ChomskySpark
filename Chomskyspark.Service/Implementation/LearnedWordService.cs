@@ -19,5 +19,14 @@ namespace Chomskyspark.Services.Implementation
                 .Where(lw => lw.UserId == userId)
                 .CountAsync();
         }
+
+        public async Task<int> GetLearnedWordsCountByUserId(int userId)
+        {
+            return await Context.LearnedWords
+                .Where(x => x.UserId == userId)
+                .Select(x => x.Word)
+                .Distinct()
+                .CountAsync();
+        }
     }
 }

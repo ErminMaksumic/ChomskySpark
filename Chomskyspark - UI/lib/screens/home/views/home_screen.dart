@@ -1,5 +1,5 @@
 import 'dart:io';
-
+import 'package:chomskyspark/providers/learned_word_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -7,7 +7,7 @@ import 'package:chomskyspark/providers/file_provider.dart';
 import 'package:chomskyspark/screens/interactive-page/discover_words.dart';
 import 'package:chomskyspark/screens/interactive-page/find_objects.dart';
 import 'package:chomskyspark/screens/interactive-page/object_detection.dart';
-import 'package:chomskyspark/screens/story/story_page.dart'; // ✅ one canonical import
+import 'package:chomskyspark/screens/story/story_page.dart';
 import 'package:chomskyspark/screens/paretns-monitoring/child_improvement_areas.dart';
 import 'package:chomskyspark/screens/paretns-monitoring/child_statistics.dart';
 import 'package:chomskyspark/screens/paretns-monitoring/child_words_statistics.dart';
@@ -18,8 +18,34 @@ import 'package:chomskyspark/screens/qr_code/generate_qr.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import '../../../utils/auth_helper.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
+
+  @override
+  _HomeScreenState createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  final LearnedWordProvider learnedWordProvider = LearnedWordProvider();
+  int learnerWordsCounter = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    loadLearnedWordsCounter();
+  }
+
+  Future<void> loadLearnedWordsCounter() async {
+    try {
+      int counter = await learnedWordProvider
+          .getLearnedWordsCount(Authorization.user!.id!);
+      setState(() {
+        learnerWordsCounter = counter;
+      });
+    } catch (error) {
+      print("Error loading learned words counter: $error");
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -87,22 +113,25 @@ class HomeScreen extends StatelessWidget {
                         ),
                       ],
                     ),
-                    child: const CircleAvatar(
+                    child: CircleAvatar(
+                      // ← no “const” because we use a variable
                       radius: 50,
                       backgroundColor: Colors.white,
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text(
-                            '0',
-                            style: TextStyle(
+                            learnerWordsCounter.toString(),
+                            style: const TextStyle(
                               fontSize: 30,
                               fontWeight: FontWeight.bold,
                               color: Color(0xFF422A74),
                             ),
                           ),
-                          Text(
-                            'Counter',
+                          const SizedBox(height: 4),
+                          const Text(
+                            'Learned\nWords',
+                            textAlign: TextAlign.center,
                             style: TextStyle(
                               fontSize: 14,
                               fontWeight: FontWeight.bold,
@@ -195,27 +224,46 @@ class HomeScreen extends StatelessWidget {
     final picker = ImagePicker();
     final pickedFile = await picker.pickImage(source: ImageSource.camera);
 
-    if (pickedFile == null) {
-      debugPrint('No file selected.');
-      return;
+    if (pickedFile != null) {
+      File file = File(pickedFile.path);
+
+      FileProvider fileProvider = FileProvider();
+      var imageUrl = await fileProvider.sendFile(file);
+      imageUrl = "https://api.thorhof-bestellungen.at${imageUrl}";
+
+      //var imageUrl = "https://images.unsplash.com/photo-1592199279376-d48388291e22?q=80&w=2076&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D";
+
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => ObjectDetectionPage(
+            imageUrl: imageUrl,
+          ),
+        ),
+      );
+    } else {
+      print('No file selected.');
     }
 
-    final file = File(pickedFile.path);
-    final fileProvider = FileProvider();
-
-    String imageUrl = await fileProvider.sendFile(file);
-    imageUrl = "https://api.thorhof-bestellungen.at$imageUrl";
-
-    // ignore: use_build_context_synchronously
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (_) => ObjectDetectionPage(imageUrl: imageUrl),
-      ),
-    );
+    //TODO: Remove after testing
+    Future<void> testFileUpload2(BuildContext context) async {
+      var imageUrl =
+          "/uploads/chomskyspark/20250107_001739_914122bb-47ac-4e9b-b112-48c8598e56f3(1).jpg";
+      imageUrl =
+          "/uploads/chomskyspark/20250107_152052_1bdf3a8f-2d6e-48b2-bc5e-b0eeffa5ac29.jpg";
+      imageUrl =
+          "https://plus.unsplash.com/premium_photo-1663075817635-90ecf218ee5f?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D";
+      imageUrl =
+          "https://images.unsplash.com/photo-1592199279376-d48388291e22?q=80&w=2076&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D";
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (_) => ObjectDetectionPage(imageUrl: imageUrl),
+        ),
+      );
+    }
   }
 }
-
 // ==============================================================================
 //  SMALL WIDGETS
 // ==============================================================================

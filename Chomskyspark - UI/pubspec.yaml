@@ -33,6 +33,7 @@ dependencies:
   confetti: ^0.7.0
   cupertino_icons: ^1.0.2
   shared_preferences: ^2.2.2
+  lite_rolling_switch: ^1.0.1
 
 dev_dependencies:
   build_runner: ^2.4.0

@@ -18,7 +18,7 @@ namespace Chomskyspark.Services.Database
             if (!optionsBuilder.IsConfigured)
             {
                 optionsBuilder.UseSqlServer(
-                     "Data Source=localhost;Database=ChomskySpark;Trusted_Connection=True;TrustServerCertificate=True;",
+                     "Server=tcp:chomskydbserver.database.windows.net,1433;Database=ChomskySpark;User ID=sqladmin;Password=Azure@2024;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;",
                 // "Server=tcp:chomskydbserver.database.windows.net,1433;Database=ChomskySpark;User ID=sqladmin;Password=Azure@2024;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;",
                 //  Server = tcp:chomsky1.database.windows.net, 1433; User ID = sqladmin; Password = Azure@2024; Encrypt = True; TrustServerCertificate = False; Connection Timeout = 30;
                 options => options.EnableRetryOnFailure()

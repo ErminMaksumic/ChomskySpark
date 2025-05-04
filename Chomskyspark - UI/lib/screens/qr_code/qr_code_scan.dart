@@ -30,7 +30,7 @@ class QrCodeScanPage extends StatelessWidget {
                 Authorization.childLogged = true;
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const HomeScreen()),
+                  MaterialPageRoute(builder: (context) => HomeScreen()),
                 );
               }
             }
