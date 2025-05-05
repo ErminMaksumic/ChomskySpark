@@ -114,7 +114,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       ],
                     ),
                     child: CircleAvatar(
-                      // ← no “const” because we use a variable
+                      // ← no "const" because we use a variable
                       radius: 50,
                       backgroundColor: Colors.white,
                       child: Column(
@@ -176,27 +176,72 @@ class _HomeScreenState extends State<HomeScreen> {
                         label: 'Take Photo',
                         onPressed: () => testFileUpload(context),
                       ),
-                      _HomeActionButton(
-                        asset: 'assets/images/story.png',
-                        label: 'Stories',
-                        onPressed: () => Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (_) => const StoryPage()),
+                    ],
+                  ),
+                ),
+
+                // ---------- stories button (full width) ----------------------------
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: Column(
+                    children: [
+                      Container(
+                        width: double.infinity,
+                        decoration: BoxDecoration(
+                          color: const Color(0xFF9D58D5),
+                          borderRadius: BorderRadius.circular(15),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(.2),
+                              spreadRadius: 2,
+                              blurRadius: 2,
+                              offset: const Offset(2, 4),
+                            ),
+                          ],
+                        ),
+                        child: ElevatedButton(
+                          onPressed: () => Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (_) => const StoryPage()),
+                          ),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.transparent,
+                            padding: EdgeInsets.zero,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(15),
+                            ),
+                          ),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(15),
+                            child: Padding(
+                              padding: const EdgeInsets.all(12),
+                              child: Center(
+                                child: Image.asset(
+                                  'assets/images/story.png',
+                                  height: 95,
+                                  width: 95,
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+                            ),
+                          ),
                         ),
                       ),
+                      const SizedBox(height: 20),
                     ],
                   ),
                 ),
 
                 // ---------- promo / hero image -------------------------------------
                 Container(
-                  height: 230,
+                  height: 180,
                   margin: const EdgeInsets.symmetric(horizontal: 15),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(15),
                     image: const DecorationImage(
                       image: AssetImage('assets/images/image.png'),
-                      fit: BoxFit.cover,
+                      fit: BoxFit.fill,
                     ),
                     boxShadow: [
                       BoxShadow(

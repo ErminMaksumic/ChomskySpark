@@ -55,15 +55,15 @@ class ImageGeneratorProvider extends BaseProvider<String> {
 
   Future<List<String>> generateLearnedWordsImages(int count) async {
     try {
-      await _loadCache();
-      final currentWordCount = await _getCurrentLearnedWordCount();
+      // await _loadCache();
+      final currentWordCount = 0;
 
       // If we have cached images and not enough new words, return cached images
-      if (_cachedImages != null &&
-          _lastWordCount != null &&
-          currentWordCount - _lastWordCount! < _newWordsThreshold) {
-        return _cachedImages!;
-      }
+      // if (_cachedImages != null &&
+      //     _lastWordCount != null &&
+      //     currentWordCount - _lastWordCount! < _newWordsThreshold) {
+      //   return _cachedImages!;
+      // }
 
       // Generate new images
       final response = await httpClient!.get(
