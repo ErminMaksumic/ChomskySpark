@@ -190,33 +190,33 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 }
 
-  Future<void> testFileUpload(context) async {
-    final picker = ImagePicker();
-    final pickedFile = await picker.pickImage(source: ImageSource.camera);
-
-    if (pickedFile != null) {
-      File file = File(pickedFile.path);
-
-      FileProvider fileProvider = FileProvider();
-      var imageUrl = await fileProvider.sendFile(file);
-      imageUrl = "https://api.thorhof-bestellungen.at${imageUrl}";
-
-      ObjectDetectionProvider objectDetectionProvider = ObjectDetectionProvider();
-      final recognizedObjects = await objectDetectionProvider.detectImage(imageUrl);
-
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => ObjectDetectionPage(
-            imageUrl: imageUrl,
-          ),
-        ),
-      );
-
-      print(recognizedObjects);
-    } else {
-      print('No file selected.');
-    }
-  }
+  //Future<void> testFileUpload(context) async {
+  //  final picker = ImagePicker();
+  //  final pickedFile = await picker.pickImage(source: ImageSource.camera);
+//
+  //  if (pickedFile != null) {
+  //    File file = File(pickedFile.path);
+//
+  //    FileProvider fileProvider = FileProvider();
+  //    var imageUrl = await fileProvider.sendFile(file);
+  //    imageUrl = "https://api.thorhof-bestellungen.at${imageUrl}";
+//
+  //    ObjectDetectionProvider objectDetectionProvider = ObjectDetectionProvider();
+  //    final recognizedObjects = await objectDetectionProvider.detectImage(imageUrl);
+//
+  //    Navigator.push(
+  //      context,
+  //      MaterialPageRoute(
+  //        builder: (context) => ObjectDetectionPage(
+  //          imageUrl: imageUrl,
+  //        ),
+  //      ),
+  //    );
+//
+  //    print(recognizedObjects);
+  //  } else {
+  //    print('No file selected.');
+  //  }
+  //}
 
 

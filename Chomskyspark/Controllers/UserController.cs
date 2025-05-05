@@ -55,5 +55,19 @@ namespace Chomskyspark.Controllers
             var token = IUserService.GenerateToken(user);
             return Ok(new { token = token, user = user });
         }
+
+        [HttpGet("get-children/{parentId}")]
+        [AllowAnonymous]
+        public IEnumerable<Model.User> GetChildren(int parentId)
+        {
+            return IUserService.GetChildrenByParentIdAsync(parentId);
+        }
+
+        [HttpGet("get-dropdown-children/{parentId}")]
+        [AllowAnonymous]
+        public async Task<IEnumerable<KeyValuePair<int, string>>> GetDropdownChildren(int parentId)
+        {
+            return await IUserService.GetDropdownChildrenByParentIdAsync(parentId);
+        }
     }
 }

@@ -72,15 +72,7 @@ class _ChildStatisticsPageState extends State<ChildStatisticsPage> {
               Expanded(
                 child: _isLoading
                     ? const Center(child: CircularProgressIndicator(color: Colors.white))
-                    : _error != null
-                        ? Center(
-                            child: Text(
-                              'Error: $_error',
-                              style: const TextStyle(color: Colors.red, fontSize: 18),
-                              textAlign: TextAlign.center,
-                            ),
-                          )
-                        : _userStatistics != null
+                    : _userStatistics != null
                             ? Padding(
                                 padding: const EdgeInsets.all(16.0),
                                 child: Card(

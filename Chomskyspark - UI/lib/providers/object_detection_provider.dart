@@ -8,11 +8,14 @@ import 'package:chomskyspark/utils/auth_helper.dart';
 class ObjectDetectionProvider extends BaseProvider<File> {
   ObjectDetectionProvider() : super("ObjectDetection");
 
-  Future<List<RecognizedObject>> detectImage(String imageUrl) async {
+  Future<List<RecognizedObject>> detectImage(String imageUrl, int childId) async {
     try {
-      final String body = jsonEncode(imageUrl);
-      var uri = Uri.parse("$fullUrl");
+      final String body = jsonEncode({
+        'imageUrl': imageUrl,
+        'childId': childId,
+      });
 
+      var uri = Uri.parse("$fullUrl");
       final response = await httpClient!.post(
         uri,
         headers: {
@@ -35,9 +38,9 @@ class ObjectDetectionProvider extends BaseProvider<File> {
     }
   }
 
-  Future<Map<String, dynamic>> getRandomRecognizedObject() async {
+  Future<Map<String, dynamic>> getRandomRecognizedObject(int childId) async {
     try {
-      var uri = Uri.parse("$fullUrl");
+      var uri = Uri.parse("$fullUrl/$childId");
 
       Map<String, String> headers = createHeaders();
       var response = await httpClient!.get(uri, headers: headers);

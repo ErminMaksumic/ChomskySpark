@@ -8,5 +8,7 @@ namespace Chomskyspark.Services.Interfaces
     {
         User Login(string username, string password);
         string GenerateToken(Model.User user);
+        IEnumerable<Model.User> GetChildrenByParentIdAsync(int parentId);
+        Task<IEnumerable<KeyValuePair<int, string>>> GetDropdownChildrenByParentIdAsync(int parentId);
     }
 }

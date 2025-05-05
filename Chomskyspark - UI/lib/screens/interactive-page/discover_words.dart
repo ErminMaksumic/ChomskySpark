@@ -32,6 +32,8 @@ class _DiscoverWordsPageState extends State<DiscoverWordsPage> {
   late String word = "Please select any object...";
   late List<String> foundObjects = [];
 
+  int childId = Authorization.childLogged ? Authorization.user!.id! : Authorization.selectedChildId!;
+
   double imageWidth = 1;
   double imageHeight = 1;
   bool objectRecognized = false;
@@ -57,7 +59,7 @@ class _DiscoverWordsPageState extends State<DiscoverWordsPage> {
 
     try {
       ObjectDetectionProvider objectDetectionProvider = ObjectDetectionProvider();
-      var response = await objectDetectionProvider.getRandomRecognizedObject();
+      var response = await objectDetectionProvider.getRandomRecognizedObject(childId);
 
       if (response.isNotEmpty) {
         recognizedObjects = response['recognizedObjects'] as List<RecognizedObject>;
@@ -311,7 +313,8 @@ class _DiscoverWordsPageState extends State<DiscoverWordsPage> {
 
               final insertData = LearnedWord(
                   word: object.name,
-                  userId: Authorization.user!.id!);
+                  userId: childId
+              );
               learnedWordProvider.insert(insertData);
             }
 
@@ -332,7 +335,7 @@ class _DiscoverWordsPageState extends State<DiscoverWordsPage> {
             decoration: BoxDecoration(
               border: foundObjects.contains(object.name)
                   ? null
-                  : Border.all(color: Colors.transparent, width: 0),
+                  : Border.all(color: Colors.red, width: 0),
             ),
           ),
         ),

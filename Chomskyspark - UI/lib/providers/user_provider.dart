@@ -70,4 +70,39 @@ class UserProvider extends BaseProvider<User> {
       throw Exception("An error occured!");
     }
   }
+
+  Future<List<User>> getChildren(int parentId) async {
+    var url = "$fullUrl/get-children/$parentId";
+
+    var uri = Uri.parse(url);
+
+    Map<String, String> headers = createHeaders();
+    var response = await httpClient!.get(uri, headers: headers);
+
+    if (isValidResponseCode(response)) {
+      var data = jsonDecode(response.body);
+      return data.map((x) => fromJson(x)).cast<User>().toList();
+    } else {
+      throw Exception("An error occurred!");
+    }
+  }
+
+  Future<List<MapEntry<int, String>>> getDropdownChildren() async {
+    var url = "$fullUrl/get-dropdown-children/${Authorization.user!.id}";
+
+    var uri = Uri.parse(url);
+
+    Map<String, String> headers = createHeaders();
+    var response = await httpClient!.get(uri, headers: headers);
+
+    if (isValidResponseCode(response)) {
+      final List<dynamic> data = jsonDecode(response.body);
+       return data
+            .map((e) => MapEntry<int, String>(e['key'], e['value']))
+            .toList();
+    } else {
+      throw Exception("An error occurred!");
+    }
+  }
+
 }

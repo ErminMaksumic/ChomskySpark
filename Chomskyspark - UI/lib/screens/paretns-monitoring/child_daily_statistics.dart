@@ -62,7 +62,12 @@ class _ChildDailyStatisticsState extends State<ChildDailyStatistics> {
                   ),
                 ),
                 Expanded(
-                  child: Padding(
+                  child: data.isEmpty ? const Center(
+                    child: Text(
+                      'No data available.',
+                      style: TextStyle(color: Colors.purple, fontSize: 18),
+                    ),
+                  ) : Padding(
                     padding: const EdgeInsets.all(12),
                     child: BarChart(
                       BarChartData(

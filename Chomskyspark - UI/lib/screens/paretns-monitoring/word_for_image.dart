@@ -25,7 +25,12 @@ class _WordForImagePageState extends State<WordForImagePage> {
     });
 
     try {
-      final data = await _wordForImageProvider.get();
+
+      var params = {
+        "userId": Authorization.selectedChildId!
+      };
+
+      final data = await _wordForImageProvider.get(params);
       setState(() {
         words = data;
         _isLoading = false;
@@ -59,7 +64,7 @@ class _WordForImagePageState extends State<WordForImagePage> {
                 child: Text(word == null ? 'Add' : 'Update'),
                 onPressed: () async {
                   if (word == null) {
-                    await _wordForImageProvider.insert(WordForImage(id: 0, name: _controller.text, userId: Authorization.user!.id!));
+                    await _wordForImageProvider.insert(WordForImage(id: 0, name: _controller.text, userId: Authorization.selectedChildId!));
                     await _fetchData();
                   } else {
                     word.name = _controller.text;
@@ -135,6 +140,11 @@ class _WordForImagePageState extends State<WordForImagePage> {
               Expanded(
                 child: _isLoading
                     ? Center(child: CircularProgressIndicator())
+                      : words.isEmpty ? const Center(
+                  child: Text('No data available.',
+                      style: TextStyle(
+                          color: Colors.white, fontSize: 18)),
+                )
                     : ListView.builder(
                   itemCount: words.length,
                   itemBuilder: (context, index) {

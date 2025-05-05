@@ -29,6 +29,8 @@ class _ObjectDetectionPageState extends State<ObjectDetectionPage> {
   late List<String> foundObjects;
   late List<RecognizedObject> recognizedObjects = [];
 
+  final childId = Authorization.childLogged ? Authorization.user!.id! : Authorization.selectedChildId!;
+
   double imageWidth = 1;
   double imageHeight = 1;
   bool objectRecognized = false;
@@ -58,7 +60,7 @@ class _ObjectDetectionPageState extends State<ObjectDetectionPage> {
       ObjectDetectionProvider objectDetectionProvider =
           ObjectDetectionProvider();
       recognizedObjects =
-          await objectDetectionProvider.detectImage(widget.imageUrl);
+          await objectDetectionProvider.detectImage(widget.imageUrl, childId);
 
       print(recognizedObjects);
       randomWord = getRandomObjectName(recognizedObjects);
@@ -288,7 +290,8 @@ class _ObjectDetectionPageState extends State<ObjectDetectionPage> {
                 success: success,
                 attemptNumber: attemptCount,
                 elapsedTimeInSeconds: elapsedTime.inSeconds,
-                userId: Authorization.user!.id);
+                userId: childId
+            );
 
             objectDetectionAttemptProvider.insert(insertData);
 
@@ -302,7 +305,7 @@ class _ObjectDetectionPageState extends State<ObjectDetectionPage> {
             width: object.w,
             height: object.h,
             decoration: BoxDecoration(
-              border: Border.all(color: Colors.transparent, width: 0),
+              border: Border.all(color: Colors.red, width: 0),
             ),
           ),
         ),

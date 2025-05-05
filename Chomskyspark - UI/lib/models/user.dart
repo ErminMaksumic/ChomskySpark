@@ -10,6 +10,7 @@ class User {
   String? lastName;
   String? email;
   List<UserLanguage>? userLanguages;
+  int? parentUserId;
 
   User();
 
