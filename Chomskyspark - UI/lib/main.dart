@@ -2,16 +2,19 @@ import 'package:chomskyspark/theme/app_theme.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart'; // Import Provider package
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:chomskyspark/providers/file_provider.dart';
 import 'package:chomskyspark/providers/language_provider.dart';
 import 'package:chomskyspark/providers/user_provider.dart'; // Import your UserProvider
 import 'package:chomskyspark/providers/word_for_image_provider.dart';
+import 'package:chomskyspark/providers/image_generator_provider.dart';
 import 'package:chomskyspark/route/route_constants.dart';
 import 'package:chomskyspark/route/router.dart' as router;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+  await SharedPreferences.getInstance(); // Initialize shared_preferences
 
   runApp(
     MultiProvider(
@@ -20,6 +23,7 @@ void main() async {
         ChangeNotifierProvider(create: (_) => FileProvider()),
         ChangeNotifierProvider(create: (_) => LanguageProvider()),
         ChangeNotifierProvider(create: (_) => WordForImageProvider()),
+        ChangeNotifierProvider(create: (_) => ImageGeneratorProvider()),
       ],
       child: const MyApp(),
     ),

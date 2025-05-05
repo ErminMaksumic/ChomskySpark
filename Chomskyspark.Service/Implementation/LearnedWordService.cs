@@ -11,7 +11,13 @@ namespace Chomskyspark.Services.Implementation
     {
         public LearnedWordService(ChomskySparkContext context, IMapper mapper) : base(context, mapper)
         {
+        }
 
+        public async Task<int> GetCount(int userId)
+        {
+            return await Context.LearnedWords
+                .Where(lw => lw.UserId == userId)
+                .CountAsync();
         }
 
         public async Task<int> GetLearnedWordsCountByUserId(int userId)
