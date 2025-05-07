@@ -11,6 +11,7 @@ import 'package:chomskyspark/screens/paretns-monitoring/child_words_statistics.d
 import 'package:chomskyspark/screens/paretns-monitoring/child_daily_statistics.dart';
 import 'package:chomskyspark/screens/paretns-monitoring/word_for_image.dart';
 import 'package:chomskyspark/screens/qr_code/generate_qr.dart';
+import 'package:chomskyspark/screens/story/story_page.dart';
 import '../../../utils/auth_helper.dart';
 
 class ChildHomeScreen extends StatelessWidget {
@@ -34,7 +35,8 @@ class ChildHomeScreen extends StatelessWidget {
             Column(
               children: [
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 20.0, vertical: 10.0),
                   margin: const EdgeInsets.only(top: 20.0),
                   decoration: BoxDecoration(
                     color: Color(0xFF422A74).withOpacity(0.2),
@@ -104,94 +106,55 @@ class ChildHomeScreen extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(horizontal: 20.0),
                   child: Column(
                     children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
+                      Wrap(
+                        spacing: 20,
+                        runSpacing: 20,
+                        alignment: WrapAlignment.center,
                         children: [
-                          Container(
-                            decoration: BoxDecoration(
-                              color: Color(0xFF9D58D5),
-                              borderRadius: BorderRadius.circular(15),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black.withOpacity(0.2),
-                                  spreadRadius: 2,
-                                  blurRadius: 2,
-                                  offset: Offset(2, 4),
-                                ),
-                              ],
-                            ),
-                            child: ElevatedButton.icon(
-                              onPressed: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => FindObjectsPage(),
-                                  ),
-                                );
-                              },
-                              icon: Icon(Icons.search, color: Colors.white),
-                              label: Text(
-                                'Find Object',
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  color: Colors.white,
-                                ),
-                              ),
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.transparent,
-                                foregroundColor: Colors.white,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(15),
-                                ),
-                                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                          _buildMenuItem(
+                            context,
+                            'Find Objects',
+                            'assets/images/find_object.png',
+                            () => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => FindObjectsPage(),
                               ),
                             ),
                           ),
-                          SizedBox(width: 10),
-                          Container(
-                            decoration: BoxDecoration(
-                              color: Color(0xFF9D58D5),
-                              borderRadius: BorderRadius.circular(15),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black.withOpacity(0.2),
-                                  spreadRadius: 2,
-                                  blurRadius: 2,
-                                  offset: Offset(2, 4),
-                                ),
-                              ],
-                            ),
-                            child: ElevatedButton.icon(
-                              onPressed: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(builder: (context) => DiscoverWordsPage(),
-                                  ),
-                                );
-                              },
-                              icon: Icon(Icons.lightbulb_outline, color: Colors.white),
-                              label: Text(
-                                'Discover a Word',
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  color: Colors.white,
-                                ),
+                          _buildMenuItem(
+                            context,
+                            'Discover Words',
+                            'assets/images/discover_word.png',
+                            () => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => DiscoverWordsPage(),
                               ),
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.transparent,
-                                foregroundColor: Colors.white,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(15),
-                                ),
-                                padding: EdgeInsets.symmetric(horizontal: 15, vertical: 12),
+                            ),
+                          ),
+                          _buildMenuItem(
+                            context,
+                            'Take Photo',
+                            'assets/images/take_photo.png',
+                            () => testFileUpload2(context),
+                          ),
+                          _buildMenuItem(
+                            context,
+                            'Story Time',
+                            'assets/images/story.png',
+                            () => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => StoryPage(),
                               ),
                             ),
                           ),
                         ],
                       ),
-                      SizedBox(height: 20),
+                      SizedBox(height: 40),
                       Container(
-                        height: 300,
+                        height: 230,
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(15),
                           image: DecorationImage(
@@ -208,42 +171,6 @@ class ChildHomeScreen extends StatelessWidget {
                           ],
                         ),
                       ),
-                      SizedBox(height: 20),
-                      Container(
-                        decoration: BoxDecoration(
-                          color: Color(0xFF9D58D5),
-                          borderRadius: BorderRadius.circular(15),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withOpacity(0.3),
-                              spreadRadius: 2,
-                              blurRadius: 5,
-                              offset: Offset(2, 4),
-                            ),
-                          ],
-                        ),
-                        child: ElevatedButton.icon(
-                          onPressed: () {
-                            testFileUpload2(context);
-                          },
-                          icon: Icon(Icons.camera_alt, color: Colors.white),
-                          label: Text(
-                            'Take a Picture',
-                            style: TextStyle(
-                              fontSize: 16,
-                              color: Colors.white,
-                            ),
-                          ),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.transparent,
-                            foregroundColor: Colors.white,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(15),
-                            ),
-                            padding: EdgeInsets.symmetric(horizontal: 60, vertical: 15),
-                          ),
-                        ),
-                      ),
                     ],
                   ),
                 ),
@@ -258,7 +185,9 @@ class ChildHomeScreen extends StatelessWidget {
 
   // Helper method to build Drawer items
   Widget _buildDrawerItem(BuildContext context,
-      {required IconData icon, required String title, required VoidCallback onTap}) {
+      {required IconData icon,
+      required String title,
+      required VoidCallback onTap}) {
     return ListTile(
       leading: Icon(
         icon,
@@ -306,9 +235,12 @@ class ChildHomeScreen extends StatelessWidget {
 
   //TODO: Remove after testing
   Future<void> testFileUpload2(BuildContext context) async {
-    var imageUrl = "/uploads/chomskyspark/20250107_001739_914122bb-47ac-4e9b-b112-48c8598e56f3(1).jpg";
-    imageUrl = "/uploads/chomskyspark/20250107_152052_1bdf3a8f-2d6e-48b2-bc5e-b0eeffa5ac29.jpg";
-    imageUrl = "https://plus.unsplash.com/premium_photo-1663075817635-90ecf218ee5f?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D";
+    var imageUrl =
+        "/uploads/chomskyspark/20250107_001739_914122bb-47ac-4e9b-b112-48c8598e56f3(1).jpg";
+    imageUrl =
+        "/uploads/chomskyspark/20250107_152052_1bdf3a8f-2d6e-48b2-bc5e-b0eeffa5ac29.jpg";
+    imageUrl =
+        "https://plus.unsplash.com/premium_photo-1663075817635-90ecf218ee5f?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D";
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -316,6 +248,55 @@ class ChildHomeScreen extends StatelessWidget {
           imageUrl: "${imageUrl}",
         ),
       ),
+    );
+  }
+
+  Widget _buildMenuItem(BuildContext context, String title, String imagePath,
+      VoidCallback onPressed) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Container(
+          width: 120,
+          height: 120,
+          decoration: BoxDecoration(
+            color: Color(0xFF9D58D5),
+            borderRadius: BorderRadius.circular(20),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.2),
+                spreadRadius: 2,
+                blurRadius: 4,
+                offset: Offset(0, 2),
+              ),
+            ],
+          ),
+          child: Material(
+            color: Colors.transparent,
+            child: InkWell(
+              onTap: onPressed,
+              borderRadius: BorderRadius.circular(20),
+              child: Padding(
+                padding: const EdgeInsets.all(15.0),
+                child: Image.asset(
+                  imagePath,
+                  fit: BoxFit.contain,
+                ),
+              ),
+            ),
+          ),
+        ),
+        SizedBox(height: 8),
+        Text(
+          title,
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.w500,
+            color: Color(0xFF9D58D5),
+          ),
+          textAlign: TextAlign.center,
+        ),
+      ],
     );
   }
 }

@@ -4,16 +4,19 @@ import 'package:chomskyspark/providers/user_provider.dart';
 import 'package:chomskyspark/screens/paretns-monitoring/children_page.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+
 import 'package:chomskyspark/providers/file_provider.dart';
 import 'package:chomskyspark/screens/interactive-page/discover_words.dart';
 import 'package:chomskyspark/screens/interactive-page/find_objects.dart';
 import 'package:chomskyspark/screens/interactive-page/object_detection.dart';
+import 'package:chomskyspark/screens/story/story_page.dart';
 import 'package:chomskyspark/screens/paretns-monitoring/child_improvement_areas.dart';
 import 'package:chomskyspark/screens/paretns-monitoring/child_statistics.dart';
 import 'package:chomskyspark/screens/paretns-monitoring/child_words_statistics.dart';
 import 'package:chomskyspark/screens/paretns-monitoring/child_daily_statistics.dart';
 import 'package:chomskyspark/screens/paretns-monitoring/word_for_image.dart';
 import 'package:chomskyspark/screens/qr_code/generate_qr.dart';
+
 import 'package:qr_flutter/qr_flutter.dart';
 import '../../../utils/auth_helper.dart';
 
@@ -148,276 +151,34 @@ class _HomeScreenState extends State<HomeScreen> {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
-        onDrawerChanged: (isOpened) {
-          if (isOpened) {
-            loadChildren();
-          }
-        },
-        drawer: Drawer(
-          child: Stack(
-            children: [
-              // Background with Scattered Yellow Stars
-              Container(
-                decoration: BoxDecoration(
-                  color: Color(0xFF422A74), // Your preferred color
-                ),
-                child: Stack(
-                  children: [
-                    // Scattered Yellow Stars
-                    Positioned(
-                      top: 20,
-                      left: 20,
-                      child: Icon(
-                        Icons.star,
-                        color: Colors.yellow, // Yellow stars
-                        size: 24,
-                      ),
-                    ),
-                    Positioned(
-                      top: 50,
-                      right: 30,
-                      child: Icon(
-                        Icons.star,
-                        color: Colors.yellow, // Yellow stars
-                        size: 18,
-                      ),
-                    ),
-                    Positioned(
-                      bottom: 40,
-                      left: 40,
-                      child: Icon(
-                        Icons.star,
-                        color: Colors.yellow, // Yellow stars
-                        size: 22,
-                      ),
-                    ),
-                    Positioned(
-                      bottom: 80,
-                      right: 20,
-                      child: Icon(
-                        Icons.star,
-                        color: Colors.yellow, // Yellow stars
-                        size: 20,
-                      ),
-                    ),
-                    Positioned(
-                      top: 100,
-                      left: 100,
-                      child: Icon(
-                        Icons.star,
-                        color: Colors.yellow, // Yellow stars
-                        size: 16,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              // Drawer Content
-              ListView(
-                padding: EdgeInsets.zero,
-                children: [
-                  // Custom Header (Replaces DrawerHeader)
-                  Container(
-                    height: 150, // Adjust height as needed
-                    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(
-                          Icons.star, // Yellow star icon
-                          size: 48,
-                          color: Colors.yellow, // Yellow stars
-                        ),
-                      ],
-                    ),
-                  ),
-                  Container(
-                    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                    child: Column(
-                        children: [
-                          GestureDetector(
-                            onTap: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(builder: (context) => GenerateQrPage())
-                              );
-                            },
-                            child: Container(
-                              width: 170,
-                              height: 170,
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              child: Center(
-                                child: QrImageView(
-                                  data: "${Authorization.selectedChildId ?? Authorization.user!.id}",
-                                  size: 165,
-                                  embeddedImageStyle: QrEmbeddedImageStyle(
-                                    size: const Size(165, 165),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                          SizedBox(height: 10),
-                          // Add the dropdown here
-                          if (childrenList.isNotEmpty)
-                            Container(
-                              padding: EdgeInsets.symmetric(horizontal: 10),
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              child: DropdownButton<int>(
-                                hint: Text('Select Child'),
-                                value: Authorization.selectedChildId,
-                                icon: Icon(Icons.arrow_drop_down, color: Color(0xFF422A74)),
-                                iconSize: 24,
-                                elevation: 16,
-                                style: TextStyle(color: Color(0xFF422A74)),
-                                underline: Container(),
-                                isExpanded: true,
-                                onChanged: (int? newValue) {
-                                  setState(() {
-                                    Authorization.selectedChildId = newValue;
-                                    loadLearnedWordsCounter();
-                                  });
-                                },
-                                items: childrenList.map<DropdownMenuItem<int>>((child) {
-                                  return DropdownMenuItem<int>(
-                                    value: child.key,
-                                    child: Text(
-                                      child.value,
-                                      style: TextStyle(fontSize: 14),
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
-                                  );
-                                }).toList(),
-                              ),
-                            ),
-                ],
-              ),
-              ),
-
-                  // Menu Items
-                  _buildDrawerItem(
-                    context,
-                    icon: Icons.pie_chart,
-                    title: 'Child Statistic',
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => ChildStatisticsPage(
-                            userId: Authorization.selectedChildId!,
-                          ),
-                        ),
-                      );
-                    },
-                  ),
-                  _buildDrawerItem(
-                    context,
-                    icon: Icons.format_quote,
-                    title: 'Child Word Statistic',
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => ChildWordsStatisticsPage(
-                            userId: Authorization.selectedChildId!,
-                          ),
-                        ),
-                      );
-                    },
-                  ),
-                  _buildDrawerItem(
-                    context,
-                    icon: Icons.date_range,
-                    title: 'Child Daily Statistic',
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => ChildDailyStatistics(
-                            userId: Authorization.selectedChildId!,
-                          ),
-                        ),
-                      );
-                    },
-                  ),
-                  _buildDrawerItem(
-                    context,
-                    icon: Icons.show_chart_outlined,
-                    title: 'Child Improvement Areas',
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => ChildImprovementAreasPage(
-                            userId: Authorization.selectedChildId!,
-                          ),
-                        ),
-                      );
-                    },
-                  ),
-                  _buildDrawerItem(
-                    context,
-                    icon: Icons.bookmarks_outlined,
-                    title: 'Words for Images',
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => WordForImagePage(),
-                        ),
-                      );
-                    },
-                  ),
-                  //Divider(),
-                  _buildDrawerItem(
-                    context,
-                    icon: Icons.child_care_sharp,
-                    title: 'Children',
-                    onTap: () async {
-                      await Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => ChildrenPage(),
-                        ),
-                      );
-                      loadChildren();
-                    },
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ),
+        drawer: _AppDrawer(),
         body: Stack(
           children: [
+            // ---- background image -------------------------------------------------
             Container(
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 image: DecorationImage(
                   image: AssetImage('assets/images/bg.png'),
                   fit: BoxFit.cover,
                 ),
               ),
             ),
+
+            // ---- main content -----------------------------------------------------
             Column(
               children: [
+                // ---------- header (title + menu) ---------------------------------
                 Container(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 20.0, vertical: 10.0),
-                  margin: const EdgeInsets.only(top: 20.0),
+                  margin: const EdgeInsets.only(top: 20),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                   decoration: BoxDecoration(
-                    color: Color(0xFF422A74).withOpacity(0.2),
+                    color: const Color(0xFF422A74).withOpacity(.2),
                   ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(
+                      const Text(
                         'Chomskyspark',
                         style: TextStyle(
                           fontSize: 20,
@@ -425,266 +186,174 @@ class _HomeScreenState extends State<HomeScreen> {
                           color: Colors.white,
                         ),
                       ),
-                      Authorization.childLogged ? SizedBox(height: 48) :
+                      if (!Authorization.childLogged)
                         Builder(
                           builder: (context) => IconButton(
-                            onPressed: () {
-                              Scaffold.of(context).openDrawer();
-                            },
-                            icon: Icon(Icons.menu, color: Colors.white),
+                            icon: const Icon(Icons.menu, color: Colors.white),
+                            onPressed: () => Scaffold.of(context).openDrawer(),
                           ),
                         ),
                     ],
                   ),
                 ),
+
+                // ---------- counter badge -----------------------------------------
                 Padding(
-                  padding: const EdgeInsets.only(top: 9.0),
-                  child: Center(
-                    child: GestureDetector(
-                      onTap: () {},
-                      child: Container(
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          boxShadow: [
-                            BoxShadow(
-                              color: Color(0xFF9D58D5).withOpacity(0.3),
-                              spreadRadius: 4,
-                              blurRadius: 8,
-                              offset: Offset(4, 4),
+                  padding: const EdgeInsets.only(top: 9),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      boxShadow: [
+                        BoxShadow(
+                          color: const Color(0xFF9D58D5).withOpacity(.3),
+                          spreadRadius: 4,
+                          blurRadius: 8,
+                          offset: const Offset(4, 4),
+                        ),
+                      ],
+                    ),
+                    child: CircleAvatar(
+                      // ← no "const" because we use a variable
+                      radius: 50,
+                      backgroundColor: Colors.white,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            learnerWordsCounter.toString(),
+                            style: const TextStyle(
+                              fontSize: 30,
+                              fontWeight: FontWeight.bold,
+                              color: Color(0xFF422A74),
                             ),
-                          ],
-                        ),
-                        child: CircleAvatar(
-                          radius: 50,
-                          backgroundColor: Colors.white,
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                learnerWordsCounter.toString(),
-                                style: TextStyle(
-                                  fontSize: 30,
-                                  fontWeight: FontWeight.bold,
-                                  color: Color(0xFF422A74),
-                                ),
-                              ),
-                              Text(
-                                'Learned\nWords',
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  color: Color(0xFF422A74),
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ],
                           ),
-                        ),
+                          const SizedBox(height: 4),
+                          const Text(
+                            'Learned\nWords',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.bold,
+                              color: Color(0xFF422A74),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ),
                 ),
-                //Spacer(),
-                SizedBox(height: 80),
+
+                const SizedBox(height: 40),
+
+                // ---------- four action buttons ------------------------------------
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                  child: Column(
+                  padding: const EdgeInsets.symmetric(vertical: 20),
+                  child: Wrap(
+                    alignment: WrapAlignment.center,
+                    spacing: 9,
+                    runSpacing: 20,
                     children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Column(
-                            children: [
-                              Container(
-                                decoration: BoxDecoration(
-                                  color: Color(0xFF9D58D5),
-                                  borderRadius: BorderRadius.circular(15),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.black.withOpacity(0.2),
-                                      spreadRadius: 2,
-                                      blurRadius: 2,
-                                      offset: Offset(2, 4),
-                                    ),
-                                  ],
-                                ),
-                                child: ElevatedButton(
-                                  onPressed: () async {
-                                    await Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => FindObjectsPage(),
-                                      ),
-                                    );
-                                    loadLearnedWordsCounter();
-                                  },
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: Colors.transparent,
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(15),
-                                    ),
-                                    padding: EdgeInsets.zero,
-                                  ),
-                                  child: ClipRRect(
-                                    borderRadius: BorderRadius.circular(15),
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: Image.asset(
-                                        'assets/images/find_object.png',
-                                        fit: BoxFit.cover,
-                                        height: 95,
-                                        width: 95,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              SizedBox(height: 5),
-                              Text(
-                                'Find Objects',
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.bold,
-                                  color: Color(0xFF9D58D5),
-                                ),
-                              ),
-                            ],
-                          ),
-                          SizedBox(width: 9),
-                          Column(
-                            children: [
-                              Container(
-                                decoration: BoxDecoration(
-                                  color: Color(0xFF9D58D5),
-                                  borderRadius: BorderRadius.circular(15),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.black.withOpacity(0.2),
-                                      spreadRadius: 2,
-                                      blurRadius: 2,
-                                      offset: Offset(2, 4),
-                                    ),
-                                  ],
-                                ),
-                                child: ElevatedButton(
-                                  onPressed: () async {
-                                    await Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => DiscoverWordsPage(),
-                                      ),
-                                    );
-                                    loadLearnedWordsCounter();
-                                  },
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: Colors.transparent,
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(15),
-                                    ),
-                                    padding: EdgeInsets.zero,
-                                  ),
-                                  child: ClipRRect(
-                                    borderRadius: BorderRadius.circular(15),
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: Image.asset(
-                                        'assets/images/discover_word.png',
-                                        fit: BoxFit.cover,
-                                        height: 95,
-                                        width: 95,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              SizedBox(height: 5),
-                              Text(
-                                'Discover Words',
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.bold,
-                                  color: Color(0xFF9D58D5),
-                                ),
-                              ),
-                            ],
-                          ),
-                          SizedBox(width: 9),
-                          Column(
-                            children: [
-                              Container(
-                                decoration: BoxDecoration(
-                                  color: Color(0xFF9D58D5),
-                                  borderRadius: BorderRadius.circular(15),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.black.withOpacity(0.2),
-                                      spreadRadius: 2,
-                                      blurRadius: 2,
-                                      offset: Offset(2, 4),
-                                    ),
-                                  ],
-                                ),
-                                child: ElevatedButton(
-                                  onPressed: () {
-                                    testFileUpload(context);
-                                  },
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: Colors.transparent,
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(15),
-                                    ),
-                                    padding: EdgeInsets.zero,
-                                  ),
-                                  child: ClipRRect(
-                                    borderRadius: BorderRadius.circular(15),
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: Image.asset(
-                                        'assets/images/take_photo.png',
-                                        fit: BoxFit.cover,
-                                        height: 95,
-                                        width: 95,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              SizedBox(height: 5),
-                              Text(
-                                'Take Photo',
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.bold,
-                                  color: Color(0xFF9D58D5),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                      SizedBox(height: 40),
-                      Container(
-                        height: 230,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(15),
-                          image: DecorationImage(
-                            image: AssetImage('assets/images/image.png'),
-                            fit: BoxFit.cover,
-                          ),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withOpacity(0.3),
-                              spreadRadius: 2,
-                              blurRadius: 8,
-                              offset: Offset(4, 4),
-                            ),
-                          ],
+                      _HomeActionButton(
+                        asset: 'assets/images/find_object.png',
+                        label: 'Find Objects',
+                        onPressed: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (_) => FindObjectsPage()),
                         ),
+                      ),
+                      _HomeActionButton(
+                        asset: 'assets/images/discover_word.png',
+                        label: 'Discover Words',
+                        onPressed: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (_) => DiscoverWordsPage()),
+                        ),
+                      ),
+                      _HomeActionButton(
+                        asset: 'assets/images/take_photo.png',
+                        label: 'Take Photo',
+                        onPressed: () => testFileUpload(context),
                       ),
                     ],
                   ),
                 ),
-                Spacer(),
+
+                // ---------- stories button (full width) ----------------------------
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: Column(
+                    children: [
+                      Container(
+                        width: double.infinity,
+                        decoration: BoxDecoration(
+                          color: const Color(0xFF9D58D5),
+                          borderRadius: BorderRadius.circular(15),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(.2),
+                              spreadRadius: 2,
+                              blurRadius: 2,
+                              offset: const Offset(2, 4),
+                            ),
+                          ],
+                        ),
+                        child: ElevatedButton(
+                          onPressed: () => Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (_) => const StoryPage()),
+                          ),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.transparent,
+                            padding: EdgeInsets.zero,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(15),
+                            ),
+                          ),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(15),
+                            child: Padding(
+                              padding: const EdgeInsets.all(12),
+                              child: Center(
+                                child: Image.asset(
+                                  'assets/images/story.png',
+                                  height: 95,
+                                  width: 95,
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+                    ],
+                  ),
+                ),
+
+                // ---------- promo / hero image -------------------------------------
+                Container(
+                  height: 180,
+                  margin: const EdgeInsets.symmetric(horizontal: 15),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(15),
+                    image: const DecorationImage(
+                      image: AssetImage('assets/images/image.png'),
+                      fit: BoxFit.fill,
+                    ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(.3),
+                        spreadRadius: 2,
+                        blurRadius: 8,
+                        offset: const Offset(4, 4),
+                      ),
+                    ],
+                  ),
+                ),
+
+                const Spacer(),
               ],
             ),
           ],
@@ -693,31 +362,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  // Helper method to build Drawer items
-  Widget _buildDrawerItem(BuildContext context,
-      {required IconData icon,
-      required String title,
-      required VoidCallback onTap}) {
-    return ListTile(
-      leading: Icon(
-        icon,
-        color: Colors.white, // Changed to white
-      ),
-      title: Text(
-        title,
-        style: TextStyle(
-          fontSize: 16,
-          fontWeight: FontWeight.bold,
-          color: Colors.white, // White text color
-        ),
-      ),
-      onTap: onTap,
-      hoverColor: Colors.purple.withOpacity(0.1), // Hover effect
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10), // Rounded corners
-      ),
-    );
-  }
+  // -------------------------- helpers ------------------------------------------
 
   Future<void> testFileUpload(BuildContext context) async {
     final picker = ImagePicker();
@@ -744,24 +389,258 @@ class _HomeScreenState extends State<HomeScreen> {
     } else {
       print('No file selected.');
     }
+
+    //TODO: Remove after testing
+    Future<void> testFileUpload2(BuildContext context) async {
+      var imageUrl =
+          "/uploads/chomskyspark/20250107_001739_914122bb-47ac-4e9b-b112-48c8598e56f3(1).jpg";
+      imageUrl =
+          "/uploads/chomskyspark/20250107_152052_1bdf3a8f-2d6e-48b2-bc5e-b0eeffa5ac29.jpg";
+      imageUrl =
+          "https://plus.unsplash.com/premium_photo-1663075817635-90ecf218ee5f?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D";
+      imageUrl =
+          "https://images.unsplash.com/photo-1592199279376-d48388291e22?q=80&w=2076&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D";
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (_) => ObjectDetectionPage(imageUrl: imageUrl),
+        ),
+      );
+    }
+  }
+}
+// ==============================================================================
+//  SMALL WIDGETS
+// ==============================================================================
+
+class _HomeActionButton extends StatelessWidget {
+  const _HomeActionButton({
+    required this.asset,
+    required this.label,
+    required this.onPressed,
+  });
+
+  final String asset;
+  final String label;
+  final VoidCallback onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Container(
+          decoration: BoxDecoration(
+            color: const Color(0xFF9D58D5),
+            borderRadius: BorderRadius.circular(15),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(.2),
+                spreadRadius: 2,
+                blurRadius: 2,
+                offset: const Offset(2, 4),
+              ),
+            ],
+          ),
+          child: ElevatedButton(
+            onPressed: onPressed,
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.transparent,
+              padding: EdgeInsets.zero,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(15),
+              ),
+            ),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(15),
+              child: Padding(
+                padding: const EdgeInsets.all(8),
+                child: Image.asset(
+                  asset,
+                  height: 95,
+                  width: 95,
+                  fit: BoxFit.cover,
+                ),
+              ),
+            ),
+          ),
+        ),
+        const SizedBox(height: 5),
+        Text(
+          label,
+          style: const TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.bold,
+            color: Color(0xFF9D58D5),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _AppDrawer extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Drawer(
+      child: Stack(
+        children: [
+          // --------- purple background + scattered stars ------------------------
+          Container(
+            decoration: const BoxDecoration(color: Color(0xFF422A74)),
+            child: const _ScatteredStars(),
+          ),
+
+          // --------- main drawer content ---------------------------------------
+          ListView(
+            padding: EdgeInsets.zero,
+            children: [
+              // Header
+              Container(
+                height: 150,
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+                alignment: Alignment.centerLeft,
+                child: const Icon(Icons.star, size: 48, color: Colors.yellow),
+              ),
+
+              // QR code
+              Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                child: Column(
+                  children: [
+                    GestureDetector(
+                      onTap: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (_) => GenerateQrPage()),
+                      ),
+                      child: Container(
+                        width: 170,
+                        height: 170,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: Center(
+                          child: QrImageView(
+                            data: "${Authorization.user!.id}",
+                            size: 165,
+                            embeddedImageStyle: const QrEmbeddedImageStyle(
+                                size: Size(165, 165)),
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    const Text(
+                      "Link the child's device",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+
+              // Menu items
+              _drawerItem(
+                context,
+                icon: Icons.pie_chart,
+                title: 'Child Statistic',
+                builder: (_) => ChildStatisticsPage(
+                  userId: Authorization.user!.id!,
+                ),
+              ),
+              _drawerItem(
+                context,
+                icon: Icons.format_quote,
+                title: 'Child Word Statistic',
+                builder: (_) => ChildWordsStatisticsPage(
+                  userId: Authorization.user!.id!,
+                ),
+              ),
+              _drawerItem(
+                context,
+                icon: Icons.date_range,
+                title: 'Child Daily Statistic',
+                builder: (_) => ChildDailyStatistics(
+                  userId: Authorization.user!.id!,
+                ),
+              ),
+              _drawerItem(
+                context,
+                icon: Icons.show_chart_outlined,
+                title: 'Child Improvement Areas',
+                builder: (_) => ChildImprovementAreasPage(
+                  userId: Authorization.user!.id!,
+                ),
+              ),
+              _drawerItem(
+                context,
+                icon: Icons.bookmarks_outlined,
+                title: 'Words for Images',
+                builder: (_) => WordForImagePage(),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
   }
 
-  //TODO: Remove after testing
-  Future<void> testFileUpload2(BuildContext context) async {
-    var imageUrl =
-        "/uploads/chomskyspark/20250107_001739_914122bb-47ac-4e9b-b112-48c8598e56f3(1).jpg";
-    imageUrl =
-        "/uploads/chomskyspark/20250107_152052_1bdf3a8f-2d6e-48b2-bc5e-b0eeffa5ac29.jpg";
-    imageUrl =
-        "https://plus.unsplash.com/premium_photo-1663075817635-90ecf218ee5f?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D";
-    imageUrl = "https://images.unsplash.com/photo-1592199279376-d48388291e22?q=80&w=2076&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D";
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => ObjectDetectionPage(
-          imageUrl: "${imageUrl}",
+  // Drawer helper
+  Widget _drawerItem(BuildContext context,
+      {required IconData icon,
+      required String title,
+      required WidgetBuilder builder}) {
+    return ListTile(
+      leading: Icon(icon, color: Colors.white),
+      title: Text(
+        title,
+        style: const TextStyle(
+          fontSize: 16,
+          fontWeight: FontWeight.bold,
+          color: Colors.white,
         ),
       ),
+      onTap: () => Navigator.push(context, MaterialPageRoute(builder: builder)),
+      hoverColor: Colors.purple.withOpacity(.1),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+    );
+  }
+}
+
+class _ScatteredStars extends StatelessWidget {
+  const _ScatteredStars();
+
+  @override
+  Widget build(BuildContext context) {
+    // just a handful of positioned icons for the decorative background
+    return const Stack(
+      children: [
+        Positioned(
+            top: 20,
+            left: 20,
+            child: Icon(Icons.star, color: Colors.yellow, size: 24)),
+        Positioned(
+            top: 50,
+            right: 30,
+            child: Icon(Icons.star, color: Colors.yellow, size: 18)),
+        Positioned(
+            bottom: 40,
+            left: 40,
+            child: Icon(Icons.star, color: Colors.yellow, size: 22)),
+        Positioned(
+            bottom: 80,
+            right: 20,
+            child: Icon(Icons.star, color: Colors.yellow, size: 20)),
+        Positioned(
+            top: 100,
+            left: 100,
+            child: Icon(Icons.star, color: Colors.yellow, size: 16)),
+      ],
     );
   }
 }
