@@ -1,5 +1,7 @@
 import 'dart:io';
 import 'package:chomskyspark/providers/learned_word_provider.dart';
+import 'package:chomskyspark/providers/user_provider.dart';
+import 'package:chomskyspark/screens/paretns-monitoring/children_page.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -27,18 +29,20 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final LearnedWordProvider learnedWordProvider = LearnedWordProvider();
+  final UserProvider userProvider = UserProvider();
   int learnerWordsCounter = 0;
+
+  List<MapEntry<int, String>> childrenList = [];
 
   @override
   void initState() {
     super.initState();
-    loadLearnedWordsCounter();
+    loadChildren();
   }
 
   Future<void> loadLearnedWordsCounter() async {
     try {
-      int counter = await learnedWordProvider
-          .getLearnedWordsCount(Authorization.user!.id!);
+      int counter = await learnedWordProvider.getLearnedWordsCount(Authorization.childLogged ? Authorization.user!.id! : Authorization.selectedChildId!);
       setState(() {
         learnerWordsCounter = counter;
       });
@@ -47,11 +51,111 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
+  Future<void> loadChildren() async {
+    var data = await userProvider.getDropdownChildren();
+
+    if (data.isNotEmpty){
+      if (Authorization.selectedChildId == null){
+        Authorization.selectedChildId = data.first.key;
+        loadLearnedWordsCounter();
+      }
+    }
+    else{
+      showDialog(
+        context: context,
+        builder: (context) => Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20.0),
+          ),
+          child: ConstrainedBox(
+            constraints: BoxConstraints(
+              maxWidth: MediaQuery.of(context).size.width * 0.85,
+            ),
+            child: Padding(
+              padding: EdgeInsets.all(20),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Container(
+                    padding: EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: Color(0xFFF3E5F5),
+                      shape: BoxShape.circle,
+                    ),
+                    child: Icon(
+                      Icons.child_care_sharp,
+                      size: 40,
+                      color: Color(0xFF9C27B0),
+                    ),
+                  ),
+                  SizedBox(height: 20),
+                  Text(
+                    'Add Your First Child',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: Color(0xFF422A74),
+                    ),
+                  ),
+                  SizedBox(height: 12),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 10),
+                    child: Text(
+                      'To get started with all features, you need to add at least one child account.',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 15,
+                        color: Colors.grey[700],
+                        height: 1.4,
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 25),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      ConstrainedBox(
+                        constraints: BoxConstraints(
+                          minWidth: 120,
+                          maxWidth: 150,
+                        ),
+                        child: ElevatedButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => ChildrenPage()),
+                            );
+                          },
+                          child: Text('Ok'),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      );
+    }
+
+    setState(() {
+      childrenList = data;
+    });
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
+        onDrawerChanged: (isOpened) {
+          if (isOpened) {
+            loadChildren();
+          }
+        },
         drawer: _AppDrawer(),
         body: Stack(
           children: [
@@ -157,19 +261,26 @@ class _HomeScreenState extends State<HomeScreen> {
                       _HomeActionButton(
                         asset: 'assets/images/find_object.png',
                         label: 'Find Objects',
-                        onPressed: () => Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (_) => FindObjectsPage()),
-                        ),
+                        onPressed: () async {
+                          await Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (_) => FindObjectsPage()),
+                          );
+                          loadLearnedWordsCounter();
+                        }
                       ),
                       _HomeActionButton(
                         asset: 'assets/images/discover_word.png',
                         label: 'Discover Words',
-                        onPressed: () => Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (_) => DiscoverWordsPage()),
-                        ),
+                        onPressed: () async {
+                          await Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (_) => DiscoverWordsPage()),
+                          );
+                          loadLearnedWordsCounter();
+                        }
                       ),
                       _HomeActionButton(
                         asset: 'assets/images/take_photo.png',
@@ -278,7 +389,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
       //var imageUrl = "https://images.unsplash.com/photo-1592199279376-d48388291e22?q=80&w=2076&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D";
 
-      Navigator.push(
+      await Navigator.push(
         context,
         MaterialPageRoute(
           builder: (context) => ObjectDetectionPage(
@@ -286,6 +397,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ),
       );
+      loadLearnedWordsCounter();
     } else {
       print('No file selected.');
     }
@@ -378,7 +490,31 @@ class _HomeActionButton extends StatelessWidget {
   }
 }
 
-class _AppDrawer extends StatelessWidget {
+class _AppDrawer extends StatefulWidget {
+  @override
+  _AppDrawerState createState() => _AppDrawerState();
+}
+
+class _AppDrawerState extends State<_AppDrawer> {
+  List<MapEntry<int, String>> childrenList = [];
+  final UserProvider userProvider = UserProvider();
+
+  @override
+  void initState() {
+    super.initState();
+    _loadChildren();
+  }
+
+  Future<void> _loadChildren() async {
+    try {
+      final list = await userProvider.getDropdownChildren();
+      setState(() {
+        childrenList = list;
+      });
+    } catch (error) {
+      print("Error loading children: $error");
+    }
+  }
   @override
   Widget build(BuildContext context) {
     return Drawer(
@@ -405,15 +541,16 @@ class _AppDrawer extends StatelessWidget {
 
               // QR code
               Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                 child: Column(
                   children: [
                     GestureDetector(
-                      onTap: () => Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (_) => GenerateQrPage()),
-                      ),
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => GenerateQrPage())
+                        );
+                      },
                       child: Container(
                         width: 170,
                         height: 170,
@@ -423,23 +560,52 @@ class _AppDrawer extends StatelessWidget {
                         ),
                         child: Center(
                           child: QrImageView(
-                            data: "${Authorization.user!.id}",
+                            data: "${Authorization.selectedChildId ?? Authorization.user!.id}",
                             size: 165,
-                            embeddedImageStyle: const QrEmbeddedImageStyle(
-                                size: Size(165, 165)),
+                            embeddedImageStyle: QrEmbeddedImageStyle(
+                              size: const Size(165, 165),
+                            ),
                           ),
                         ),
                       ),
                     ),
-                    const SizedBox(height: 10),
-                    const Text(
-                      "Link the child's device",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
+                    SizedBox(height: 10),
+                    // Add the dropdown here
+                    if (childrenList.isNotEmpty)
+                      Container(
+                        padding: EdgeInsets.symmetric(horizontal: 10),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: DropdownButton<int>(
+                          hint: Text('Select Child'),
+                          value: Authorization.selectedChildId,
+                          icon: Icon(Icons.arrow_drop_down, color: Color(0xFF422A74)),
+                          iconSize: 24,
+                          elevation: 16,
+                          style: TextStyle(color: Color(0xFF422A74)),
+                          underline: Container(),
+                          isExpanded: true,
+                          onChanged: (int? newValue) {
+                            setState(() {
+                              Authorization.selectedChildId = newValue;
+                              final homeState = context.findAncestorStateOfType<_HomeScreenState>();
+                              homeState?.loadLearnedWordsCounter();
+                            });
+                          },
+                          items: childrenList.map<DropdownMenuItem<int>>((child) {
+                            return DropdownMenuItem<int>(
+                              value: child.key,
+                              child: Text(
+                                child.value,
+                                style: TextStyle(fontSize: 14),
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            );
+                          }).toList(),
+                        ),
                       ),
-                    ),
                   ],
                 ),
               ),
@@ -450,7 +616,7 @@ class _AppDrawer extends StatelessWidget {
                 icon: Icons.pie_chart,
                 title: 'Child Statistic',
                 builder: (_) => ChildStatisticsPage(
-                  userId: Authorization.user!.id!,
+                  userId:  Authorization.selectedChildId!,
                 ),
               ),
               _drawerItem(
@@ -458,7 +624,7 @@ class _AppDrawer extends StatelessWidget {
                 icon: Icons.format_quote,
                 title: 'Child Word Statistic',
                 builder: (_) => ChildWordsStatisticsPage(
-                  userId: Authorization.user!.id!,
+                  userId: Authorization.selectedChildId!,
                 ),
               ),
               _drawerItem(
@@ -466,7 +632,7 @@ class _AppDrawer extends StatelessWidget {
                 icon: Icons.date_range,
                 title: 'Child Daily Statistic',
                 builder: (_) => ChildDailyStatistics(
-                  userId: Authorization.user!.id!,
+                  userId: Authorization.selectedChildId!,
                 ),
               ),
               _drawerItem(
@@ -474,7 +640,7 @@ class _AppDrawer extends StatelessWidget {
                 icon: Icons.show_chart_outlined,
                 title: 'Child Improvement Areas',
                 builder: (_) => ChildImprovementAreasPage(
-                  userId: Authorization.user!.id!,
+                  userId: Authorization.selectedChildId!,
                 ),
               ),
               _drawerItem(
@@ -482,6 +648,13 @@ class _AppDrawer extends StatelessWidget {
                 icon: Icons.bookmarks_outlined,
                 title: 'Words for Images',
                 builder: (_) => WordForImagePage(),
+              ),
+              _drawerItem(
+                context,
+                icon: Icons.bookmarks_outlined,
+                title: 'Children',
+                builder: (_) => ChildrenPage(),
+                onTapAction: _loadChildren
               ),
             ],
           ),
@@ -491,10 +664,12 @@ class _AppDrawer extends StatelessWidget {
   }
 
   // Drawer helper
-  Widget _drawerItem(BuildContext context,
-      {required IconData icon,
-      required String title,
-      required WidgetBuilder builder}) {
+  Widget _drawerItem(BuildContext context, {
+    required IconData icon,
+    required String title,
+    required WidgetBuilder builder,
+    VoidCallback? onTapAction,
+  }) {
     return ListTile(
       leading: Icon(icon, color: Colors.white),
       title: Text(
@@ -505,7 +680,13 @@ class _AppDrawer extends StatelessWidget {
           color: Colors.white,
         ),
       ),
-      onTap: () => Navigator.push(context, MaterialPageRoute(builder: builder)),
+      onTap: () async {
+        await Navigator.push(context, MaterialPageRoute(builder: builder));
+
+        if (onTapAction != null) {
+          onTapAction();
+        }
+      },
       hoverColor: Colors.purple.withOpacity(.1),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
     );

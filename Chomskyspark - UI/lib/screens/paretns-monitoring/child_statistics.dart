@@ -1,3 +1,5 @@
+import 'package:chomskyspark/providers/user_provider.dart';
+import 'package:chomskyspark/utils/auth_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:chomskyspark/models/user_statistics.dart';
 import 'package:chomskyspark/providers/statistics_provider.dart';
@@ -14,8 +16,9 @@ class ChildStatisticsPage extends StatefulWidget {
 class _ChildStatisticsPageState extends State<ChildStatisticsPage> {
   UserStatistics? _userStatistics;
   bool _isLoading = true;
-  String? _error;
+  String? _childName;
   final statisticsProvider = StatisticsProvider();
+  final userProvider = UserProvider();
 
   @override
   void initState() {
@@ -26,13 +29,14 @@ class _ChildStatisticsPageState extends State<ChildStatisticsPage> {
   Future<void> _fetchStatistics() async {
     try {
       final stats = await statisticsProvider.fetchUserStatistics(widget.userId);
+      var children = await userProvider.getDropdownChildren();
       setState(() {
+        _childName = children.firstWhere((x) => x.key == Authorization.selectedChildId!).value;
         _userStatistics = stats;
         _isLoading = false;
       });
     } catch (e) {
       setState(() {
-        _error = e.toString();
         _isLoading = false;
       });
     }
@@ -72,15 +76,7 @@ class _ChildStatisticsPageState extends State<ChildStatisticsPage> {
               Expanded(
                 child: _isLoading
                     ? const Center(child: CircularProgressIndicator(color: Colors.white))
-                    : _error != null
-                        ? Center(
-                            child: Text(
-                              'Error: $_error',
-                              style: const TextStyle(color: Colors.red, fontSize: 18),
-                              textAlign: TextAlign.center,
-                            ),
-                          )
-                        : _userStatistics != null
+                    : _userStatistics != null
                             ? Padding(
                                 padding: const EdgeInsets.all(16.0),
                                 child: Card(
@@ -104,7 +100,7 @@ class _ChildStatisticsPageState extends State<ChildStatisticsPage> {
                                           ),
                                         ),
                                         const SizedBox(height: 20),
-                                        _buildStatisticRow('Child', 'John Smith'),
+                                        _buildStatisticRow('Child', _childName ?? ''),
                                         const Divider(),
                                         _buildStatisticRow('Total Attempts',
                                             '${_userStatistics!.totalAttempts}'),

@@ -62,21 +62,21 @@ namespace Chomskyspark.Services.Implementation
 
             if (request != null)
             {
+                var childUser = request.ParentUserId != null && request.ParentUserId != 0;
 
-                if (Context.Users.Where(a => a.Email == request.Email).Any())
+                if (!childUser && Context.Users.Where(a => a.Email == request.Email).Any())
                 {
                     throw new UserException("User with that username already exists!");
                 }
-                if (request.Password != request.PasswordConfirmation)
+                if (!childUser && request.Password != request.PasswordConfirmation)
                 {
                     throw new UserException("The two password fields didn't match");
                 }
 
                 var newUser = IMapper.Map<User>(request);
 
-                newUser.PasswordSalt = GenerateSalt();
-
-                newUser.PasswordHash = GenerateHash(newUser.PasswordSalt, request.Password);
+                newUser.PasswordSalt = !childUser ? GenerateSalt() : string.Empty;
+                newUser.PasswordHash = !childUser ? GenerateHash(newUser.PasswordSalt, request.Password) : string.Empty;
 
                 Context.Users.Add(newUser);
                 Context.SaveChanges();
@@ -162,6 +162,25 @@ namespace Chomskyspark.Services.Implementation
             Context.SaveChanges();
 
             return IMapper.Map<Model.User>(entity);
+        }
+
+        public IEnumerable<Model.User> GetChildrenByParentIdAsync(int parentId)
+        {
+            var set = Context.Set<User>();
+
+            var entities = Context.Users
+                .Include(u => u.UserLanguages)
+                .ThenInclude(l => l.Language)
+             .Where(u => u.ParentUserId == parentId);
+
+            return IMapper.Map<IList<Model.User>>(entities);
+        }
+
+        public async Task<IEnumerable<KeyValuePair<int, string>>> GetDropdownChildrenByParentIdAsync(int parentId)
+        {
+            return await Context.Set<User>()
+                .Where(u => u.ParentUserId == parentId)
+                .Select(c => new KeyValuePair<int, string>(c.Id, $"{c.Firstname} {c.Lastname}")).ToListAsync();
         }
 
         public override void AfterUpdate(User entity, UserUpdateRequest request)

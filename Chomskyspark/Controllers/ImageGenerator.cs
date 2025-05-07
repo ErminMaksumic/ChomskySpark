@@ -16,10 +16,10 @@ namespace Chomskyspark.Controllers
             this.IImageGeneratorService = IImageGeneratorService;
         }
 
-        [HttpGet]
-        public virtual Task<string> GenerateImage()
+        [HttpGet("{childId}")]
+        public virtual Task<string> GenerateImage(int childId)
         {
-            return IImageGeneratorService.GenerateImage(int.Parse(HttpContext.Items["UserId"] as string));
+            return IImageGeneratorService.GenerateImage(childId);
         }
 
         [HttpGet("learned-words")]

@@ -29,6 +29,8 @@ class _FindObjectsPageState extends State<FindObjectsPage> {
   late List<RecognizedObject> recognizedObjects = [];
   late String imageUrl = "https://api.thorhof-bestellungen.at/uploads/chomskyspark/find-object/7.png";
 
+  final int childId = Authorization.childLogged ? Authorization.user!.id! : Authorization.selectedChildId!;
+
   double imageWidth = 1;
   double imageHeight = 1;
   bool objectRecognized = false;
@@ -57,7 +59,7 @@ class _FindObjectsPageState extends State<FindObjectsPage> {
       foundObjects = [];
 
       ObjectDetectionProvider objectDetectionProvider = ObjectDetectionProvider();
-      var response = await objectDetectionProvider.getRandomRecognizedObject();
+      var response = await objectDetectionProvider.getRandomRecognizedObject(childId);
 
       if (response.isNotEmpty) {
         recognizedObjects =
@@ -334,7 +336,8 @@ class _FindObjectsPageState extends State<FindObjectsPage> {
                 success: success,
                 attemptNumber: attemptCount,
                 elapsedTimeInSeconds: elapsedTime.inSeconds,
-                userId: Authorization.user!.id);
+                userId: childId
+            );
 
             objectDetectionAttemptProvider.insert(insertData);
 
@@ -350,7 +353,7 @@ class _FindObjectsPageState extends State<FindObjectsPage> {
             decoration: BoxDecoration(
               border: foundObjects.contains(object.name)
                   ? null
-                  : Border.all(color: Colors.transparent, width: 0),
+                  : Border.all(color: Colors.red, width: 0),
             ),
           ),
         ),

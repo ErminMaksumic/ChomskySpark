@@ -52,6 +52,10 @@ flutter:
     - assets/images/take_photo.png
     - assets/images/image.png
     - assets/images/story.png
+    - assets/images/clock.png
+    - assets/images/log2.jpg
+    - assets/images/congrats.png
+    - assets/images/archery-board.png
     - assets/icons/
     - assets/Illustration/
     - assets/flags/

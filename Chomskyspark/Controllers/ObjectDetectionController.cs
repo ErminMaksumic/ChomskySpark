@@ -19,13 +19,13 @@ namespace Chomskyspark.Controllers
         }
 
         [HttpPost]
-        public virtual Task<IEnumerable<RecognizedObject>> DetectImage([FromBody] string imageUrl)
+        public virtual Task<IEnumerable<RecognizedObject>> DetectImage([FromBody] string imageUrl, int childId)
         {
-            return IObjectionService.DetectImageAsync(imageUrl, true, int.Parse(HttpContext.Items["UserId"] as string));
+            return IObjectionService.DetectImageAsync(imageUrl, true, childId);
         }
 
-        [HttpGet]
-        public virtual async Task<IActionResult> GetRandomRecognizedObject()
+        [HttpGet("{childId}")]
+        public virtual async Task<IActionResult> GetRandomRecognizedObject(int childId)
         {
             //#if DEBUG
             //            var images = new List<string>()
@@ -74,13 +74,12 @@ namespace Chomskyspark.Controllers
             //            var recognizedObjects = await IObjectionService.DetectImageAsync(imageUrl, false,   int.Parse(HttpContext.Items["UserId"] as string));
             //#endif
 
-            var userId = int.Parse(HttpContext.Items["UserId"] as string);
             string imageUrl = string.Empty;
             IEnumerable<RecognizedObject> recognizedObjects = new List<RecognizedObject>();
             while (recognizedObjects.Count() <= 1) 
             { 
-                imageUrl = await IImageGeneratorService.GenerateImage(userId);
-                recognizedObjects = await IObjectionService.DetectImageAsync(imageUrl, false, userId);
+                imageUrl = await IImageGeneratorService.GenerateImage(childId);
+                recognizedObjects = await IObjectionService.DetectImageAsync(imageUrl, false, childId);
             }
 
             return Ok(new { recognizedObjects, imageUrl });

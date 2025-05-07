@@ -22,7 +22,7 @@ namespace Chomskyspark.Controllers
 
         public override Task<IEnumerable<WordForImage>> Get([FromQuery] WordForImageSearchObject search)
         {
-            search.UserId = int.Parse(HttpContext.Items["UserId"] as string);
+            //search.UserId = int.Parse(HttpContext.Items["UserId"] as string);
             return base.Get(search);
         }
     }

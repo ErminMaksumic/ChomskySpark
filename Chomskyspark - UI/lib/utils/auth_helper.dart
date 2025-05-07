@@ -5,6 +5,7 @@ class Authorization {
   static JWT? jwt;
   static bool useBothLanguages = false;
   static bool childLogged = false;
+  static int? selectedChildId;
 }
 
 class JWT {

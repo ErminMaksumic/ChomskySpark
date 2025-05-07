@@ -73,15 +73,7 @@ class _ChildImprovementAreasPageState extends State<ChildImprovementAreasPage> {
               Expanded(
                 child: _isLoading
                     ? const Center(child: CircularProgressIndicator(color: Colors.white))
-                    : _error != null
-                        ? Center(
-                            child: Text(
-                              'Error: $_error',
-                              style: const TextStyle(color: Colors.red, fontSize: 18),
-                              textAlign: TextAlign.center,
-                            ),
-                          )
-                        : _wordsStatistics != null && _wordsStatistics!.isNotEmpty
+                    : _wordsStatistics != null && _wordsStatistics!.isNotEmpty
                             ? ListView.builder(
                                 itemCount: _wordsStatistics!.length,
                                 itemBuilder: (context, index) {

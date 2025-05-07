@@ -26,7 +26,7 @@ class QrCodeScanPage extends StatelessWidget {
               print('Detected QR Code: ${barcode.rawValue}');
               int? intValue = int.tryParse(barcode.rawValue!);
               if (intValue != null){
-                Authorization.user = await _userProvider.loginChild(1);
+                Authorization.user = await _userProvider.loginChild(intValue);
                 Authorization.childLogged = true;
                 Navigator.push(
                   context,
