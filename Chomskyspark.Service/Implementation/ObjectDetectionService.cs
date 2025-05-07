@@ -41,7 +41,8 @@ namespace Chomskyspark.Services.Implementation
             .DistinctBy(o => o.Name
             ).ToList();
 
-            Model.User parent = IUserService.GetById(userId);
+            Model.User child = IUserService.GetById(userId);
+            string childId = child.ParentUserId?.ToString() ?? child.Id.ToString();
 
             List<string> objectNames = detectedObjects.Select(obj => obj.Name).ToList();
 
@@ -58,7 +59,7 @@ namespace Chomskyspark.Services.Implementation
                 if (highRiskObjects.Any())
                 {
                     string notificationMessage = $"Dangerous objects detected: {string.Join(", ", highRiskObjects)}";
-                    await INotificationService.SendNotificationAsync(notificationMessage, parent.Id.ToString());
+                    await INotificationService.SendNotificationAsync(notificationMessage, childId);
                 }
             }
 
